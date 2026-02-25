@@ -1,3 +1,5 @@
+@use 'sass:list';
+
 .map.flex-grow {
   position: relative;
   min-height: 20rem;
@@ -8,7 +10,7 @@
   margin: 30px 30px 0 0;
   right: 0;
   width: 300px;
-  z-index: index($zindex, map-buttons);
+  z-index: list.index($zindex, map-buttons);
 
   .origin-stop-near-you-selector-input-icon {
     margin-left: 9px;

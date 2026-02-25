@@ -1,3 +1,4 @@
+@use 'sass:list';
 @import '~leaflet/dist/leaflet.css';
 
 $small-map-height: 10rem;
@@ -54,7 +55,7 @@ div.map {
       margin-right: 15px;
     }
 
-    z-index: index($zindex, map-container);
+    z-index: list.index($zindex, map-container);
   }
 
   .drawer-container {
@@ -79,7 +80,7 @@ div.map {
       flex-basis: 50vh;
       background: white;
       position: relative;
-      z-index: index($zindex, mobile-drawer);
+      z-index: list.index($zindex, mobile-drawer);
 
       &.fit-content {
         flex-basis: fit-content;
@@ -91,7 +92,7 @@ div.map {
         border-radius: 2px;
         background-color: #ddd;
         display: block;
-        z-index: index($zindex, mobile-drawer-drag-line);
+        z-index: list.index($zindex, mobile-drawer-drag-line);
         margin: auto;
         position: relative;
         top: -5px;
@@ -136,7 +137,7 @@ div.map {
     .icon-holder:hover {
       padding: 0.55em 0.2em 0 0 !important;
       font-size: 16px;
-      z-index: index($zindex, map-buttons);
+      z-index: list.index($zindex, map-buttons);
       background: white;
       height: 2.5em;
       width: 2.5em;
@@ -222,7 +223,7 @@ div.leaflet-container {
   width: 100%;
   height: 100%;
   background: none;
-  z-index: index($zindex, map-container);
+  z-index: list.index($zindex, map-container);
 
   @include font-map-container;
 
@@ -292,7 +293,7 @@ div.leaflet-marker-icon.vehicle-icon {
   }
 
   & > * {
-    z-index: index($zindex, map-buttons);
+    z-index: list.index($zindex, map-buttons);
   }
 
   & > *:not(:first-child) {
@@ -317,7 +318,7 @@ div.leaflet-marker-icon.vehicle-icon {
   &:hover,
   &:active,
   &:focus {
-    z-index: index($zindex, map-buttons);
+    z-index: list.index($zindex, map-buttons);
     position: absolute;
     bottom: 20px;
     left: 15px;

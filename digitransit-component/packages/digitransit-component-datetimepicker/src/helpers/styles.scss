@@ -1,3 +1,4 @@
+@use 'sass:list';
 @import '~@hsl-fi/sass/colors';
 @import '~@hsl-fi/sass/mixins/screen';
 @import '~@hsl-fi/sass/mixins/text';
@@ -244,7 +245,7 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
     color: var(--color);
     height: 40px;
     position: absolute;
-    z-index: index($zindex, 'search-panel');
+    z-index: list.index($zindex, 'search-panel');
     pointer-events: none;
 
     &.date-input-icon {
@@ -325,7 +326,7 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
     }
 
     :global .datetimepicker-select__menu {
-      z-index: index($zindex, 'autosuggest-suggestion-container');
+      z-index: list.index($zindex, 'autosuggest-suggestion-container');
       padding: 0;
       background: #fff;
       max-height: 250px;
@@ -577,7 +578,7 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
 
         .suggestionsContainerOpen {
           position: absolute;
-          z-index: index($zindex, 'autosuggest-suggestion-container');
+          z-index: list.index($zindex, 'autosuggest-suggestion-container');
           max-height: 250px;
           overflow-x: hidden;
           overflow-y: scroll;

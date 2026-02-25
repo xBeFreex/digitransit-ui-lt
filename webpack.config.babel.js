@@ -212,7 +212,20 @@ module.exports = {
           isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
           'css-loader',
           'postcss-loader',
-          'sass-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                quietDeps: true,
+                silenceDeprecations: [
+                  'legacy-js-api',
+                  'import',
+                  'global-builtin',
+                  'color-functions',
+                ],
+              },
+            },
+          },
         ],
       },
       {
@@ -327,7 +340,7 @@ module.exports = {
   },
   devServer: {
     compress: true,
-    host: '::1',
+    host: '0.0.0.0',
     hot: false,
     port: process.env.HOT_LOAD_PORT || 9000,
     devMiddleware: {

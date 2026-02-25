@@ -73,6 +73,7 @@ $body-font-weight: $font-weight-medium;
 @import '../app/component/animations';
 
 /* Modal */
+@import '~foundation-apps/scss/helpers/functions';
 @import '~foundation-apps/scss/helpers/breakpoints';
 @import '~foundation-apps/scss/components/modal';
 

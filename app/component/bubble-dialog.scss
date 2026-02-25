@@ -1,3 +1,5 @@
+@use 'sass:list';
+
 $bubble-dialog-box-shadow: 1.5px 2.6px 10px 0 rgba(0, 0, 0, 0.2);
 $bubble-dialog-font-size--fullscreen: 1.5rem;
 
@@ -11,7 +13,7 @@ $bubble-dialog-font-size--fullscreen: 1.5rem;
     bottom: 2.5em;
     max-width: calc(100vw - 2em);
     position: absolute;
-    z-index: index($zindex, front);
+    z-index: list.index($zindex, front);
 
     &.bubble-dialog-container--fullscreen {
       bottom: auto;
@@ -148,7 +150,7 @@ $bubble-dialog-font-size--fullscreen: 1.5rem;
     height: 3em;
     padding: 6px;
     width: 3em;
-    z-index: index($zindex, map-buttons);
+    z-index: list.index($zindex, map-buttons);
     position: relative;
 
     .icon {

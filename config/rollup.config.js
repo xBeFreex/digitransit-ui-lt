@@ -48,6 +48,18 @@ const globals = {
   'lodash/get': 'get',
   'lodash/uniq': 'uniq',
   'lodash/compact': 'compact',
+  'lodash/sortBy': 'sortBy',
+  lodash: 'lodash',
+  'lodash-es': 'lodash',
+  downshift: 'downshift',
+  luxon: 'luxon',
+  graphql: 'graphql',
+  'react-i18next': 'reactI18next',
+  'react-select': 'Select',
+  'react-autowhatever': 'Autowhatever',
+  'hoist-non-react-statics': 'hoistNonReactStatics',
+  'prop-types/checkPropTypes': 'checkPropTypes',
+  '@marvelapp/react-ab-test': 'reactAbTest',
   'react-relay': 'reactRelay',
 };
 
@@ -111,15 +123,22 @@ export default async () => {
           ignoreGlobal: true,
           include: /node_modules/,
           sourceMap: true,
-          namedExports: {
-            './node_modules/react-is/index.js': ['isValidElementType'],
-          },
         }),
         postcss({
           extract: false,
           plugins: [autoprefixer()],
           modules: true,
-          use: ['sass'],
+          use: {
+            sass: {
+              quietDeps: true,
+              silenceDeprecations: [
+                'legacy-js-api',
+                'import',
+                'global-builtin',
+                'color-functions',
+              ],
+            },
+          },
           config: false,
         }),
         json(),

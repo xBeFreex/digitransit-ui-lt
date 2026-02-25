@@ -37,4 +37,5 @@ dump.rdb
 !.yarn/versions
 .pnp.*
 .npmrc
-claude.md
+CLAUDE.md
+*.env

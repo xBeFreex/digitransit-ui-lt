@@ -1,3 +1,5 @@
+@use 'sass:list';
+
 $font-weight-medium: 500;
 $primary-color: #007ac9;
 $suggestion-highlight-background-color: #f2f5f7;
@@ -61,7 +63,7 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
   .suggestionsContainerOpen {
     position: absolute;
     background-color: #fff;
-    z-index: index($zindex, 'autosuggest-suggestion-container');
+    z-index: list.index($zindex, 'autosuggest-suggestion-container');
     max-height: 250px;
     overflow-x: hidden;
     overflow-y: scroll;

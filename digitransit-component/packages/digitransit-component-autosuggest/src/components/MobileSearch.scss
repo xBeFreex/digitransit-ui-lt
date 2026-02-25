@@ -1,3 +1,5 @@
+@use 'sass:list';
+
 $font-weight-medium: 500;
 $search-result-text-highlight-background-color: #f2f5f7;
 $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
@@ -160,7 +162,7 @@ button.clear-input {
   display: flex;
   position: absolute;
   margin-bottom: auto;
-  z-index: index($zindex, 'autosuggest-suggestion-container');
+  z-index: list.index($zindex, 'autosuggest-suggestion-container');
   width: 100vw;
   max-height: calc(100% - 75px);
   height: 100%;

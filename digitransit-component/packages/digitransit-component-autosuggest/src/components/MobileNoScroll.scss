@@ -1,4 +1,4 @@
-@import './MobileSearch';
+@use './MobileSearch' as *;
 
 .suggestionsContainerOpen {
   -ms-overflow-style: none; /* Internet Explorer 10+ */

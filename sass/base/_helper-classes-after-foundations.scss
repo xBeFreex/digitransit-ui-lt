@@ -1,3 +1,5 @@
+@use 'sass:list';
+
 /*
   Helper Classes
   These classes may be used through out the application on any DOM-element
@@ -67,7 +69,7 @@ button.noborder {
 
 .before-scrollable-area {
   position: relative;
-  z-index: index($zindex, 'before-scrollable-area');
+  z-index: list.index($zindex, 'before-scrollable-area');
   height: 16px;
 
   &.scrolled {

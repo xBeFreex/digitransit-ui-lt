@@ -1,3 +1,5 @@
+@use 'sass:list';
+
 .weather-details-modal {
   position: fixed;
   top: 50%;
@@ -78,5 +80,5 @@
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.2);
-  z-index: index($zindex, click-prevent-overlay);
+  z-index: list.index($zindex, click-prevent-overlay);
 }

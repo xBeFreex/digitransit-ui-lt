@@ -1,3 +1,4 @@
+@use 'sass:list';
 @import '~@hsl-fi/sass/colors';
 @import '~@hsl-fi/sass/mixins/screen';
 @import '~@hsl-fi/sass/mixins/text';
@@ -88,12 +89,12 @@ input[type='text'] {
   position: absolute;
   background-color: white;
   top: calc(3 * 0.875rem + 9px);
-  z-index: index($zindex, 'suggestion-container');
+  z-index: list.index($zindex, 'suggestion-container');
 }
 
 .suggestionsContainer {
   background-color: white;
-  z-index: index($zindex, 'suggestion-container');
+  z-index: list.index($zindex, 'suggestion-container');
 
   .suggestionsList {
     margin: 0;
@@ -117,7 +118,7 @@ input[type='text'] {
   overflow-x: hidden;
   overflow-y: hidden;
   white-space: nowrap;
-  z-index: index($zindex, 'suggestion-container');
+  z-index: list.index($zindex, 'suggestion-container');
 }
 
 .suggestionHighlighted {
@@ -129,15 +130,15 @@ input[type='text'] {
   width: 100%;
 
   &.origin {
-    z-index: index($zindex, origin-input);
+    z-index: list.index($zindex, origin-input);
   }
 
   &.destination {
-    z-index: index($zindex, destination-input);
+    z-index: list.index($zindex, destination-input);
   }
 
   &.stop-route-station {
-    z-index: index($zindex, stop-route-station-input);
+    z-index: list.index($zindex, stop-route-station-input);
   }
 }
 

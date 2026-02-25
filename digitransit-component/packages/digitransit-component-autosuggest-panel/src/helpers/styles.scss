@@ -1,3 +1,4 @@
+@use 'sass:list';
 @import '~@hsl-fi/sass/colors';
 @import '~@hsl-fi/sass/mixins/screen';
 @import '~@hsl-fi/sass/mixins/text';
@@ -94,23 +95,23 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
         }
 
         &.viapoint-1 > div.viapoint {
-          z-index: index($zindex, viapoint-input-1);
+          z-index: list.index($zindex, viapoint-input-1);
         }
 
         &.viapoint-2 > div.viapoint {
-          z-index: index($zindex, viapoint-input-2);
+          z-index: list.index($zindex, viapoint-input-2);
         }
 
         &.viapoint-3 > div.viapoint {
-          z-index: index($zindex, viapoint-input-3);
+          z-index: list.index($zindex, viapoint-input-3);
         }
 
         &.viapoint-4 > div.viapoint {
-          z-index: index($zindex, viapoint-input-4);
+          z-index: list.index($zindex, viapoint-input-4);
         }
 
         &.viapoint-5 > div.viapoint {
-          z-index: index($zindex, viapoint-input-5);
+          z-index: list.index($zindex, viapoint-input-5);
         }
       }
     }
@@ -243,7 +244,7 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
   display: block;
   position: relative;
   height: 9px;
-  z-index: index($zindex, 'rectangle');
+  z-index: list.index($zindex, 'rectangle');
 
   .rectangle {
     position: absolute;

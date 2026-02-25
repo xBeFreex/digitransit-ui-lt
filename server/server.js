@@ -45,7 +45,7 @@ const configFiles = fs
 let allZones;
 
 /* ********* Global ********* */
-const port = config.PORT || 8080;
+const port = config.PORT || 3000;
 const app = express();
 const { indexPath, hostnames } = config;
 
@@ -122,6 +122,9 @@ function setUpMiddleware() {
     const hotloadPort = process.env.HOT_LOAD_PORT || 9000;
     // proxy for dev-bundle
     app.use('/proxy/', proxy(`http://localhost:${hotloadPort}/`));
+    // geocoder adapter: translates Pelias-format requests to gazetteer API
+    // eslint-disable-next-line global-require
+    app.use('/geocoder', require('./geocoderProxy'));
   }
 }
 
@@ -286,7 +289,7 @@ function collectGeoJsonZones() {
 }
 
 function startServer() {
-  const server = app.listen(port, () =>
+  const server = app.listen(port, '0.0.0.0', () =>
     console.log('Digitransit-ui available on port %d', server.address().port),
   );
 }

@@ -26,7 +26,7 @@ const {
   RUN_ENV,
 } = process.env;
 const hasAPISubscriptionQueryParameter = true;
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 const APP_DESCRIPTION = 'Digitransit journey planning UI';
 const OTP_TIMEOUT = process.env.OTP_TIMEOUT || 12000;
 const YEAR = 1900 + new Date().getYear();
