@@ -27,8 +27,8 @@ export default {
   },
 
   favicon: './app/configurations/images/default/default-favicon.png',
-  textLogo: true,
-  logo: null,
+  textLogo: false,
+  logo: 'lietuva/logo.png',
   meta: {
     description: APP_DESCRIPTION,
   },
@@ -37,7 +37,7 @@ export default {
     content: [
       {
         name: 'about-these-pages',
-        href: '/tietoja-palvelusta',
+        route: '/tietoja-palvelusta',
       },
     ],
   },
@@ -107,10 +107,10 @@ export default {
   },
 
   colors: {
-    primary: '#000',
+    primary: '#1e0eac',
     tram: '#5E7921',
-    rail: '#000',
-    ferry: '#247C7B',
+    rail: '#0c5183',
+    ferry: '#3d8b85',
   },
 
   redirectReittiopasParams: true,

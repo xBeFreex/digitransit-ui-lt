@@ -62,6 +62,28 @@ const translations = {
       'invalid-input': 'Syöttämäsi aika on virheellinen',
     },
   },
+  lt: {
+    translation: {
+      today: 'Šiandien',
+      tomorrow: 'Rytoj',
+      'accessible-close': 'Uždaryti parinkiklį',
+      'accessible-closed': 'Parinkiklis uždarytas',
+      'accessible-open': 'Atidaryti parinkiklį',
+      'accessible-opened': 'Parinkiklis atidarytas',
+      'accessible-title': 'Datos ir laiko parinkiklis',
+      'accessible-update-instructions':
+        'Pakeitus laiko parametrus bus pradėta nauja paieška.',
+      arrival: 'Atvykimas',
+      date: 'Data',
+      departure: 'Išvykimas',
+      'departure-now': 'Išvykti dabar',
+      time: 'Laikas',
+      'choose-time': 'Pasirinkti laiką',
+      ready: 'Patvirtinti',
+      cancel: 'Atšaukti',
+      'invalid-input': 'Įvestas laikas yra neteisingas',
+    },
+  },
   pl: {
     translation: {
       today: 'Dziś',

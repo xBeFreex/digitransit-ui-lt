@@ -1,4 +1,5 @@
 /* eslint sort-keys: "error" */
+import lt from './translations/lt';
 
 const translations = {
   da: {
@@ -3505,6 +3506,8 @@ const translations = {
     yesterday: 'Hier',
     zones: 'Zones tarifaires',
   },
+
+  lt,
 
   nb: {
     'about-this-service': 'Om tjenesten',

@@ -1,0 +1,33 @@
+/* Lietuva theme */
+
+/* Base theme */
+@import '../default/theme';
+
+/* Lithuania brand palette */
+$lt-navy: #196bac;
+$lt-teal: #3d8b85;
+$lt-blue: #1e5799;
+
+/* Application palette */
+$primary-color: $lt-navy;
+$secondary-color: $lt-blue;
+$highlight-color: $lt-teal;
+$action-color: $lt-navy;
+$current-location-color: $lt-teal;
+$link-color: $lt-navy;
+$top-bar-color: $lt-navy;
+$navigation-background-color: #f0f4f8;
+$desktop-title-color: $lt-navy;
+$desktop-title-arrow-icon-color: $lt-teal;
+
+/* Component palette */
+$standalone-btn-color: $lt-navy;
+$standalone-btn-hover-color: $lt-blue;
+$standalone-btn-active-color: $lt-teal;
+$viewpoint-marker-color: $lt-navy;
+
+/* Vehicle palette - matching Lithuania transport colors */
+$bus-color: $lt-navy;
+$tram-color: #5e7921;
+$rail-color: $lt-navy;
+$ferry-color: $lt-teal;
