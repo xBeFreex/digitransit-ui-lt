@@ -39,6 +39,20 @@ const translations = {
       work: 'Työ',
     },
   },
+  lt: {
+    translation: {
+      'add-destination': 'Nustatyti kaip tikslą',
+      'add-favourite': 'Pridėti į mėgstamus',
+      'add-home': 'Pridėti namus',
+      'add-place': 'Pridėti vietą',
+      'add-work': 'Pridėti darbą',
+      'favourites-list': 'Mėgstamų sąrašas',
+      edit: 'Redaguoti',
+      'open-favourites': 'Atidaryti mėgstamus',
+      home: 'Namai',
+      work: 'Darbas',
+    },
+  },
   pl: {
     translation: {
       'add-destination': 'Wybierz jako punkt docelowy',

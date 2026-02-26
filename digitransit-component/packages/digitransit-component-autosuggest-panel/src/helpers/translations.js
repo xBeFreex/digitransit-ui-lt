@@ -50,6 +50,23 @@ const translations = {
       'viapoint-slack-amount': 'Pysähdyksen kesto',
     },
   },
+  lt: {
+    translation: {
+      'add-via-button-label': 'Pridėti tarpinį punktą',
+      'add-via-duration-button-label':
+        'Nustatyti sustojimo trukmę tarpiniame punkte {{index}}',
+      'add-via-duration-button-label-close':
+        'Uždaryti sustojimo trukmės parinkiklį tarpiniame punkte {{index}}',
+      'add-via-duration-button-label-open':
+        'Atidaryti sustojimo trukmės parinkiklį tarpiniame punkte {{index}}',
+      'minute-short': 'min',
+      'remove-via-button-label': 'Pašalinti tarpinį punktą {{index}}',
+      'swap-order-button-label': 'Sukeisti pradžią ir tikslą',
+      'via-point': 'Tarpinis punktas',
+      'via-point-index': 'Tarpinis punktas {{index}}',
+      'viapoint-slack-amount': 'Sustojimo trukmė',
+    },
+  },
   pl: {
     translation: {
       'add-via-button-label': 'Dodaj punkt pośredni',

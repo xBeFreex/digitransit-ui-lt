@@ -14,6 +14,11 @@ const translations = {
       'close-modal': 'Sulje modaali',
     },
   },
+  lt: {
+    translation: {
+      'close-modal': 'Uždaryti langą',
+    },
+  },
   pl: {
     translation: {
       'close-modal': 'Zamknij modal',

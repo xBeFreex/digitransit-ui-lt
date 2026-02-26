@@ -77,6 +77,8 @@ const positions = [
   'Use current location',
   'Your current location',
   'Wybrane miejsce',
+  'Dabartinė vieta',
+  'Naudoti dabartinę vietą',
 ];
 
 /**

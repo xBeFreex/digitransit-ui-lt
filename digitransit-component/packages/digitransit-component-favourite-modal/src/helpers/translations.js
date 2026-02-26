@@ -55,6 +55,27 @@ const translations = {
       'required-text': 'pakollinen kenttä',
     },
   },
+  lt: {
+    translation: {
+      cancel: 'Atšaukti',
+      'choose-icon': 'Pasirinkti vietos piktogramą',
+      'close-favourite-modal': 'Uždaryti mėgstamų langą',
+      'edit-place': 'Redaguoti vietą',
+      'favourite-modal-on-add-new': 'Pridėti naują mėgstamą',
+      'favourite-modal-on-edit': 'Redaguoti mėgstamą: {{favourite.name}}',
+      'input-placeholder': 'Suteikti vietai pavadinimą (neprivaloma)',
+      save: 'Išsaugoti',
+      'save-place': 'Išsaugoti vietą',
+      'cannot-save-place': 'Negalima išsaugoti vietos be adreso ar piktogramos',
+      place: 'vieta',
+      home: 'namai',
+      work: 'darbas',
+      sport: 'sportas',
+      school: 'mokykla',
+      shopping: 'apsipirkimas',
+      'required-text': 'privalomas laukas',
+    },
+  },
   pl: {
     translation: {
       cancel: 'Anuluj',

@@ -24,5 +24,10 @@ const translations = {
       traffic: 'Häiriöt ja muutokset',
     },
   },
+  lt: {
+    translation: {
+      traffic: 'Sutrikimai ir pakeitimai',
+    },
+  },
 };
 export default translations;

@@ -51,6 +51,24 @@ const translations = {
       down: 'Siirrä suosikkisijaintia alaspäin',
     },
   },
+  lt: {
+    translation: {
+      cancel: 'Atšaukti',
+      delete: 'Ištrinti',
+      'delete-place-header': 'Ar norite ištrinti šią vietą?',
+      'delete-place-name': 'Ištrinti vietą: {{favourite.name}}',
+      'edit-places': 'Redaguoti vietas',
+      'edit-place-name': 'Redaguoti vietą: {{favourite.name}}',
+      'edit-modal-on-open': 'Mėgstamų redagavimo langas.',
+      'choose-icon': 'Pasirinkti vietos piktogramą',
+      'close-modal': 'Uždaryti langą',
+      'input-placeholder': 'Suteikti vietai pavadinimą (neprivaloma)',
+      save: 'Išsaugoti',
+      'save-place': 'Išsaugoti vietą',
+      up: 'Perkelti mėgstamą aukštyn',
+      down: 'Perkelti mėgstamą žemyn',
+    },
+  },
   pl: {
     translation: {
       cancel: 'Anuluj',

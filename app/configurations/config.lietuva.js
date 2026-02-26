@@ -137,8 +137,10 @@ export default {
     [20.9, 53.9],
   ],
 
-  hideFavourites: true,
-  hideStopRouteSearch: true,
+  hideFavourites: false,
+  hideStopRouteSearch: false,
+  showNearYouButtons: true,
+  nearYouModes: ['bus', 'tram', 'rail', 'ferry'],
   hideMapLayersByDefault: true,
   hideCarSuggestionDuration: true,
   hideWalkLegDurationSummary: true,

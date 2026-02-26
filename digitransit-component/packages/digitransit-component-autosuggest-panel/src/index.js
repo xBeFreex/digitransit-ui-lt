@@ -82,7 +82,7 @@ const isKeyboardSelectionEvent = event => {
 
 const value = location =>
   (location && location.address) ||
-  (location && location.gps && location.ready && 'Nykyinen sijainti') ||
+  (location && location.gps && location.ready && 'Dabartinė vieta') ||
   '';
 
 const getLocationType = location =>
