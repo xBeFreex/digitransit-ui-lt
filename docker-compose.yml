@@ -1,0 +1,18 @@
+services:
+  digitransit-ui:
+    build:
+      context: .
+      args:
+        CONFIG: lietuva
+    ports:
+      - "3000:3000"
+    environment:
+      CONFIG: lietuva
+      PORT: 3000
+      # OTP ir MQTT veikia tame pačiame VM – pasiekiami per host tinklą
+      OTP_URL: ${OTP_URL:-https://vintra.ciskauskas.lt/}
+      GEOCODING_BASE_URL: ${GEOCODING_BASE_URL:-/geocoder}
+      MQTT_URL: ${MQTT_URL:-wss://vintra.ciskauskas.lt/mqtt}
+    extra_hosts:
+      - "host-gateway:host-gateway"
+    restart: unless-stopped

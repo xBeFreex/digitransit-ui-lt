@@ -118,13 +118,13 @@ function setUpStaticFolders() {
 function setUpMiddleware() {
   app.use(cookieParser());
   app.use(bodyParser.raw());
+  // geocoder adapter: translates Pelias-format requests to Photon API
+  // eslint-disable-next-line global-require
+  app.use('/geocoder', require('./geocoderProxy'));
   if (process.env.NODE_ENV === 'development') {
     const hotloadPort = process.env.HOT_LOAD_PORT || 9000;
     // proxy for dev-bundle
     app.use('/proxy/', proxy(`http://localhost:${hotloadPort}/`));
-    // geocoder adapter: translates Pelias-format requests to gazetteer API
-    // eslint-disable-next-line global-require
-    app.use('/geocoder', require('./geocoderProxy'));
   }
 }
 

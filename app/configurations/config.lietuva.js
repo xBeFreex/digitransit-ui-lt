@@ -3,6 +3,7 @@ const APP_TITLE = 'Vintra | Lietuva';
 const APP_DESCRIPTION = 'Digitransit-Lietuva';
 const OTP_URL = process.env.OTP_URL || 'https://vintra.ciskauskas.lt/otp/';
 const GEOCODING_BASE_URL = process.env.GEOCODING_BASE_URL || '/geocoder';
+const MQTT_URL = process.env.MQTT_URL || 'ws://localhost:9001';
 
 export default {
   CONFIG,
@@ -16,6 +17,21 @@ export default {
     PELIAS: `${GEOCODING_BASE_URL}/search`,
     PELIAS_REVERSE_GEOCODER: `${GEOCODING_BASE_URL}/reverse`,
     PELIAS_PLACE: `${GEOCODING_BASE_URL}/place`,
+    MAP: {
+      default: 'https://tile.openstreetmap.org/',
+      lt: 'https://tile.openstreetmap.org/',
+      en: 'https://tile.openstreetmap.org/',
+    },
+    STOP_MAP: {
+      default: `${OTP_URL}routers/default/vectorTiles/stops,stations/`,
+      lt: `${OTP_URL}routers/default/vectorTiles/stops,stations/`,
+      en: `${OTP_URL}routers/default/vectorTiles/stops,stations/`,
+    },
+    REALTIME_STOP_MAP: {
+      default: `${OTP_URL}routers/default/vectorTiles/stops,stations/`,
+      lt: `${OTP_URL}routers/default/vectorTiles/stops,stations/`,
+      en: `${OTP_URL}routers/default/vectorTiles/stops,stations/`,
+    },
   },
 
   hasAPISubscriptionQueryParameter: false,
@@ -108,6 +124,7 @@ export default {
 
   colors: {
     primary: '#1e0eac',
+    bus: '#007AC9',
     tram: '#5E7921',
     rail: '#0c5183',
     ferry: '#3d8b85',
@@ -117,6 +134,10 @@ export default {
 
   map: {
     minZoom: 5,
+    maxZoom: 18,
+    tileSize: 256,
+    zoomOffset: 0,
+    useRetinaTiles: false,
     areaBounds: {
       corner1: [56.5, 26.9],
       corner2: [53.9, 20.9],
@@ -140,13 +161,14 @@ export default {
   hideFavourites: false,
   hideStopRouteSearch: false,
   showNearYouButtons: true,
-  nearYouModes: ['bus', 'tram', 'rail', 'ferry'],
-  hideMapLayersByDefault: true,
+  nearYouModes: ['bus', 'rail', 'ferry'],
+  hideMapLayersByDefault: false,
   hideCarSuggestionDuration: true,
   hideWalkLegDurationSummary: true,
   emphasizeDistance: true,
   emphasizeOneWayJourney: true,
 
+  stopsMinZoom: 14,
   terminalStopsMinZoom: 14,
 
   useRealtimeTravellerCapacities: false,
@@ -177,4 +199,29 @@ export default {
   useAssembledGeoJsonZones: 'isOnByDefault',
   locationSearchTargetsFromOTP: [],
   viaPointsEnabled: false,
+
+  vehicles: true,
+  showVehiclesOnStopPage: true,
+  showVehiclesOnItineraryPage: true,
+
+  realTime: {
+    vintra: {
+      active: true,
+      gtfsrt: true,
+      mqtt: MQTT_URL,
+      feedId: 'vintra',
+      routeSelector: routePageProps =>
+        routePageProps.route.gtfsId.split(':')[1],
+      mqttTopicResolver: (
+        route,
+        direction,
+        tripStartTime,
+        headsign,
+        feedId,
+        tripId,
+        geoHash,
+      ) =>
+        `/gtfsrt/vp/${feedId}/+/+/+/${route}/${direction}/${headsign}/${tripId}/+/${tripStartTime}/+/${geoHash[0]}/${geoHash[1]}/${geoHash[2]}/${geoHash[3]}/#`,
+    },
+  },
 };

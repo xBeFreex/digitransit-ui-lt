@@ -29,7 +29,8 @@ RUN \
   # Tell Playwright not to download browser binaries, as it is only used for testing (not building).
   # https://github.com/microsoft/playwright/blob/v1.16.2/installation-tests/installation-tests.sh#L200-L216
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
-  && yarn install --immutable --inline-builds \
+  && yarn add node-gyp \
+  && yarn install --inline-builds \
   && yarn cache clean --all \
   && rm -rf /tmp/phantomjs
 
@@ -66,10 +67,10 @@ LABEL org.opencontainers.image.licenses="(AGPL-3.0 OR EUPL-1.2)"
 
 WORKDIR /opt/digitransit-ui
 
-ARG CONFIG=''
+ARG CONFIG='lietuva'
 ENV CONFIG=${CONFIG}
 
-EXPOSE 8080
+EXPOSE 3000
 
 # todo: install production dependencies only, re-use .yarn/cache from above
 # `yarn install --production` is not supported by Yarn v2.4.3, and the suggested `yarn workspaces focus` command
@@ -80,7 +81,7 @@ COPY --from=builder /opt/digitransit-ui/ .
 ARG WEBPACK_DEVTOOL=''
 ENV \
   # App specific settings to override when the image is run \
-  PORT=8080 \
+  PORT=3000 \
   API_URL='' \
   MAP_URL='' \
   OTP_URL='' \
@@ -98,11 +99,12 @@ ENV \
   NODE_OPTS='--title=digitransit-ui' \
   WEBPACK_DEVTOOL=$WEBPACK_DEVTOOL \
   ASSET_URL='' \
-  STATIC_MESSAGE_URL=''
+  STATIC_MESSAGE_URL='' \
+  MQTT_URL=''
 
 RUN apk add --no-cache curl
 HEALTHCHECK \
-  --interval=5s --timeout=3s --retries=3 --start-period=5s \
+  --interval=15s --timeout=5s --retries=5 --start-period=90s \
   CMD curl -fsSLI "http://localhost:$PORT/" || exit 1
 
 CMD yarn run start

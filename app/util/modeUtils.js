@@ -180,7 +180,10 @@ export function getStopMode(vehicleMode, routes, code, config, isTerminal) {
           }
           const arr = typeof routes === 'string' ? JSON.parse(routes) : routes;
           if (
-            arr.some(r => isExternalFeed(getFeedWithoutId(r.gtfsId), config))
+            arr.some(
+              r =>
+                r.gtfsId && isExternalFeed(getFeedWithoutId(r.gtfsId), config),
+            )
           ) {
             return 'ferry-external';
           }

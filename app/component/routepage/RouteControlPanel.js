@@ -296,13 +296,13 @@ class RouteControlPanel extends React.Component {
     const routeParts = route.gtfsId.split(':');
     const feedId = routeParts[0];
     const source = realTime[feedId];
+    if (!source || !source.active) {
+      return;
+    }
     const id =
       pattern.code !== match.params.patternId
         ? routeParts[1]
         : source.routeSelector(this.props);
-    if (!source || !source.active) {
-      return;
-    }
 
     const patternIdSplit = match.params.patternId.split(':');
     const direction = patternIdSplit[patternIdSplit.length - 2];

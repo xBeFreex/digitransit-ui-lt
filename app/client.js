@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Modal from 'react-modal';
 import BrowserProtocol from 'farce/BrowserProtocol';
 import createFarceRouter from 'found/createFarceRouter';
 import makeRouteConfig from 'found/makeRouteConfig';
@@ -47,6 +48,8 @@ import { ConfigProvider } from './configurations/ConfigContext';
 import { FavouriteProvider } from './hooks/FavouriteContext';
 
 window.debug = debug; // Allow _debug.enable('*') in browser console
+
+Modal.setAppElement('#app');
 
 const { config } = window;
 const app = appCreator(config);
