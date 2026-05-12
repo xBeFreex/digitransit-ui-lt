@@ -210,6 +210,7 @@ export default {
       gtfsrt: true,
       mqtt: MQTT_URL,
       feedId: 'vintra',
+      vehicleNumberParser: vehicleNumber => vehicleNumber,
       routeSelector: routePageProps =>
         routePageProps.route.gtfsId.split(':')[1],
       mqttTopicResolver: (

@@ -1,5 +1,4 @@
 .embedded-search-generator {
-  font-family: $font-family;
   margin: auto;
 
   fieldset {
@@ -18,7 +17,7 @@
 
     input[type='checkbox'],
     input[type='radio'] {
-      accent-color: $primary-color;
+      accent-color: $theme-primary-color;
       border: 1px solid #888;
       box-sizing: border-box;
       width: 24px;
@@ -104,7 +103,6 @@
   h2,
   h3,
   label {
-    font-family: $heading-font-family;
     letter-spacing: $letter-spacing;
     color: $black;
   }

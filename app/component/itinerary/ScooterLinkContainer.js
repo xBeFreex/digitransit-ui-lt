@@ -1,4 +1,4 @@
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
@@ -8,7 +8,7 @@ import {
   getRentalNetworkConfig,
   getRentalNetworkIcon,
   getRentalVehicleLink,
-  useDeepLink,
+  openDeepLink,
 } from '../../util/vehicleRentalUtils';
 
 import withBreakpoint from '../../util/withBreakpoint';
@@ -34,7 +34,7 @@ function ScooterLinkContainer(
   const rentalVehicleLink = getRentalVehicleLink(rentalVehicle, networkConfig);
   const onClick = rentalVehicleLink.startsWith('http')
     ? () => {}
-    : () => useDeepLink(rentalVehicleLink, rentalVehicle.rentalNetwork.url);
+    : () => openDeepLink(rentalVehicleLink, rentalVehicle.rentalNetwork.url);
 
   return (
     <div>
@@ -91,7 +91,6 @@ ScooterLinkContainer.defaultProps = {
 
 ScooterLinkContainer.contextTypes = {
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
 };
 const ScooterLinkWithBreakpoint = withBreakpoint(ScooterLinkContainer);
 

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState, useRef } from 'react';
 import { createPaginationContainer, graphql } from 'react-relay';
-import { intlShape, FormattedMessage } from 'react-intl';
-import { configShape, relayShape } from '../../util/shapes';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { relayShape } from '../../util/shapes';
 import StopNearYouContainer from './StopNearYouContainer';
 import withBreakpoint from '../../util/withBreakpoint';
 import {
@@ -13,24 +13,22 @@ import VehicleRentalStationNearYou from './VehicleRentalStationNearYou';
 import ParkNearYou from './ParkNearYou';
 import Loading from '../Loading';
 import Icon from '../Icon';
-import { getDefaultNetworks } from '../../util/vehicleRentalUtils';
 import DisruptionBanner from '../DisruptionBanner';
+import { useConfigContext } from '../../configurations/ConfigContext';
 
-function NearYouContainer(
-  {
-    places,
-    loadingDone,
-    currentTime,
-    relay,
-    position,
-    withSeparator,
-    prioritizedStops,
-    mode,
-    isParentTabActive,
-    favouriteIds,
-  },
-  { config, intl },
-) {
+function NearYouContainer({
+  places,
+  currentTime,
+  relay,
+  position,
+  withSeparator,
+  prioritizedStops,
+  mode,
+  isParentTabActive,
+  favouriteIds,
+}) {
+  const config = useConfigContext();
+  const intl = useIntl();
   const ariaRef = useRef('stop-near-you');
   const searchPos = useRef(position); // position used for fetching nearest places
   const refetches = useRef(0);
@@ -61,11 +59,16 @@ function NearYouContainer(
     if (!automatic) {
       ariaRef.current = 'loading';
     }
-    relay.loadMore(5, () => {
+    relay.loadMore(5, error => {
       if (automatic) {
         refetches.current += 1;
       }
-      stopCount.current += 5;
+      if (error) {
+        // stop collecting more
+        refetches.current = config.maxNearYouRefetches;
+      } else {
+        stopCount.current += 5;
+      }
       ariaRef.current = 'stop-near-you-update-alert';
       setLoading(0);
     });
@@ -91,10 +94,6 @@ function NearYouContainer(
     }
   }, [position.lat, position.lon]);
 
-  useEffect(() => {
-    loadingDone();
-  }, []);
-
   const createNearYouPlaces = () => {
     if (!places?.nearest) {
       return [];
@@ -104,25 +103,13 @@ function NearYouContainer(
     const { edges } = places.nearest;
     let sorted;
     if (mode === 'CITYBIKE') {
-      const withNetworks = edges.filter(edge => {
-        return !!edge.node.place.rentalNetwork?.networkId;
-      });
-      const filteredCityBikeStopEdges = withNetworks.filter(edge => {
-        return getDefaultNetworks(config).includes(
-          edge.node.place.rentalNetwork?.networkId,
-        );
-      });
-      sorted = filteredCityBikeStopEdges
-        .slice(0, 5)
-        .sort(sortNearYouRentalStations(favouriteIds));
-      sorted.push(...filteredCityBikeStopEdges.slice(5));
+      sorted = edges.slice().sort(sortNearYouRentalStations(favouriteIds));
     } else if (mode === 'BIKEPARK' || mode === 'CARPARK') {
       sorted = edges;
     } else {
       sorted = edges
-        .slice(0, 5)
+        .slice()
         .sort(sortNearYouStops(favouriteIds, walkRoutingThreshold));
-      sorted.push(...edges.slice(5));
     }
 
     const stops = sorted.map(({ node }) => {
@@ -176,7 +163,9 @@ function NearYouContainer(
     .flatMap(route => route?.alerts || [])
     .filter(alert => alert.alertSeverityLevel === 'SEVERE');
   const noStopsFound =
-    !items.length && refetches >= config.maxNearYouRefetches && !loading;
+    !items.length &&
+    refetches.current >= config.maxNearYouRefetches &&
+    !loading;
   return (
     <>
       {alerts?.length ? <DisruptionBanner alerts={alerts} mode={mode} /> : null}
@@ -184,7 +173,7 @@ function NearYouContainer(
         (noStopsFound && !prioritizedStops.length)) && (
         <>
           {withSeparator && <div className="separator" />}
-          <div className="stops-near-you-no-stops">
+          <div className="near-you-no-stops">
             <Icon img="icon_info" color={config.colors.primary} />
             <FormattedMessage id="nearest-no-stops" />
           </div>
@@ -194,15 +183,15 @@ function NearYouContainer(
         <FormattedMessage id={ariaRef.current} />
       </div>
       {loading === 1 && (
-        <div key="loading1" className="stops-near-you-spinner-container">
+        <div key="loading1" className="near-you-spinner-container">
           <Loading />
         </div>
       )}
-      <div key="items" role="list" className="stops-near-you-container">
+      <div key="items" role="list" className="near-you-container">
         {items}
       </div>
       {loading === 2 && (
-        <div key="loading2" className="stops-near-you-spinner-container">
+        <div key="loading2" className="near-you-spinner-container">
           <Loading />
         </div>
       )}
@@ -226,7 +215,6 @@ function NearYouContainer(
 NearYouContainer.propTypes = {
   // eslint-disable-next-line
   places: PropTypes.object,
-  loadingDone: PropTypes.func.isRequired,
   currentTime: PropTypes.number.isRequired,
   relay: relayShape.isRequired,
   position: PropTypes.shape({
@@ -245,13 +233,6 @@ NearYouContainer.defaultProps = {
   places: undefined,
   withSeparator: false,
   isParentTabActive: false,
-};
-
-NearYouContainer.contextTypes = {
-  config: configShape,
-  intl: intlShape.isRequired,
-  executeAction: PropTypes.func.isRequired,
-  getStore: PropTypes.func,
 };
 
 const NearYouContainerWithBreakpoint = withBreakpoint(NearYouContainer);

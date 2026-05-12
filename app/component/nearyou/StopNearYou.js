@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'found';
 import Modal from '@hsl-fi/modal';
-import { stopShape, configShape, relayShape } from '../../util/shapes';
+import { stopShape, relayShape } from '../../util/shapes';
 import { hasEntitiesOfType } from '../../util/alertUtils';
 import { stopPagePath } from '../../util/path';
 import { AlertEntityType } from '../../constants';
@@ -11,18 +11,17 @@ import NearYouHeader from './NearYouHeader';
 import AlertBanner from '../AlertBanner';
 import StopNearYouDepartureRowContainer from './StopNearYouDepartureRowContainer';
 import CapacityModal from '../CapacityModal';
+import { useConfigContext } from '../../configurations/ConfigContext';
 
-const StopNearYou = (
-  { stop, currentTime, relay, isParentTabActive },
-  { config, intl },
-) => {
+const StopNearYou = ({ stop, currentTime, relay, isParentTabActive }) => {
+  const config = useConfigContext();
+  const intl = useIntl();
   if (!stop.stoptimesWithoutPatterns) {
     return null;
   }
   const timeRef = useRef(currentTime);
   const [capacityModalOpen, setCapacityModalOpen] = useState(false);
-  const stopMode = stop.stoptimesWithoutPatterns[0]?.trip.route.mode;
-  const { gtfsId } = stop;
+  const { gtfsId, vehicleMode } = stop;
 
   useEffect(() => {
     if (isParentTabActive && currentTime - timeRef.current > 30) {
@@ -50,6 +49,7 @@ const StopNearYou = (
           desc={stop.desc}
           isStation={isStation}
           linkAddress={linkAddress}
+          mode={vehicleMode}
         />
         <span className="sr-only">
           <FormattedMessage
@@ -79,9 +79,9 @@ const StopNearYou = (
           <>
             <StopNearYouDepartureRowContainer
               currentTime={currentTime}
-              mode={stopMode}
+              mode={vehicleMode}
               stopTimes={stop.stoptimesWithoutPatterns}
-              isStation={isStation && stopMode !== 'SUBWAY'}
+              isStation={isStation && vehicleMode !== 'SUBWAY'}
               openCapacityModal={() => setCapacityModalOpen(true)}
               isParentTabActive={isParentTabActive}
             />
@@ -120,11 +120,6 @@ StopNearYou.propTypes = {
   currentTime: PropTypes.number.isRequired,
   relay: relayShape.isRequired,
   isParentTabActive: PropTypes.bool.isRequired,
-};
-
-StopNearYou.contextTypes = {
-  config: configShape.isRequired,
-  intl: intlShape.isRequired,
 };
 
 export default StopNearYou;

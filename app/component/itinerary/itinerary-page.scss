@@ -124,7 +124,6 @@
     @include font-book;
 
     text-align: left;
-    font-family: $font-family !important;
     display: flex !important;
     border: 1px solid #ddd;
 
@@ -197,7 +196,7 @@
 
     &:focus {
       box-shadow: none !important;
-      border-color: none !important;
+      border-color: transparent !important;
     }
 
     &#inputMinutes {
@@ -250,11 +249,8 @@
     padding: 0.6em;
     padding-right: 0.8em;
     outline: none;
-
-    span {
-      font-weight: $font-weight-medium;
-      font-size: $font-size-xxsmall;
-    }
+    font-weight: $font-weight-medium;
+    font-size: $font-size-xxsmall;
 
     &.settings .icon {
       font-size: 1.7em;
@@ -381,7 +377,6 @@
       }
 
       h1 {
-        font-family: $heading-font-family;
         width: 100%;
         text-align: center;
         margin: 1.7em 0 25px 0;
@@ -398,7 +393,7 @@
 .time-navigation-btn {
   height: 40px;
   width: 100%;
-  color: $primary-color;
+  color: $theme-primary-color;
   background-color: $white;
   text-align: left;
   padding-left: 81px;
@@ -442,9 +437,8 @@
   border-radius: 5px;
   margin: 15px 60px 15px 60px;
   padding: 15px;
-  font-family: $font-family;
   font-style: normal;
-  font-weight: normal;
+  font-weight: $font-weight-book;
   line-height: 21px;
   letter-spacing: -0.03em;
   color: #000;
@@ -456,11 +450,11 @@
 
   button {
     font-size: $font-size-xsmall;
-    color: $primary-color;
+    color: $theme-primary-color;
   }
 
   h3 {
-    font-weight: bold;
+    font-weight: $font-weight-bold;
     font-size: $font-size-xsmall;
   }
 
@@ -471,10 +465,10 @@
   }
 
   .change-settings {
-    color: $primary-color;
+    color: $theme-primary-color;
 
     #change-settings-button {
-      font-weight: bold;
+      font-weight: $font-weight-bold;
     }
   }
 }

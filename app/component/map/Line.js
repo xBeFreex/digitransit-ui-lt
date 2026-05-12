@@ -17,6 +17,7 @@ export default class Line extends React.Component {
         PropTypes.arrayOf(PropTypes.number),
       ]),
     ).isRequired,
+    appendClass: PropTypes.string,
   };
 
   static defaultProps = {
@@ -24,6 +25,7 @@ export default class Line extends React.Component {
     opaque: false,
     passive: false,
     color: undefined,
+    appendClass: undefined,
   };
 
   static contextTypes = {
@@ -47,10 +49,13 @@ export default class Line extends React.Component {
   }
 
   componentDidUpdate() {
-    if (!(this.props.passive && this.props.thin) && this.line) {
-      if (!this.props.opaque) {
-        this.line.leafletElement.bringToFront();
-      }
+    if (
+      !this.props.passive &&
+      !this.props.thin &&
+      !this.props.opaque &&
+      this.line
+    ) {
+      this.line.leafletElement.bringToFront();
     }
   }
 
@@ -117,7 +122,7 @@ export default class Line extends React.Component {
             this.halo = el;
           }}
           positions={filteredPoints}
-          className={`leg-halo ${className}`}
+          className={`leg-halo ${className} ${this.props.appendClass}`}
           weight={haloWeight}
           interactive={false}
         />
@@ -127,7 +132,7 @@ export default class Line extends React.Component {
             this.line = el;
           }}
           positions={filteredPoints}
-          className={`leg ${className}`}
+          className={`leg ${className} ${this.props.appendClass}`}
           color={color}
           weight={legWeight}
           interactive={false}

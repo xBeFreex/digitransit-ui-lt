@@ -1,16 +1,28 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import { shallow } from 'enzyme';
 
-import { shallowWithIntl } from './helpers/mock-intl-enzyme';
+import { createSimpleTestContext } from './helpers/mock-schedule-context';
 import WalkLeg from '../../app/component/itinerary/WalkLeg';
 import ServiceAlertIcon from '../../app/component/ServiceAlertIcon';
 import { AlertSeverityLevelType } from '../../app/constants';
 
 describe('<WalkLeg />', () => {
+  let sandbox;
+
+  beforeEach(() => {
+    ({ sandbox } = createSimpleTestContext({
+      intl: { formatNumber: () => '284 m' },
+    }));
+  });
+
+  afterEach(() => sandbox.restore());
+
   it('should show the leg starting point name', () => {
     const props = {
       focusAction: () => {},
       focusToLeg: () => {},
+      focusToPoint: () => {},
       index: 2,
       leg: {
         distance: 284.787,
@@ -27,14 +39,23 @@ describe('<WalkLeg />', () => {
         rentedBike: false,
         start: { scheduledTime: new Date(1529589709000).toISOString() },
         end: { scheduledTime: new Date(1529589701000).toISOString() },
+        steps: [
+          {
+            streetName: 'entrance',
+            area: false,
+            absoluteDirection: null,
+            feature: {
+              __typename: 'Entrance',
+              publicCode: 'A',
+              entranceId: 'osm:123',
+              wheelchairAccessible: 'POSSIBLE',
+            },
+          },
+        ],
       },
     };
 
-    const wrapper = shallowWithIntl(<WalkLeg {...props} />, {
-      context: {
-        config: {},
-      },
-    });
+    const wrapper = shallow(<WalkLeg {...props} />);
 
     expect(wrapper.find('.itinerary-leg-row').text()).to.contain('Veturitori');
   });
@@ -43,6 +64,7 @@ describe('<WalkLeg />', () => {
     const props = {
       focusAction: () => {},
       focusToLeg: () => {},
+      focusToPoint: () => {},
       index: 2,
       leg: {
         distance: 284.787,
@@ -59,6 +81,19 @@ describe('<WalkLeg />', () => {
         rentedBike: false,
         start: { scheduledTime: new Date(1529589709000).toISOString() },
         end: { scheduledTime: new Date(1529589701000).toISOString() },
+        steps: [
+          {
+            streetName: 'entrance',
+            area: false,
+            absoluteDirection: null,
+            feature: {
+              __typename: 'Entrance',
+              publicCode: 'A',
+              entranceId: 'osm:123',
+              wheelchairAccessible: 'POSSIBLE',
+            },
+          },
+        ],
       },
       previousLeg: {
         distance: 3297.017000000001,
@@ -78,11 +113,7 @@ describe('<WalkLeg />', () => {
       },
     };
 
-    const wrapper = shallowWithIntl(<WalkLeg {...props} />, {
-      context: {
-        config: {},
-      },
-    });
+    const wrapper = shallow(<WalkLeg {...props} />);
 
     expect(wrapper.find(FormattedMessage).at(0).prop('id')).to.equal(
       'return-cycle-to',
@@ -94,6 +125,7 @@ describe('<WalkLeg />', () => {
     const props = {
       focusAction: () => {},
       focusToLeg: () => {},
+      focusToPoint: () => {},
       index: 2,
       leg: {
         distance: 284.787,
@@ -119,12 +151,23 @@ describe('<WalkLeg />', () => {
         rentedBike: false,
         start: { scheduledTime: new Date(startTime).toISOString() },
         end: { scheduledTime: new Date(1529589701000).toISOString() },
+        steps: [
+          {
+            streetName: 'entrance',
+            area: false,
+            absoluteDirection: null,
+            feature: {
+              __typename: 'Entrance',
+              publicCode: 'A',
+              entranceId: 'osm:123',
+              wheelchairAccessible: 'POSSIBLE',
+            },
+          },
+        ],
       },
     };
 
-    const wrapper = shallowWithIntl(<WalkLeg {...props} />, {
-      context: { config: { colors: { primary: '#007ac9' } } },
-    });
+    const wrapper = shallow(<WalkLeg {...props} />);
 
     expect(wrapper.find(ServiceAlertIcon).prop('severityLevel')).to.equal(
       AlertSeverityLevelType.Info,
@@ -135,6 +178,7 @@ describe('<WalkLeg />', () => {
     const props = {
       focusAction: () => {},
       focusToLeg: () => {},
+      focusToPoint: () => {},
       index: 1,
       leg: {
         distance: 1.23,
@@ -157,11 +201,22 @@ describe('<WalkLeg />', () => {
         rentedBike: false,
         start: { scheduledTime: new Date(1668600030868).toISOString() },
         end: { scheduledTime: new Date(1668600108525).toISOString() },
+        steps: [
+          {
+            streetName: 'entrance',
+            area: false,
+            absoluteDirection: null,
+            feature: {
+              __typename: 'Entrance',
+              publicCode: 'A',
+              entranceId: 'osm:123',
+              wheelchairAccessible: 'POSSIBLE',
+            },
+          },
+        ],
       },
     };
 
-    shallowWithIntl(<WalkLeg {...props} />, {
-      context: { config: { colors: { primary: '#007ac9' } } },
-    });
+    shallow(<WalkLeg {...props} />);
   });
 });

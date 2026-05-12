@@ -19,7 +19,7 @@ const globals = {
   'prop-types': 'PropTypes',
   'react-is': 'react-is',
   i18next: 'i18next',
-  'react-autosuggest': 'Autosuggest',
+  'react-i18next': 'reactI18next',
   'react-sortablejs': 'reactSortablejs',
   'react-modal': 'ReactModal',
   '@hsl-fi/modal': 'Modal',
@@ -54,7 +54,6 @@ const globals = {
   downshift: 'downshift',
   luxon: 'luxon',
   graphql: 'graphql',
-  'react-i18next': 'reactI18next',
   'react-select': 'Select',
   'react-autowhatever': 'Autowhatever',
   'hoist-non-react-statics': 'hoistNonReactStatics',
@@ -113,7 +112,7 @@ export default async () => {
         peerDepsExternal({
           packageJsonPath: path.join(__dirname, basePath, 'package.json'),
         }),
-        nodeResolve(),
+        nodeResolve({ browser: true }),
         babel({
           runtimeHelpers: true,
           configFile: './config/babel.config.js',
@@ -128,17 +127,19 @@ export default async () => {
           extract: false,
           plugins: [autoprefixer()],
           modules: true,
-          use: {
-            sass: {
-              quietDeps: true,
-              silenceDeprecations: [
-                'legacy-js-api',
-                'import',
-                'global-builtin',
-                'color-functions',
-              ],
-            },
-          },
+          use: [
+            [
+              'sass',
+              {
+                quietDeps: true,
+                silenceDeprecations: [
+                  'import',
+                  'global-builtin',
+                  'color-functions',
+                ],
+              },
+            ],
+          ],
           config: false,
         }),
         json(),

@@ -1,7 +1,7 @@
 import { matchShape, routerShape } from 'found';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
-import { intlShape } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { addAnalyticsEvent } from '../../../util/analyticsUtils';
 import {
   isAnyLegPropertyIdentical,
@@ -43,6 +43,7 @@ const getLegType = (leg, firstLeg, time, interlineWithPreviousLeg) => {
 function NaviCardContainer(
   {
     focusToLeg,
+    focusToPoint,
     time,
     legs,
     position,
@@ -68,7 +69,8 @@ function NaviCardContainer(
   );
   const focusRef = useRef(false);
 
-  const { intl, config, match, router } = context;
+  const intl = useIntl();
+  const { config, match, router } = context;
   const platformRef = useRef();
 
   if (legChanged) {
@@ -225,6 +227,8 @@ function NaviCardContainer(
       aria-hidden={legChanging ? 'true' : 'false'}
     >
       <NaviCard
+        focusToPoint={focusToPoint}
+        previousLeg={previousLeg}
         leg={l}
         nextLeg={nl}
         legType={legType}
@@ -250,6 +254,7 @@ function NaviCardContainer(
 
 NaviCardContainer.propTypes = {
   focusToLeg: PropTypes.func,
+  focusToPoint: PropTypes.func.isRequired,
   time: PropTypes.number.isRequired,
   legs: PropTypes.arrayOf(legShape).isRequired,
   position: PropTypes.shape({
@@ -283,7 +288,6 @@ NaviCardContainer.defaultProps = {
 };
 
 NaviCardContainer.contextTypes = {
-  intl: intlShape.isRequired,
   config: configShape.isRequired,
   match: matchShape.isRequired,
   router: routerShape.isRequired,

@@ -1,17 +1,22 @@
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { displayDistance } from '../../../util/geo-utils';
 import { legShape, configShape } from '../../../util/shapes';
-import { legDestination, legTimeStr, legTime } from '../../../util/legUtils';
+import {
+  legDestination,
+  legTimeStr,
+  legTime,
+  isLocalCallAgency,
+} from '../../../util/legUtils';
 import {
   LEGTYPE,
   getLocalizedMode,
   getToLocalizedMode,
   withRealTime,
 } from './NaviUtils';
-import { getRouteMode } from '../../../util/modeUtils';
+import { getTripOrRouteMode } from '../../../util/modeUtils';
 import BoardingInfo from './BoardingInfo';
 import Duration from '../Duration';
 
@@ -19,7 +24,7 @@ function getBoardingParams(leg, time, config) {
   if (!leg?.transitLeg) {
     return {};
   }
-  const { headsign, route, start } = leg;
+  const { headsign, trip, route, start } = leg;
   const hs = headsign || leg.trip?.tripHeadsign;
 
   const remainingDuration = <Duration duration={legTime(start) - time} />;
@@ -28,40 +33,54 @@ function getBoardingParams(leg, time, config) {
     duration: withRealTime(rt, remainingDuration),
     legTime: withRealTime(rt, legTimeStr(start)),
   };
-  const routeMode = getRouteMode(route, config);
+  const routeMode = getTripOrRouteMode(trip, route, config);
   return { routeMode, route, hs, values };
 }
 
 export default function NaviInstructions(
-  { leg, nextLeg, instructions, legType, time, position, tailLength },
-  { intl, config },
+  {
+    leg,
+    nextLeg,
+    instructions,
+    legType,
+    time,
+    position,
+    tailLength,
+    showDestinationInfo,
+  },
+  { config },
 ) {
+  const intl = useIntl();
   const { routeMode, route, hs, values } = getBoardingParams(
     nextLeg,
     time,
     config,
   );
+  const appendClass = isLocalCallAgency(nextLeg, config) ? 'call-local' : '';
   if (legType === LEGTYPE.MOVE) {
     return (
       <>
-        <div className="notification-header navi-header-chain">
-          <FormattedMessage id={instructions} defaultMessage="Go to" />
-          &nbsp;
-          {legDestination(intl, leg, null, nextLeg)}
-          &nbsp;
-          <span className={cx({ realtime: !!position })}>
-            {displayDistance(tailLength, config, intl.formatNumber)}&nbsp;
-          </span>
-          {nextLeg?.transitLeg && (
-            <FormattedMessage id="navileg-hop-on" defaultMessage="by" />
-          )}
-        </div>
+        {showDestinationInfo && (
+          <div className="notification-header navi-header-chain">
+            <FormattedMessage id={instructions} defaultMessage="Go to" />
+            &nbsp;
+            {legDestination(intl, leg, null, nextLeg)}
+            &nbsp;
+            <span className={cx({ realtime: !!position })}>
+              {displayDistance(tailLength, config, intl.formatNumber)}&nbsp;
+            </span>
+            {nextLeg?.transitLeg && (
+              <FormattedMessage id="navileg-hop-on" defaultMessage="by" />
+            )}
+          </div>
+        )}
         {nextLeg?.transitLeg && (
           <BoardingInfo
             route={route}
             mode={routeMode}
             headsign={hs}
             translationValues={values}
+            appendClass={appendClass}
             compact
           />
         )}
@@ -85,6 +104,7 @@ export default function NaviInstructions(
           mode={routeMode}
           headsign={hs}
           translationValues={values}
+          appendClass={appendClass}
         />
       </>
     );
@@ -172,6 +192,7 @@ NaviInstructions.propTypes = {
     lon: PropTypes.number,
   }),
   tailLength: PropTypes.number.isRequired,
+  showDestinationInfo: PropTypes.bool,
 };
 
 NaviInstructions.defaultProps = {
@@ -179,8 +200,8 @@ NaviInstructions.defaultProps = {
   leg: undefined,
   nextLeg: undefined,
   position: undefined,
+  showDestinationInfo: false,
 };
 NaviInstructions.contextTypes = {
-  intl: intlShape.isRequired,
   config: configShape.isRequired,
 };

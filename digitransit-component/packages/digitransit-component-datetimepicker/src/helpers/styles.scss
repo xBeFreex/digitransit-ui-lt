@@ -42,8 +42,7 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
 
   label button {
     cursor: pointer;
-    font-family: 'Gotham Rounded A', 'Gotham Rounded B', Roboto, Arial, Georgia,
-      serif;
+    font-family: var(--font-family);
   }
 
   .hidden {
@@ -303,6 +302,7 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
       background: inherit;
       position: relative;
       margin-left: 40px;
+      margin-top: -4px;
 
       input {
         opacity: 1 !important; // TODO
@@ -378,8 +378,7 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
 }
 
 .mobile-modal-content {
-  font-family: 'Gotham Rounded A', 'Gotham Rounded B', Roboto, Arial, Georgia,
-    serif;
+  font-family: var(--font-family);
   background: white;
   width: 89%;
   position: absolute;
@@ -487,6 +486,10 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
         top: 3px;
 
         &.time-input-icon > svg {
+          height: 20px;
+        }
+
+        &.date-input-icon > svg {
           height: 20px;
         }
       }
@@ -600,6 +603,7 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
 
         // autosuggest
         .input {
+          color: black;
           box-shadow: none;
           border: none;
           background: none;

@@ -2,14 +2,13 @@
 import { DateTime } from 'luxon';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import cx from 'classnames';
 import sortBy from 'lodash/sortBy';
 import { matchShape, routerShape } from 'found';
 import { enrichPatterns } from '@digitransit-util/digitransit-util';
 import connectToStores from 'fluxible-addons-react/connectToStores';
 import { configShape } from '../../util/shapes';
-import CallAgencyWarning from './CallAgencyWarning';
 import RoutePatternSelectContainer from './RoutePatternSelectContainer';
 import Notification from './Notification';
 import { DATE_FORMAT, ExtendedRouteTypes } from '../../constants';
@@ -43,6 +42,14 @@ const Tab = {
   Timetable: PREFIX_TIMETABLE,
 };
 
+/**
+ * Determines if a route supports full control panel features
+ * (pattern selection, timetables, stops tabs).
+ */
+const showStandardControls = route => {
+  return route.type !== ExtendedRouteTypes.CallAgency;
+};
+
 const getActiveTab = pathname => {
   if (pathname.indexOf(`/${Tab.Disruptions}`) > -1) {
     return Tab.Disruptions;
@@ -60,7 +67,7 @@ class RouteControlPanel extends React.Component {
   static contextTypes = {
     getStore: PropTypes.func.isRequired,
     executeAction: PropTypes.func.isRequired,
-    intl: intlShape.isRequired,
+    intl: PropTypes.object.isRequired,
     router: routerShape.isRequired,
     config: configShape.isRequired,
   };
@@ -275,11 +282,13 @@ class RouteControlPanel extends React.Component {
     );
     if (type === PREFIX_TIMETABLE) {
       const today = unixToYYYYMMDD(unixTime(), config);
-      if (pattern[0].minAndMaxDate && today < pattern[0].minAndMaxDate[0]) {
+      if (match.location.query?.serviceDay) {
+        newPath += `?serviceDay=${match.location.query.serviceDay}`;
+      } else if (
+        pattern[0].minAndMaxDate &&
+        today < pattern[0].minAndMaxDate[0]
+      ) {
         newPath += `?serviceDay=${pattern[0].minAndMaxDate[0]}`;
-      }
-      if (match.query && match.query.serviceDay) {
-        newPath += `?serviceDay=${match.query.serviceDay}`;
       }
     }
     router.replace(newPath);
@@ -289,7 +298,7 @@ class RouteControlPanel extends React.Component {
     const { config, executeAction } = this.context;
     const { match, route, tripStartTime } = this.props;
     const { realTime } = config;
-    if (config.NODE_ENV === 'test' || !realTime) {
+    if (process.env.NODE_ENV === 'test' || !realTime) {
       return;
     }
 
@@ -363,7 +372,7 @@ class RouteControlPanel extends React.Component {
 
     const routeNotifications = [];
     if (
-      config.NODE_ENV !== 'test' &&
+      process.env.NODE_ENV !== 'test' &&
       config.routeNotifications &&
       config.routeNotifications.length > 0
     ) {
@@ -431,9 +440,6 @@ class RouteControlPanel extends React.Component {
             <FormattedMessage id="route-guide" defaultMessage="Route guide" />
           </h1>
         </div>
-        {route.type === ExtendedRouteTypes.CallAgency && (
-          <CallAgencyWarning route={route} />
-        )}
         <div
           className={cx('route-control-panel', {
             'bp-large': breakpoint === 'large',
@@ -441,116 +447,123 @@ class RouteControlPanel extends React.Component {
           aria-live="polite"
         >
           {routeNotifications}
-          {patternId && (
-            <RoutePatternSelectContainer
-              params={match.params}
-              route={route}
-              onSelectChange={this.onPatternChange}
-              gtfsId={route.gtfsId}
-              className={cx({ 'bp-large': breakpoint === 'large' })}
-              useCurrentTime={useCurrentTime}
-            />
-          )}
-          {/* eslint-disable jsx-a11y/interactive-supports-focus */}
-          <div
-            className="route-tabs"
-            role="tablist"
-            onKeyDown={e => {
-              const tabs = [Tab.Stops, Tab.Timetable, Tab.Disruptions];
-              const tabCount = tabs.length;
-              const activeIndex = tabs.indexOf(this.state.focusedTab);
-              let index;
-              switch (e.nativeEvent.code) {
-                case 'ArrowLeft':
-                  index = (activeIndex - 1 + tabCount) % tabCount;
-                  this.tabRefs[index].current.focus();
-                  this.setState({ focusedTab: tabs[index] });
-                  break;
-                case 'ArrowRight':
-                  index = (activeIndex + 1) % tabCount;
-                  this.tabRefs[index].current.focus();
-                  this.setState({ focusedTab: tabs[index] });
-                  break;
-                default:
-                  break;
-              }
-            }}
-          >
-            {/* eslint-enable jsx-a11y/interactive-supports-focus */}
-            <button
-              type="button"
-              className={cx({ 'is-active': activeTab === Tab.Stops })}
-              onClick={() => {
-                this.changeTab(Tab.Stops);
-              }}
-              tabIndex={activeTab === Tab.Stops ? 0 : -1}
-              role="tab"
-              {...(activeTab === Tab.Stops ? { id: 'route-tab' } : {})}
-              ref={this.stopTabRef}
-              aria-selected={activeTab === Tab.Stops}
-              style={{
-                '--totalCount': `${countOfButtons}`,
-              }}
-            >
-              <div>
-                <FormattedMessage id="stops" defaultMessage="Stops" />
-              </div>
-            </button>
-            <button
-              type="button"
-              className={cx({ 'is-active': activeTab === Tab.Timetable })}
-              onClick={() => {
-                this.changeTab(Tab.Timetable);
-              }}
-              tabIndex={activeTab === Tab.Timetable ? 0 : -1}
-              role="tab"
-              ref={this.timetableTabRef}
-              aria-selected={activeTab === Tab.Timetable}
-              style={{
-                '--totalCount': `${countOfButtons}`,
-              }}
-            >
-              <div>
-                <FormattedMessage id="timetable" defaultMessage="Timetable" />
-              </div>
-            </button>
-            <button
-              type="button"
-              className={cx({
-                activeAlert: hasActiveAlert,
-                'is-active': activeTab === Tab.Disruptions,
-              })}
-              onClick={() => {
-                this.changeTab(Tab.Disruptions);
-              }}
-              tabIndex={activeTab === Tab.Disruptions ? 0 : -1}
-              role="tab"
-              ref={this.disruptionTabRef}
-              aria-selected={activeTab === Tab.Disruptions}
-              style={{
-                '--totalCount': `${countOfButtons}`,
-              }}
-            >
-              <div
-                className={`tab-route-disruption ${
-                  disruptionClassName || `no-alerts`
-                }`}
-              >
-                {disruptionIcon}
-                <FormattedMessage
-                  id="disruptions"
-                  defaultMessage="Disruptions"
+          {showStandardControls(route) && (
+            <>
+              {patternId && (
+                <RoutePatternSelectContainer
+                  params={match.params}
+                  route={route}
+                  onSelectChange={this.onPatternChange}
+                  gtfsId={route.gtfsId}
+                  className={cx({ 'bp-large': breakpoint === 'large' })}
+                  useCurrentTime={useCurrentTime}
                 />
-                <span className="sr-only">
-                  {disruptionClassName ? (
-                    <FormattedMessage id="disruptions-tab.sr-disruptions" />
-                  ) : (
-                    <FormattedMessage id="disruptions-tab.sr-no-disruptions" />
-                  )}
-                </span>
+              )}
+              {/* eslint-disable jsx-a11y/interactive-supports-focus */}
+              <div
+                className="route-tabs"
+                role="tablist"
+                onKeyDown={e => {
+                  const tabs = [Tab.Stops, Tab.Timetable, Tab.Disruptions];
+                  const tabCount = tabs.length;
+                  const activeIndex = tabs.indexOf(this.state.focusedTab);
+                  let index;
+                  switch (e.nativeEvent.code) {
+                    case 'ArrowLeft':
+                      index = (activeIndex - 1 + tabCount) % tabCount;
+                      this.tabRefs[index].current.focus();
+                      this.setState({ focusedTab: tabs[index] });
+                      break;
+                    case 'ArrowRight':
+                      index = (activeIndex + 1) % tabCount;
+                      this.tabRefs[index].current.focus();
+                      this.setState({ focusedTab: tabs[index] });
+                      break;
+                    default:
+                      break;
+                  }
+                }}
+              >
+                {/* eslint-enable jsx-a11y/interactive-supports-focus */}
+                <button
+                  type="button"
+                  className={cx({ 'is-active': activeTab === Tab.Stops })}
+                  onClick={() => {
+                    this.changeTab(Tab.Stops);
+                  }}
+                  tabIndex={activeTab === Tab.Stops ? 0 : -1}
+                  role="tab"
+                  {...(activeTab === Tab.Stops ? { id: 'route-tab' } : {})}
+                  ref={this.stopTabRef}
+                  aria-selected={activeTab === Tab.Stops}
+                  style={{
+                    '--totalCount': `${countOfButtons}`,
+                  }}
+                >
+                  <div>
+                    <FormattedMessage id="stops" defaultMessage="Stops" />
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  className={cx({ 'is-active': activeTab === Tab.Timetable })}
+                  onClick={() => {
+                    this.changeTab(Tab.Timetable);
+                  }}
+                  tabIndex={activeTab === Tab.Timetable ? 0 : -1}
+                  role="tab"
+                  ref={this.timetableTabRef}
+                  aria-selected={activeTab === Tab.Timetable}
+                  style={{
+                    '--totalCount': `${countOfButtons}`,
+                  }}
+                >
+                  <div>
+                    <FormattedMessage
+                      id="timetable"
+                      defaultMessage="Timetable"
+                    />
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  className={cx({
+                    activeAlert: hasActiveAlert,
+                    'is-active': activeTab === Tab.Disruptions,
+                  })}
+                  onClick={() => {
+                    this.changeTab(Tab.Disruptions);
+                  }}
+                  tabIndex={activeTab === Tab.Disruptions ? 0 : -1}
+                  role="tab"
+                  ref={this.disruptionTabRef}
+                  aria-selected={activeTab === Tab.Disruptions}
+                  style={{
+                    '--totalCount': `${countOfButtons}`,
+                  }}
+                >
+                  <div
+                    className={`tab-route-disruption ${
+                      disruptionClassName || `no-alerts`
+                    }`}
+                  >
+                    {disruptionIcon}
+                    <FormattedMessage
+                      id="disruptions"
+                      defaultMessage="Disruptions"
+                    />
+                    <span className="sr-only">
+                      {disruptionClassName ? (
+                        <FormattedMessage id="disruptions-tab.sr-disruptions" />
+                      ) : (
+                        <FormattedMessage id="disruptions-tab.sr-no-disruptions" />
+                      )}
+                    </span>
+                  </div>
+                </button>
               </div>
-            </button>
-          </div>
+            </>
+          )}
         </div>
       </div>
     );

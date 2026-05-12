@@ -172,15 +172,15 @@
 
     .alert-body {
       font-size: $font-size-small;
-      font-weight: $disruption-message-font-weight;
+      font-weight: $font-weight-book;
       white-space: pre-wrap;
 
       .alert-url {
-        color: $primary-color;
+        color: $theme-primary-color;
         margin-left: 5px;
 
         .external-link {
-          color: $primary-color;
+          color: $theme-primary-color;
         }
       }
     }

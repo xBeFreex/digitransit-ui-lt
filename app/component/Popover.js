@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { intlShape, FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from './Icon';
 import { isKeyboardSelectionEvent } from '../util/browser';
 
-export default function Popover({ onClose, message, buttonText }, { intl }) {
+export default function Popover({ onClose, message, buttonText }) {
+  const intl = useIntl();
   const [isSettingChangeInfoDismissed, setSettingChangeInfoDismissed] =
     useState(false);
 
@@ -66,10 +67,7 @@ export default function Popover({ onClose, message, buttonText }, { intl }) {
           })}
         >
           {buttonText || (
-            <FormattedMessage
-              id="popover-button-got-it"
-              defaultMessage="Got it!"
-            />
+            <FormattedMessage id="acknowledged" defaultMessage="Got it!" />
           )}
         </button>
       </div>
@@ -85,10 +83,6 @@ Popover.propTypes = {
 
 Popover.defaultProps = {
   buttonText: null,
-};
-
-Popover.contextTypes = {
-  intl: intlShape.isRequired,
 };
 
 Popover.displayName = 'Popover';

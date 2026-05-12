@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { intlShape } from 'react-intl';
 import getJson from '@digitransit-search-util/digitransit-search-util-get-json';
 import suggestionToLocation from '@digitransit-search-util/digitransit-search-util-suggestion-to-location';
 import connectToStores from 'fluxible-addons-react/connectToStores';
@@ -56,7 +55,7 @@ export function withSearchContext(WrappedComponent, embeddedSearch = false) {
   class ComponentWithSearchContext extends React.Component {
     static contextTypes = {
       config: configShape.isRequired,
-      intl: intlShape.isRequired,
+      intl: PropTypes.object.isRequired,
       executeAction: PropTypes.func.isRequired,
       getStore: PropTypes.func.isRequired,
     };
@@ -259,7 +258,7 @@ export function withSearchContext(WrappedComponent, embeddedSearch = false) {
     };
 
     renderSelectFromMapModal = id => {
-      let titleId = 'select-from-map-no-title';
+      let titleId = '';
 
       if (id === 'origin') {
         titleId = 'select-from-map-origin';

@@ -1,6 +1,5 @@
-import prUtils from '../util/ParkAndRideUtils';
+import { IS_DEV } from '../util/envUtils';
 
-const HSLParkAndRideUtils = prUtils.HSL;
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
 const OTP_URL = process.env.OTP_URL || `${API_URL}/routing/v2/waltti/`;
 const MAP_URL = process.env.MAP_URL || 'https://dev-cdn.digitransit.fi';
@@ -41,6 +40,33 @@ export default {
     },
   },
 
+  aboutThisService: {
+    fi: [
+      {
+        header: 'Käytön seuranta ja analytiikka',
+        paragraphs: [
+          'Käytämme evästeetöntä Plausible Analytics -analytiikkatyökalua palvelun käytön seurantaan ja kehittämiseen. Kerättävä tieto on tilastollista eikä mahdollista yksittäisten käyttäjien tunnistamista.',
+        ],
+      },
+    ],
+    sv: [
+      {
+        header: 'Uppföljning och analys',
+        paragraphs: [
+          'Vi använder det cookiefria analysverktyget Plausible Analytics för att följa upp och utveckla användningen av tjänsten. Den information som samlas in är statistisk och gör det inte möjligt att identifiera enskilda användare.',
+        ],
+      },
+    ],
+    en: [
+      {
+        header: 'Tracking and analytics',
+        paragraphs: [
+          'We use the cookie-free analytics tool Plausible Analytics to monitor and develop the use of the service. The data collected is statistical in nature and does not enable the identification of individual users.',
+        ],
+      },
+    ],
+  },
+
   stopsMinZoom: 14,
 
   vehicleRental: {},
@@ -56,9 +82,6 @@ export default {
   meta: {
     description: APP_DESCRIPTION,
   },
-
-  availableLanguages: ['fi', 'sv', 'en'],
-  defaultLanguage: 'fi',
 
   vehicles: true,
   showVehiclesOnStopPage: true,
@@ -150,16 +173,8 @@ export default {
   includeCarSuggestions: true,
   includeParkAndRideSuggestions: true,
   showBikeAndParkItineraries: true,
-  parkingAreaSources: ['liipi'],
 
-  parkAndRide: {
-    showParkAndRide: false,
-    showParkAndRideForBikes: false,
-    parkAndRideMinZoom: 14,
-    pageContent: {
-      default: HSLParkAndRideUtils,
-    },
-  },
+  parkAndRide: { parkAndRideMinZoom: 14 },
 
   hostnames: [
     // DEV hostnames
@@ -271,21 +286,18 @@ export default {
   },
   analyticsClass: 'plausible-event-name=Ticket+Purchase+Link',
 
-  viaPointsEnabled: false,
   hideNaviTickets: true, // TODO: temporary force switch
   navigation: true,
 
-  externalFeedIds: ['02Taksi'],
-
-  // features that should not be deployed to production
-  experimental: {
-    allowFlexJourneys:
-      process.env.RUN_ENV === 'development' ||
-      process.env.NODE_ENV !== 'production',
-    allowDirectFlexJourneys:
-      process.env.RUN_ENV === 'development' ||
-      process.env.NODE_ENV !== 'production',
-  },
+  // TODO: flex disabled for now, proper configuration coming in the future
+  /* flex: {
+    internalFlexEnabled: false,
+    allowTaxiJourneys: IS_DEV,
+    directOnlyTaxiJourneys: false,
+    internalAgencies: [],
+    externalAgencies: ['02Taksi:02_taksi'],
+    infoLanguage: 'fi',
+  }, */
 
   replacementBusNotification: {
     header: {
@@ -311,5 +323,6 @@ export default {
       ],
     },
   },
+  showRouteDescNotification: IS_DEV,
   useAlternativeNameForModes: ['RAIL'],
 };

@@ -1,12 +1,10 @@
 import configMerger from '../util/configMerger';
+import { IS_DEV } from '../util/envUtils';
 import walttiConfig from './config.waltti';
 
 const CONFIG = 'jyvaskyla';
 const APP_TITLE = 'Reittiopas Jyväskylä';
 const APP_DESCRIPTION = 'Jyväskylän uusi reittiopas';
-const IS_DEV =
-  process.env.RUN_ENV === 'development' ||
-  process.env.NODE_ENV !== 'production';
 
 const virtualMonitorBaseUrl = IS_DEV
   ? 'https://dev-jyvaskylamonitori.digitransit.fi'
@@ -36,7 +34,17 @@ export default configMerger(walttiConfig, {
 
   appBarLink: {
     name: 'Jyväskylän seudun joukkoliikenne',
-    href: 'http://linkki.jyvaskyla.fi/',
+    href: 'https://linkki.jyvaskyla.fi/',
+    altLink: {
+      sv: {
+        name: 'Kollektivtrafiken i Jyväskyläregionen',
+        href: 'https://linkki.jyvaskyla.fi/en',
+      },
+      en: {
+        name: 'Public transportation in the Jyväskylä region',
+        href: 'https://linkki.jyvaskyla.fi/en',
+      },
+    },
   },
 
   colors: {
@@ -143,7 +151,7 @@ export default configMerger(walttiConfig, {
           sv: 'Servicekontorer',
           en: 'Service points',
         },
-        url: 'https://jakoon.jkl.fi/reittiopas/Asiakaspalvelupisteet/myyntipisteet.geojson',
+        url: 'https://jakoon.jkl.fi/reittiopas/Asiakaspalvelupisteet/myyntipisteet090226.geojson',
       },
     ],
   },
@@ -180,4 +188,5 @@ export default configMerger(walttiConfig, {
   defaultSettings: {
     minTransferTime: 180,
   },
+  useRealtimeTravellerCapacities: true,
 });

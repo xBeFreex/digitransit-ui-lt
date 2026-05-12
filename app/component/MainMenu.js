@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'found/Link';
 import { connectToStores } from 'fluxible-addons-react';
 import { configShape } from '../util/shapes';
@@ -14,11 +14,11 @@ import Toggle from './Toggle';
 import searchContext from '../util/searchContext';
 import intializeSearchContext from '../util/DTSearchContextInitializer';
 
-function MainMenu(props, { config, intl, executeAction }) {
+function MainMenu(props, { config, executeAction }) {
+  const intl = useIntl();
   const [countries, setCountries] = useState(props.countries);
-  const appBarLinkHref =
-    config.appBarLink?.alternativeHref?.[props.currentLanguage] ||
-    config.appBarLink?.href;
+  const appBarLink =
+    config.appBarLink?.altLink?.[props.currentLanguage] || config.appBarLink;
   return (
     <div className="main-menu no-select" tabIndex={-1}>
       <div className="main-menu-top-section">
@@ -121,11 +121,11 @@ function MainMenu(props, { config, intl, executeAction }) {
             </div>
           </div>
         ))}
-        {config.appBarLink?.name && appBarLinkHref && (
+        {appBarLink?.name && appBarLink?.href && (
           <div className="offcanvas-section">
             <a
               id="appBarLink"
-              href={appBarLinkHref}
+              href={appBarLink.href}
               target="_blank"
               onClick={() => {
                 addAnalyticsEvent({
@@ -136,7 +136,7 @@ function MainMenu(props, { config, intl, executeAction }) {
               }}
               rel="noreferrer"
             >
-              {config.appBarLink.name}
+              {appBarLink.name}
             </a>
           </div>
         )}
@@ -172,7 +172,6 @@ MainMenu.defaultProps = {
 MainMenu.contextTypes = {
   getStore: PropTypes.func.isRequired,
   config: configShape.isRequired,
-  intl: intlShape.isRequired,
   executeAction: PropTypes.func.isRequired,
 };
 

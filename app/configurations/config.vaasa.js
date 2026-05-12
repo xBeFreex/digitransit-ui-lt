@@ -1,4 +1,5 @@
 import configMerger from '../util/configMerger';
+import { IS_DEV } from '../util/envUtils';
 import walttiConfig from './config.waltti';
 
 const CONFIG = 'vaasa';
@@ -10,10 +11,6 @@ const maxLat = 63.19;
 const minLon = 21.42;
 const maxLon = 22.18;
 
-const IS_DEV =
-  process.env.RUN_ENV === 'development' ||
-  process.env.NODE_ENV !== 'production';
-
 const virtualMonitorBaseUrl = IS_DEV
   ? 'https://dev-vaasamonitori.digitransit.fi'
   : 'https://pysakit-vaasa.digitransit.fi';
@@ -21,7 +18,20 @@ const virtualMonitorBaseUrl = IS_DEV
 export default configMerger(walttiConfig, {
   CONFIG,
 
-  appBarLink: { name: 'Vaasa', href: 'https://www.vaasa.fi/' },
+  appBarLink: {
+    name: 'Lifti – Vaasan seudun joukkoliikenne',
+    href: 'https://www.vaasa.fi/asu-ja-ela/liikenne-ja-kadut/joukkoliikenne/',
+    altLink: {
+      sv: {
+        name: 'Lifti – Vasaregionens kollektivtrafik',
+        href: 'https://www.vaasa.fi/sv/bo-och-lev/trafik-och-gator/kollektivtrafik/',
+      },
+      en: {
+        name: 'Lifti – Public transport for the Vaasa region',
+        href: 'https://www.vaasa.fi/en/living/traffic-and-streets/public-transport/',
+      },
+    },
+  },
 
   colors: {
     primary: '#000a8c',

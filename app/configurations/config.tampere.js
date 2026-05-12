@@ -1,4 +1,5 @@
 import configMerger from '../util/configMerger';
+import { IS_DEV } from '../util/envUtils';
 import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
 import walttiConfig from './config.waltti';
 import ttConfig from './timetableConfigUtils';
@@ -9,10 +10,6 @@ const APP_TITLE = 'Nyssen reittiopas';
 const APP_DESCRIPTION = 'Nyssen reittiopas';
 const CDN_URL = process.env.MAP_URL || 'https://dev-cdn.digitransit.fi';
 
-const IS_DEV =
-  process.env.RUN_ENV === 'development' ||
-  process.env.NODE_ENV !== 'production';
-
 const virtualMonitorBaseUrl = IS_DEV
   ? 'https://dev-tremonitori.digitransit.fi'
   : 'https://tremonitori.digitransit.fi';
@@ -20,7 +17,20 @@ const virtualMonitorBaseUrl = IS_DEV
 export default configMerger(walttiConfig, {
   CONFIG,
 
-  appBarLink: { name: 'Nysse', href: 'https://www.nysse.fi/' },
+  appBarLink: {
+    name: 'Nysse.fi',
+    href: 'https://www.nysse.fi/',
+    altLink: {
+      sv: {
+        name: 'Nysse.fi',
+        href: 'https://www.nysse.fi/en/front-page.html',
+      },
+      en: {
+        name: 'Nysse.fi',
+        href: 'https://www.nysse.fi/en/front-page.html',
+      },
+    },
+  },
 
   colors: {
     primary: '#1c57cf',
@@ -75,12 +85,23 @@ export default configMerger(walttiConfig, {
       virtualMonitorBaseUrl,
     },
   },
+  // custom ticketPurchaseLink because tampere sends different fare zones from every other waltti city
+  ticketPurchaseLink: (fare, availableTickets) => {
+    const appName = 'nysseapp';
+    const operatorCode = '50245';
+    const zoneMap = { A: '1', B: '2', C: '3' };
+    const fareId = fare.fareProducts[0].product.id;
+    const feed = fareId.split(':')[0];
+    const zones = availableTickets[feed][fareId].zones.reduce((acc, zone) => {
+      return `${acc}0${zoneMap[zone]}`;
+    }, '');
+    return `https://waltti.fi/${appName}/busTicket/?operator=${operatorCode}&ticketType=single&customerGroup=adult&zones=${zones}`;
+  },
+
   zones: {
     stops: true,
     itinerary: true,
   },
-
-  appName: 'nysseapp',
 
   useTicketIcons: true,
   showTicketInformation: true,
@@ -337,10 +358,12 @@ export default configMerger(walttiConfig, {
     TRAM: { showNotification: true },
   },
 
-  showTenWeeksOnRouteSchedule: true,
-
   parkAndRide: {
     showParkAndRide: true,
     showParkAndRideForBikes: true,
+  },
+
+  defaultSettings: {
+    minTransferTime: 180,
   },
 });

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelect } from 'downshift';
 import { Link, routerShape } from 'found';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import cx from 'classnames';
 import Icon from '../Icon';
 import { routePagePath } from '../../util/path';
@@ -27,7 +27,11 @@ export function patternTextWithIcon(pattern) {
     return (
       <>
         {text.slice(0, i)}
-        <Icon className="in-text-arrow" img="icon_arrow-right-long" />
+        <Icon
+          className="in-text-arrow"
+          img="icon_arrow-right-long"
+          viewBox="0 0 17 10"
+        />
         <span className="sr-only">➔</span>
         {text.slice(i + 1)}
       </>
@@ -46,10 +50,14 @@ export function patternTextWithIcon(pattern) {
  * @param currentPattern currently selected pattern
  * @returns {JSX.Element}
  */
-function PatternOption(
-  { option, optionIndexTable, highlightedIndex, getItemProps, currentPattern },
-  { intl },
-) {
+function PatternOption({
+  option,
+  optionIndexTable,
+  highlightedIndex,
+  getItemProps,
+  currentPattern,
+}) {
+  const intl = useIntl();
   const isSelected = option.code === currentPattern.code;
   const selectedText = isSelected
     ? intl.formatMessage({ id: 'route-page.pattern-chosen' })
@@ -71,7 +79,12 @@ function PatternOption(
       >
         {patternTextWithIcon(option)}
         {isSelected && (
-          <Icon aria-hidden="true" className="check" img="icon_check" />
+          <Icon
+            aria-hidden="true"
+            className="check"
+            img="icon_check"
+            viewBox="0 0 15 11"
+          />
         )}
       </li>
     )) ||
@@ -124,10 +137,6 @@ PatternOption.propTypes = {
   highlightedIndex: PropTypes.number.isRequired,
   getItemProps: PropTypes.func.isRequired,
   currentPattern: patternShape.isRequired,
-};
-
-PatternOption.contextTypes = {
-  intl: intlShape.isRequired,
 };
 
 export default function RoutePatternSelect(

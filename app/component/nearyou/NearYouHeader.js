@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'found';
-import { stopShape, configShape } from '../../util/shapes';
+import { stopShape } from '../../util/shapes';
 import AddressRow from '../AddressRow';
 import ZoneIcon from '../ZoneIcon';
 import PlatformNumber from '../PlatformNumber';
 import FavouriteStopContainer from '../FavouriteStopContainer';
 import { getZoneLabel } from '../../util/legUtils';
+import { useConfigContext } from '../../configurations/ConfigContext';
 
-const NearYouHeader = ({ stop, desc, isStation, linkAddress }, { config }) => {
+const NearYouHeader = ({ stop, desc, isStation, linkAddress, mode }) => {
+  const config = useConfigContext();
   const zoneId =
     isStation && stop.stops.length ? stop.stops[0].zoneId : stop.zoneId;
   return (
@@ -23,13 +25,17 @@ const NearYouHeader = ({ stop, desc, isStation, linkAddress }, { config }) => {
           <h2 className="stop-near-you-name">
             {stop.name}
             <span className="sr-only">
-              <PlatformNumber number={stop.platformCode} short={false} />
+              <PlatformNumber
+                number={stop.platformCode}
+                short={false}
+                mode={mode}
+              />
             </span>
           </h2>
         </Link>
         <div className="stop-near-you-info">
           <AddressRow desc={desc} code={stop.code} isTerminal={isStation} />
-          <PlatformNumber number={stop.platformCode} short />
+          <PlatformNumber number={stop.platformCode} short mode={mode} />
           {zoneId &&
             config.zones.stops &&
             config.feedIds.includes(stop.gtfsId.split(':')[0]) && (
@@ -54,15 +60,12 @@ NearYouHeader.propTypes = {
   linkAddress: PropTypes.string.isRequired,
   desc: PropTypes.string,
   isStation: PropTypes.bool,
+  mode: PropTypes.string.isRequired,
 };
 
 NearYouHeader.defaultProps = {
   isStation: false,
   desc: undefined,
-};
-
-NearYouHeader.contextTypes = {
-  config: configShape.isRequired,
 };
 
 export default NearYouHeader;

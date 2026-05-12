@@ -1,6 +1,7 @@
 import safeJsonParse from '../util/safeJsonParser';
 import { BIKEAVL_WITHMAX } from '../util/vehicleRentalUtils';
 import realtime from './realtimeUtils';
+import prUtils from '../util/ParkAndRideUtils';
 
 const CONFIG = process.env.CONFIG || 'default';
 const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
@@ -20,11 +21,6 @@ const API_SUBSCRIPTION_HEADER_NAME =
 const API_SUBSCRIPTION_TOKEN =
   process.env.API_SUBSCRIPTION_TOKEN || 'c65af0cd2d0a401a9599894970a2b29c';
 
-const {
-  // AXE,
-  NODE_ENV,
-  RUN_ENV,
-} = process.env;
 const hasAPISubscriptionQueryParameter = true;
 const PORT = process.env.PORT || 3000;
 const APP_DESCRIPTION = 'Digitransit journey planning UI';
@@ -37,7 +33,6 @@ export default {
   PORT,
   // AXE,
   CONFIG,
-  NODE_ENV,
   OTPTimeout: OTP_TIMEOUT,
   URL: {
     API_URL,
@@ -112,7 +107,6 @@ export default {
   API_SUBSCRIPTION_QUERY_PARAMETER_NAME,
   API_SUBSCRIPTION_HEADER_NAME,
   API_SUBSCRIPTION_TOKEN,
-  RUN_ENV,
 
   hasAPISubscriptionQueryParameter,
 
@@ -207,12 +201,7 @@ export default {
    * If not, the selection may not make any sense.
    */
   defaultOptions: {
-    walkReluctance: {
-      least: 5,
-      less: 3,
-      more: 1,
-      most: 0.2,
-    },
+    highWalkReluctance: 5,
     walkSpeed: [0.69, 0.97, 1.2, 1.67, 2.22],
     bikeSpeed: [2.77, 4.15, 5.55, 6.94, 8.33],
   },
@@ -224,19 +213,8 @@ export default {
   // if you enable car suggestions but the linear distance between all points is less than this, then a car route will
   // not be computed
   suggestCarMinDistance: 2000,
-  availableLanguages: [
-    'fi',
-    'sv',
-    'en',
-    'fr',
-    'nb',
-    'de',
-    'da',
-    'es',
-    'ro',
-    'pl',
-  ],
-  defaultLanguage: 'en',
+  availableLanguages: ['fi', 'sv', 'en'],
+  defaultLanguage: 'fi',
   timeZone: 'Europe/Helsinki',
   allowLogin: false,
   allowFavouritesFromLocalstorage: true,
@@ -752,7 +730,6 @@ export default {
   vehicles: false,
   showVehiclesOnStopPage: false,
   showVehiclesOnItineraryPage: false,
-  trafficNowLink: '',
 
   timetables: {},
 
@@ -779,6 +756,7 @@ export default {
   },
 
   viaPointsEnabled: true,
+  viaPointsMax: 1,
 
   // Toggling this off shows the alert bodytext instead of the header
   showAlertHeader: true,
@@ -789,6 +767,14 @@ export default {
 
   constantOperationStops: {},
   constantOperationRoutes: {},
+
+  parkAndRide: {
+    showParkAndRide: false,
+    showParkAndRideForBikes: false,
+    parkAndRideMinZoom: 13,
+    resolver: prUtils.liipi,
+  },
+  parkingAreaSources: ['liipi'],
 
   embeddedSearch: {
     title: {
@@ -848,17 +834,40 @@ export default {
         ],
       },
     },
+    {
+      showForRoute: route => route.type === 715,
+      id: 'flexBusNotification',
+      header: {
+        fi: 'Kutsuliikenne',
+        en: 'On-demand service',
+        sv: 'Anropsbusstrafiken',
+      },
+      content: {
+        fi: [
+          'Linja toimii ennakkotilauksella. Varmistaaksesi matkan, tee varaus etukäteen. Tarkemmat tiedot palveluntarjoalta.',
+        ],
+        en: [
+          'This service operates by advance booking. To ensure your ride, please book ahead of time. More information is available from the service provider. ',
+        ],
+        sv: [
+          'Linjen fungerar med förhandsbokning. Boka din resa i förväg för att säkerställa resan. Mer information från tjänsteleverantören.',
+        ],
+      },
+    },
   ],
   navigation: false,
   sendAnalyticsCustomEventGoals: false,
   shortenLongTextThreshold: 10, // for route number in itinerary summary
-  allowFlexJourneys: false,
-  allowDirectFlexJourneys: false,
-  allowedFlexRouteTypes: [1501],
   showRouteDescNotification: false,
   showStopStatusMarkers: false,
-
-  parkAndRide: {
-    parkAndRideMinZoom: 13,
+  flex: {
+    internalFlexEnabled: false,
+    allowTaxiJourneys: false,
+    directOnlyTaxiJourneys: false,
+    internalAgencies: [], // "FeedId:AgencyId"
+    externalAgencies: [], // "FeedId:AgencyId"
+    allowedExternalFlexRouteTypes: [1501],
+    minTransferTime: 900, // seconds
   },
+  personalisation: false,
 };

@@ -28,7 +28,7 @@ $border-radius-rounded: 30px;
 
   .zone-icon-container {
     align-items: center;
-    color: $primary-color;
+    color: $theme-primary-color;
     display: flex;
     font-size: $font-size-xxsmall;
     font-weight: $font-weight-medium;
@@ -79,7 +79,6 @@ $border-radius-rounded: 30px;
   border-radius: $border-radius-rounded;
   background: $gray-blue-light;
   color: $white;
-  font-family: $button-font-family;
   font-weight: $font-weight-medium;
   font-size: $font-size-small;
   width: 100%;
@@ -155,6 +154,7 @@ $border-radius-rounded: 30px;
 
     &.selected {
       stroke: transparent;
+      fill: $attention-color;
     }
 
     &:hover {

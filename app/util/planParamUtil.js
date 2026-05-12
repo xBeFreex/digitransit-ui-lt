@@ -21,7 +21,8 @@ export const PLANTYPE = {
   BIKETRANSIT: 'BIKETRANSIT',
   PARKANDRIDE: 'PARKANDRIDE',
   SCOOTERTRANSIT: 'SCOOTERTRANSIT',
-  FLEXTRANSIT: 'FLEXTRANSIT',
+  FLEXTRANSIT_EXTERNAL: 'EXTERNAL_FLEXTRANSIT',
+  FLEXTRANSIT_INTERNAL: 'INTERNAL_FLEXTRANSIT',
 };
 
 const directModes = [PLANTYPE.WALK, PLANTYPE.BIKE, PLANTYPE.CAR];
@@ -37,7 +38,7 @@ const SHORT_TRIP_METERS = 2000;
 export function findNearestOption(value, options) {
   let currNearest = options[0];
   let diff = Math.abs(value - currNearest);
-  for (let i = 0; i < options.length; i++) {
+  for (let i = 1; i < options.length; i++) {
     const newdiff = Math.abs(value - options[i]);
     if (newdiff < diff) {
       diff = newdiff;
@@ -259,12 +260,16 @@ export function planQueryNeeded(
         settings.includeParkAndRideSuggestions
       );
     /* special logic: relaxed flex query is made only if taxis are not allowed */
-    case PLANTYPE.FLEXTRANSIT:
+    case PLANTYPE.FLEXTRANSIT_EXTERNAL:
       return (
-        config.experimental?.allowFlexJourneys &&
-        (transitModes.length > 0 ||
-          config.experimental?.allowDirectFlexJourneys) &&
+        config.flex?.allowTaxiJourneys &&
+        (transitModes.length > 0 || config.flex?.directOnlyTaxiJourneys) &&
         settings.includeTaxiSuggestions !== relaxSettings
+      );
+    case PLANTYPE.FLEXTRANSIT_INTERNAL:
+      return (
+        config.flex?.internalFlexEnabled &&
+        transitModes.includes(TransportMode.Bus)
       );
 
     case PLANTYPE.TRANSIT:
@@ -273,10 +278,9 @@ export function planQueryNeeded(
   }
 }
 
-function getLocation(str, planType) {
+function getLocation(str) {
   const loc = otpToLocation(str);
-  // direct car routing from/to a stop does not work
-  if (loc.gtfsId && planType !== PLANTYPE.CAR) {
+  if (loc.gtfsId) {
     return {
       location: {
         stopLocation: { stopLocationId: loc.gtfsId },
@@ -294,6 +298,23 @@ function getLocation(str, planType) {
   };
 }
 
+/*
+ * Exclude agencies from the plan query. Format is: { exclude: { agencies: [FeedId:AgencyId] } }
+ * @param {Array} agencies - List of agency IDs to exclude.
+ * @returns {Object|null} - Returns an object with the exclude filter or null if
+ * agencies is empty or not provided.
+ */
+function excludeAgencies(agencies) {
+  if (!agencies?.length) {
+    return null;
+  }
+  return {
+    exclude: {
+      agencies,
+    },
+  };
+}
+
 export function getPlanParams(
   config,
   {
@@ -305,8 +326,8 @@ export function getPlanParams(
   planType,
   relaxSettings = false,
 ) {
-  const fromPlace = getLocation(from, planType);
-  const toPlace = getLocation(to, planType);
+  const fromPlace = getLocation(from);
+  const toPlace = getLocation(to);
   const useLatestArrival = arriveBy === 'true';
   // estimate distance for search iteration heuristics
   const fromLocation = otpToLocation(from);
@@ -314,11 +335,33 @@ export function getPlanParams(
   const intermediateLocations = getIntermediatePlaces({
     intermediatePlaces,
   });
-  const via = intermediateLocations.map(loc => ({
-    passThrough: {
-      stopLocationIds: [loc.gtfsId],
-    },
-  }));
+  let via = intermediateLocations
+    .map(loc => {
+      if (loc.gtfsId) {
+        return {
+          visit: {
+            stopLocationIds: [loc.gtfsId],
+            coordinate: {
+              latitude: loc.lat,
+              longitude: loc.lon,
+            },
+          },
+        };
+      }
+      if (loc.lat && loc.lon) {
+        return {
+          visit: {
+            coordinate: {
+              latitude: loc.lat,
+              longitude: loc.lon,
+            },
+          },
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
   const distance = estimateItineraryDistance(
     fromLocation,
     toLocation,
@@ -342,6 +385,9 @@ export function getPlanParams(
   let otpModes = transitModes.map(mode => {
     return { mode };
   });
+  if (transitModes.includes('RAIL') && !transitModes.includes('BUS')) {
+    otpModes.push({ mode: 'BUS', replacement: { requirement: 'REQUIRED' } });
+  }
   if (config.customWeights) {
     otpModes.forEach(m => {
       if (config.customWeights[m.mode]) {
@@ -353,13 +399,14 @@ export function getPlanParams(
 
   // non-direct for testing purposes on planners that only allow direct
   const directFlexOnly =
-    config.experimental?.allowDirectFlexJourneys &&
+    config.flex?.directOnlyTaxiJourneys &&
     !window.localStorage.getItem('favouriteStore')?.includes('Flextestaus2025');
   const directOnly = directModes.includes(planType) || otpModes.length === 0;
   let transitOnly = !!relaxSettings;
   const wheelchair = !!settings.accessibilityOption;
   const cityBike =
     !wheelchair && settings.allowedBikeRentalNetworks?.length > 0;
+  let { minTransferTime } = settings;
   // set defaults
   let access = cityBike ? ['WALK', 'BICYCLE_RENTAL'] : ['WALK'];
   let egress = access;
@@ -370,6 +417,7 @@ export function getPlanParams(
   let noIterationsForShortTrips = false;
   // A null value uses the default amount of maximum iterations.
   let maxQueryIterations = null;
+  let filters = null;
 
   switch (planType) {
     case PLANTYPE.BIKEPARK:
@@ -413,11 +461,21 @@ export function getPlanParams(
       egress = access;
       direct = access;
       break;
-    case PLANTYPE.FLEXTRANSIT:
+    case PLANTYPE.FLEXTRANSIT_EXTERNAL:
       access = directFlexOnly ? null : ['WALK', 'FLEX'];
       egress = access;
       direct = directFlexOnly ? ['WALK', 'FLEX'] : null;
       transitOnly = false;
+      filters = excludeAgencies(config.flex?.internalAgencies);
+      via = null;
+      break;
+    case PLANTYPE.FLEXTRANSIT_INTERNAL:
+      access = [...access, 'FLEX'];
+      egress = access;
+      direct = access;
+      filters = excludeAgencies(config.flex?.externalAgencies);
+      minTransferTime = config.flex?.minTransferTime || minTransferTime;
+      via = null;
       break;
     default: // direct modes
       direct = [planType];
@@ -474,7 +532,7 @@ export function getPlanParams(
     fromPlace,
     toPlace,
     datetime,
-    minTransferTime: `PT${settings.minTransferTime}S`,
+    minTransferTime: `PT${minTransferTime}S`,
     first: numItineraries, // used in actual query
     numItineraries, // backup original value for convenient paging
     wheelchair,
@@ -487,5 +545,7 @@ export function getPlanParams(
     via,
     carReluctance,
     maxQueryIterations,
+    filters,
+    bookingTime: DateTime.now().toISO({ suppressMilliseconds: true }),
   };
 }

@@ -36,12 +36,7 @@ export default function CardHeader(
   return (
     <Fragment>
       <div className={cx('card-header', className)}>
-        {showBackButton && (
-          <BackButton
-            icon="icon_arrow-collapse--left"
-            iconClassName="arrow-icon"
-          />
-        )}
+        {showBackButton && <BackButton />}
         <div className="card-header-content">
           {icon ? (
             <div
@@ -64,6 +59,7 @@ export default function CardHeader(
                   desc={description}
                   code={code}
                   isTerminal={isTerminal}
+                  vehicleMode={stop.vehicleMode}
                 />
               </div>
               {config.zones?.stops &&

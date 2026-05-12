@@ -1,4 +1,5 @@
 import { uniqBy } from 'lodash';
+import { isCallAgencyLeg } from './legUtils';
 
 // TODO: support for currency
 export function formatFare(fare) {
@@ -32,7 +33,7 @@ export const getFaresFromLegs = (legs, config) => {
     price: leg.fareProducts[0].product.price.amount,
     ticketName:
       // E2E-testing does not work without this check
-      (config.NODE_ENV === 'test' &&
+      (process.env.NODE_ENV === 'test' &&
         leg.fareProducts[0].product.id.split(':')[1]) ||
       config.fareMapping(leg.fareProducts[0].product.id),
   }));
@@ -102,6 +103,17 @@ export const shouldShowFareInfo = (config, legs, fares) => {
       leg =>
         leg.route &&
         config.externalFareRouteIds.includes(leg.route.gtfsId.split(':')[1]),
+    )
+  ) {
+    return false;
+  }
+
+  if (
+    legs?.some(
+      leg =>
+        isCallAgencyLeg(leg) &&
+        leg.route &&
+        config.flex.internalAgencies.includes(leg.route.agency.gtfsId),
     )
   ) {
     return false;

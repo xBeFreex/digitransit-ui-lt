@@ -10,14 +10,16 @@ import cx from 'classnames';
 import sortBy from 'lodash/sortBy';
 import { routerShape } from 'found';
 import enrichPatterns from '@digitransit-util/digitransit-util-enrich-patterns';
-import { FormattedMessage, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { routeShape, relayShape, configShape } from '../../util/shapes';
 import Icon from '../Icon';
 import { routePagePath, PREFIX_STOPS } from '../../util/path';
 import RoutePatternSelect, { patternTextWithIcon } from './RoutePatternSelect';
 
 function filterSimilarRoutes(routes, currentRoute) {
-  const withoutCurrent = routes.filter(r => r.gtfsId !== currentRoute.gtfsId);
+  const withoutCurrent = routes.filter(
+    r => r.shortName && r.gtfsId !== currentRoute.gtfsId,
+  );
 
   let routeBasename = currentRoute.shortName;
   if (Number.isNaN(Number(routeBasename))) {
@@ -56,12 +58,12 @@ class RoutePatternSelectContainer extends Component {
     router: routerShape.isRequired,
     config: configShape,
     getStore: PropTypes.func.isRequired,
-    intl: intlShape.isRequired,
+    intl: PropTypes.object.isRequired,
   };
 
   fetchSimilarRoutes = route => {
     let searchSimilarTo = route.shortName;
-    const c = route.shortName.length ? route.shortName[0] : '';
+    const c = route.shortName?.length ? route.shortName[0] : '';
     if (c < '0' || c > '9') {
       // must start with number
       return;
@@ -151,7 +153,13 @@ class RoutePatternSelectContainer extends Component {
 
     const noSpecialRoutes = !specialRoutes.length;
     const noFutureRoutes = !futureRoutes.length;
-    const noSimilarRoutes = !this.state.similarRoutes?.length;
+
+    // If similar-route loading is enabled, avoid treating "no similar routes" as true
+    // until loading finishes. This prevents an initial button-only render that jumps
+    // to a dropdown once similar routes load.
+    const noSimilarRoutes = this.context.config.showSimilarRoutesOnRouteDropDown
+      ? !this.state.similarRoutes?.length && !this.state.loadingSimilar
+      : true;
 
     const renderButtonOnly =
       mainRoutes.length &&
@@ -170,6 +178,12 @@ class RoutePatternSelectContainer extends Component {
           className={cx('route-pattern-select', this.props.className)}
           aria-atomic="true"
         >
+          <h3 className="route-pattern-select-title">
+            <FormattedMessage
+              id="route-page.choose-direction"
+              defaultMessage="Choose direction"
+            />
+          </h3>
           <label htmlFor="route-pattern-toggle-button">
             {directionSwap && (
               <span className="sr-only">
@@ -188,7 +202,11 @@ class RoutePatternSelectContainer extends Component {
             >
               {patternTextWithIcon(currentPattern)}
               {directionSwap && (
-                <Icon className="toggle-icon" img="icon_direction-c" />
+                <Icon
+                  className="toggle-icon"
+                  img="icon_direction-c"
+                  viewBox="0 0 19 17"
+                />
               )}
             </button>
           </label>
@@ -231,12 +249,20 @@ class RoutePatternSelectContainer extends Component {
     }
 
     return (
-      <RoutePatternSelect
-        currentPattern={currentPattern}
-        optionArray={optionArray}
-        onSelectChange={this.props.onSelectChange}
-        className={this.props.className}
-      />
+      <div className={cx('route-pattern-select', this.props.className)}>
+        <h3 className="route-pattern-select-title">
+          <FormattedMessage
+            id="route-page.choose-direction"
+            defaultMessage="Choose direction"
+          />
+        </h3>
+        <RoutePatternSelect
+          currentPattern={currentPattern}
+          optionArray={optionArray}
+          onSelectChange={this.props.onSelectChange}
+          className={this.props.className}
+        />
+      </div>
     );
   }
 }

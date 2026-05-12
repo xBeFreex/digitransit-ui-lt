@@ -70,7 +70,6 @@
         line-height: 18px;
         letter-spacing: -0.5px;
         color: #000;
-        font-family: $font-family;
         width: max-content;
       }
 
@@ -86,7 +85,7 @@
         .icon {
           width: 16px;
           height: 16px;
-          color: $primary-color;
+          color: $theme-primary-color;
         }
       }
     }
