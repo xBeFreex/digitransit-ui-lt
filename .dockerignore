@@ -22,3 +22,9 @@ node_modules
 _static
 /app/__generated__
 /app/**/__generated__
+
+# Workspace build artifacts - rebuilt in Docker by build-workspaces
+/digitransit-component/**/lib
+/digitransit-search-util/**/lib
+/digitransit-store/**/lib
+/digitransit-util/**/lib
