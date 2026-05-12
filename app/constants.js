@@ -131,6 +131,7 @@ export const PlannerMessageType = Object.freeze({
 
 export const OtpCornerNamingPattern = Object.freeze({
   fi: /katujen .* ja .* kulma/,
+  lt: /corner of .* and .*/,
   sv: /hörnet av .* och .*/,
   en: /corner of .* and .*/,
 });

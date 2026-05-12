@@ -974,7 +974,11 @@ export function getValidatedLegName(name, intl, start) {
     id: 'origin',
     defaultMessage: 'Origin',
   });
-  if (OtpCornerNamingPattern[intl.locale].test(name)) {
+  if (
+    (OtpCornerNamingPattern[intl.locale] ?? OtpCornerNamingPattern.en).test(
+      name,
+    )
+  ) {
     return start ? originName : terminusName;
   }
   return name;
