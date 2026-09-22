@@ -1,9 +1,6 @@
 services:
   digitransit-ui:
-    build:
-      context: .
-      args:
-        CONFIG: lietuva
+    image: ghcr.io/xbefreex/digitransit-ui-lt:latest
     ports:
       - "3000:3000"
     environment:
