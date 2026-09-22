@@ -3339,6 +3339,7 @@ __metadata:
   resolution: "@digitransit-search-util/digitransit-search-util-get-geocoding-results@workspace:digitransit-search-util/packages/digitransit-search-util-get-geocoding-results"
   dependencies:
     "@digitransit-search-util/digitransit-search-util-get-json": "workspace:^"
+    axios: "npm:1.17.0"
   languageName: unknown
   linkType: soft
 

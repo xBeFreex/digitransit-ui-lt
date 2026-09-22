@@ -22,6 +22,7 @@
   "author": "Digitransit Authors",
   "license": "(AGPL-3.0 OR EUPL-1.2)",
   "dependencies": {
-    "@digitransit-search-util/digitransit-search-util-get-json": "workspace:^"
+    "@digitransit-search-util/digitransit-search-util-get-json": "workspace:^",
+    "axios": "1.17.0"
   }
 }

@@ -1,6 +1,5 @@
+import axios from 'axios';
 import getJson from '@digitransit-search-util/digitransit-search-util-get-json';
-
-const axios = require('axios').default;
 
 const DEFAULT_PELIAS_URL = 'https://api.digitransit.fi/geocoding/v1/search';
 
