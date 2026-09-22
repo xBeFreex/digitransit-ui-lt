@@ -33,7 +33,9 @@ jobs:
 
       - name: Compute image tag
         id: tags
-        run: echo "sha-tag=${GITHUB_SHA:0:7}" >>"$GITHUB_OUTPUT"
+        run: |
+          echo "sha-tag=${GITHUB_SHA:0:7}" >>"$GITHUB_OUTPUT"
+          echo "owner-lc=${GITHUB_REPOSITORY_OWNER,,}" >>"$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
@@ -42,8 +44,8 @@ jobs:
           build-args: |
             CONFIG=lietuva
           tags: |
-            ghcr.io/${{ github.repository_owner }}/digitransit-ui-lt:latest
-            ghcr.io/${{ github.repository_owner }}/digitransit-ui-lt:${{ steps.tags.outputs.sha-tag }}
+            ghcr.io/${{ steps.tags.outputs.owner-lc }}/digitransit-ui-lt:latest
+            ghcr.io/${{ steps.tags.outputs.owner-lc }}/digitransit-ui-lt:${{ steps.tags.outputs.sha-tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max,oci-mediatypes=true,compression=zstd
           push: true
