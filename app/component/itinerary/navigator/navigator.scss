@@ -481,15 +481,6 @@
                   font-size: 11px;
                 }
               }
-
-              .zone-icon-container {
-                .circle {
-                  width: 16px;
-                  height: 16px;
-                  font-size: 0.9rem;
-                  padding: 0 2px 0 2px;
-                }
-              }
             }
           }
         }
@@ -501,7 +492,7 @@
 
           .indoor-text {
             display: flex;
-            color: $primary-color;
+            color: $theme-primary-color;
             font-weight: $font-weight-medium;
             line-height: 1;
             flex: 1;
@@ -515,7 +506,7 @@
               align-items: center;
 
               svg {
-                color: $primary-color;
+                color: $theme-primary-color;
 
                 &.open {
                   transform: rotate(180deg);
@@ -686,11 +677,6 @@
     &.success {
       background-color: $theme-success-color;
       gap: var(--space-xs);
-
-      button {
-        color: white;
-        background-color: $realtime-color;
-      }
     }
   }
 }
@@ -897,17 +883,15 @@
   }
 
   .navi-ticket-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 20px;
     width: 100px;
     height: 40px;
-    text-align: center;
     margin-left: 16px;
     background-color: $theme-primary-color;
     color: white;
-
-    a {
-      color: white;
-      text-decoration: none;
-    }
+    text-decoration: none;
   }
 }

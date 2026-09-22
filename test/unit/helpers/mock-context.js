@@ -4,6 +4,7 @@ import { matchShape, routerShape } from 'found';
 
 import { mockRouter, mockMatch } from './mock-router';
 import PositionStore from '../../../app/store/PositionStore';
+import config from '../../../server/configs/config.default';
 
 const noop = () => {};
 
@@ -13,19 +14,16 @@ const noop = () => {};
  * their propType requirements.
  */
 export const mockContext = {
-  config: {
-    CONFIG: 'default',
-    timeZone: 'Europe/Helsinki',
-    colors: { primary: '#3fa', accessiblePrimary: '#333' },
-  },
+  config: { ...config, language: config.defaultLanguage || 'en' },
   executeAction: noop,
   getStore: () => ({
     on: noop,
     getCurrentTime: () => DateTime.now(),
     getLanguage: () => 'en',
     getLocationState: () => ({
-      lat: '',
-      lon: '',
+      type: 'CurrentLocation',
+      lat: undefined,
+      lon: undefined,
       address: '',
       status: PositionStore.STATUS_NO_LOCATION,
       hasLocation: false,
@@ -33,10 +31,16 @@ export const mockContext = {
       locationingFailed: false,
     }),
     getMessages: () => [],
+    getDuplicateMessageCounter: () => 0,
+    getGeoJsonConfig: () => [],
+    getGeoJsonData: () => null,
+    getViaPoints: () => [],
     removeListener: noop,
     getRoutingSettings: () => ({}),
     isFavourite: noop,
+    getStatus: () => 'ready',
     getUser: () => ({}),
+    storeFavourites: noop,
   }),
   match: mockMatch,
   router: mockRouter,

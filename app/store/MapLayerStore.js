@@ -1,8 +1,11 @@
 import Store from 'fluxible/addons/BaseStore';
 import PropTypes from 'prop-types';
-import { setMapLayerSettings, getMapLayerSettings } from './localStorage';
-import { showRentalVehiclesOfType } from '../util/modeUtils';
-import { TransportMode } from '../constants';
+import {
+  setMapLayerSettings,
+  getMapLayerSettings,
+} from '../../utils/client/localStorage';
+import { showRentalVehiclesOfType } from '../../utils/client/modeUtils';
+import { TransportMode } from '../../utils/shared/constants';
 
 class MapLayerStore extends Store {
   static handlers = {
@@ -21,6 +24,7 @@ class MapLayerStore extends Store {
       subway: true,
       tram: true,
       funicular: true,
+      airplane: true,
     },
     terminal: {
       bus: true,
@@ -28,6 +32,7 @@ class MapLayerStore extends Store {
       rail: true,
       subway: true,
       tram: true,
+      airplane: true,
     },
     vehicles: false,
     geoJson: {},
@@ -40,12 +45,14 @@ class MapLayerStore extends Store {
     this.mapLayers.citybike = showRentalVehiclesOfType(
       config.vehicleRental?.networks,
       TransportMode.Citybike,
+      config,
     );
     this.mapLayers.scooter =
       config.transportModes.scooter?.showIfSelectedForRouting &&
       showRentalVehiclesOfType(
         config.vehicleRental?.networks,
         TransportMode.Scooter,
+        config,
       );
     if (config.hideMapLayersByDefault) {
       this.mapLayers.stop = Object.keys(this.mapLayers.stop).map(() => false);
@@ -103,6 +110,10 @@ class MapLayerStore extends Store {
         ...this.mapLayers.stop,
         ...mapLayers.stop,
       },
+      geoJson: {
+        ...this.mapLayers.geoJson,
+        ...mapLayers.geoJson,
+      },
     };
     setMapLayerSettings({ ...this.mapLayers });
     this.emitChange();
@@ -120,11 +131,15 @@ export const mapLayerShape = PropTypes.shape({
     subway: PropTypes.bool,
     tram: PropTypes.bool,
     funicular: PropTypes.bool,
+    airplane: PropTypes.bool,
   }).isRequired,
   terminal: PropTypes.shape({
     bus: PropTypes.bool,
+    ferry: PropTypes.bool,
     rail: PropTypes.bool,
     subway: PropTypes.bool,
+    tram: PropTypes.bool,
+    airplane: PropTypes.bool,
   }).isRequired,
   vehicles: PropTypes.bool,
   // eslint-disable-next-line

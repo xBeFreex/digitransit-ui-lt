@@ -1,0 +1,281 @@
+// ============================================================================
+// TrafficNow Card Styles
+// ============================================================================
+// Disruption cards, canceled trips cards, and related card container styles
+
+.traffic-now {
+  &__body {
+    .detail-view {
+      &__cta-container {
+        padding: var(--space-xl) var(--space-xxl);
+        background-color: var(--white);
+        border-right: 1px solid $light-gray;
+        min-width: 258px;
+
+        a {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: var(--space-s);
+          color: var(--color-text-default);
+        }
+
+        &--mobile {
+          display: flex;
+          flex-direction: column;
+          padding: var(--space-m) var(--space-s);
+          justify-content: space-between;
+          border-bottom: 1px solid $light-gray;
+
+          a {
+            color: var(--color-text-default);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          }
+        }
+      }
+    }
+
+    .canceled-trips {
+      &__header {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 var(--space-m);
+        background-color: $white;
+
+        @media screen and (max-width: $bp-tablet) {
+          padding: var(--space-m);
+        }
+      }
+
+      &__body {
+        width: 100%;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+
+        @media screen and (max-width: $bp-tablet) {
+          gap: var(--space-s);
+        }
+      }
+
+      &__footer {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: auto;
+        padding-top: var(--space-l);
+        padding-bottom: var(--space-xl);
+
+        &-body {
+          display: flex;
+          flex-direction: column;
+          width: fit-content;
+          gap: var(--space-m);
+        }
+
+        &-show-more-container {
+          align-self: center;
+        }
+      }
+
+      &__container {
+        display: flex;
+        padding: var(--space-xl);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-m);
+        flex: 1 1 auto;
+        min-height: 0;
+        min-width: 0;
+        width: auto;
+        max-width: 100%;
+
+        @media screen and (max-width: $bp-tablet) {
+          padding: 0;
+          gap: var(--space-s);
+          width: 100%;
+        }
+
+        .cancellation-container {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          gap: var(--space-m);
+
+          @media screen and (max-width: $bp-tablet) {
+            padding: var(--space-fixed-m);
+            background-color: $white;
+            border-top: 1px solid $light-gray;
+            border-bottom: 1px solid $light-gray;
+          }
+
+          &:first-child {
+            @media screen and (max-width: $bp-tablet) {
+              border-top: 0;
+            }
+          }
+
+          &--row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+
+            @media screen and (max-width: $bp-tablet) {
+              width: 100%;
+            }
+          }
+
+          &__patterns--column {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-m);
+            width: 100%;
+
+            .pattern-column {
+              gap: var(--space-fixed-s);
+              margin-bottom: var(--space-s);
+
+              @media screen and (max-width: $bp-tablet) {
+                > .badge-container,
+                > .badge-container .entity-name,
+                > .badge-container .entity-name a {
+                  width: 100%;
+                }
+
+                > .badge-container {
+                  display: flex;
+                }
+
+                > .badge-container .entity-name {
+                  display: flex;
+                  flex: 1 1 auto;
+                }
+
+                > .badge-container .entity-name a {
+                  justify-content: center;
+                  text-align: center;
+                }
+              }
+            }
+
+            @media screen and (max-width: $bp-tablet) {
+              width: 100%;
+            }
+          }
+
+          button.show-departures-button {
+            color: $link-color;
+            align-self: flex-end;
+          }
+        }
+
+        .canceled-trips__card {
+          width: 100%;
+          display: flex;
+          padding: var(--space-l) var(--space-xl);
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--space-m);
+          align-self: stretch;
+          margin-bottom: 0;
+          background-color: $white;
+          border-radius: var(--radius-l);
+          border: 1px solid $light-gray;
+        }
+      }
+    }
+
+    .disruption-operator-badge {
+      display: flex;
+      flex-direction: row;
+      gap: var(--space-xxs);
+      align-items: center;
+      min-height: 24px;
+      max-width: 200px;
+      padding: 0 12px 0 12px;
+      border: 1px solid $light-gray;
+      border-radius: var(--radius-pill);
+      white-space: nowrap;
+    }
+
+    .disruption-card {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-l) var(--space-l) var(--space-m) var(--space-l);
+      gap: var(--space-s);
+      border-radius: var(--radius-m);
+      border: 1px solid $light-gray;
+
+      &.clickable {
+        cursor: pointer;
+      }
+
+      &:hover &__icon {
+        transform: translateX(4px);
+        transition: transform $transition-short;
+
+        &--inverted {
+          transform: rotate(180deg) translateY(4px);
+          transition: transform $transition-short;
+        }
+      }
+
+      header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+
+        .separator.vertical {
+          align-self: stretch;
+        }
+      }
+
+      &__header-left {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-xs);
+        flex-wrap: wrap;
+      }
+
+      &__icon {
+        &--inverted {
+          transform: rotate(180deg);
+        }
+      }
+
+      &__body {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition:
+          max-height $transition-medium $transition-easing-expansion,
+          opacity $transition-short ease-in $transition-short;
+
+        &--open {
+          max-height: $card-body-max-height-expanded; // Used for smooth expand/collapse animation
+          opacity: 1;
+        }
+      }
+
+      &__body-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+    }
+  }
+}

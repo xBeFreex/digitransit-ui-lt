@@ -42,7 +42,7 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
 
   label button {
     cursor: pointer;
-    font-family: var(--font-family);
+    font-family: inherit;
   }
 
   .hidden {
@@ -53,14 +53,17 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
     background-color: #f2f5f7;
     border-radius: 5px;
     padding: 15px;
+    margin: 9px 0 9px 0;
   }
 
   .top-row-container {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
+    min-height: 36px;
 
     &.closed {
-      margin: 11px 0 6px 18px;
+      margin: 4px 0 6px 18px;
     }
 
     @include max-width(mobile-small) {
@@ -116,11 +119,9 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
 
   .textbutton {
     margin-left: 9px;
-    margin-top: 1px;
     background: none;
     border: none;
     color: #666;
-    padding: 0;
 
     @include min-width(tablet) {
       margin-left: 14px;
@@ -208,14 +209,14 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
   .open-button {
     display: flex;
     margin-bottom: 0;
-    margin-top: -1px;
+    margin-top: 1px;
     padding: 2px 0 2px 0;
   }
 
   button.close-button {
     transition: transform 0.2s;
     position: relative;
-    top: -8px;
+    top: -14px;
     right: -8px;
     border: 0;
     font-weight: normal;
@@ -374,11 +375,11 @@ $zindex: base, map-container, map-gradient, map-fullscreen-toggle, map-buttons,
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1000;
+  z-index: 10001;
 }
 
 .mobile-modal-content {
-  font-family: var(--font-family);
+  font-family: inherit;
   background: white;
   width: 89%;
   position: absolute;

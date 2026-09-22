@@ -1,0 +1,65 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import cx from 'classnames';
+import { useIntl } from 'react-intl';
+import capitalize from 'lodash/capitalize';
+import { Text } from '@hsl-fi/layout-primitives';
+import Icon from '../Icon';
+import { AlertSeverityLevelType } from '../../../utils/shared/constants';
+
+const DISRUPTION_BADGE_PREFIX = 'disruption-badge-';
+
+function variantValidator(props, propName, componentName) {
+  if (!Object.values(AlertSeverityLevelType).includes(props[propName])) {
+    return new Error(
+      `Invalid prop \`${propName}: ${props[propName]}\` supplied to ${componentName}.`,
+    );
+  }
+  return null;
+}
+
+const getIcon = variant => {
+  switch (true) {
+    case [AlertSeverityLevelType.Info, AlertSeverityLevelType.Unknown].includes(
+      variant,
+    ): {
+      return <Icon img="icon_info-circled" className="info" />;
+    }
+    case variant === AlertSeverityLevelType.Warning: {
+      return <Icon img="icon_caution_white_exclamation" className="warning" />;
+    }
+    case variant === AlertSeverityLevelType.Severe: {
+      return <Icon img="icon_caution_white_exclamation" className="danger" />;
+    }
+    default:
+      return null;
+  }
+};
+
+export default function DisruptionBadge({
+  label = undefined,
+  showIcon = false,
+  variant = 'info',
+  className = undefined,
+  ...rest
+}) {
+  const { formatMessage } = useIntl();
+  return (
+    <div {...rest} className={cx('badge', variant.toLowerCase(), className)}>
+      {showIcon && getIcon(variant)}
+      <Text variant="tag-bold">
+        {formatMessage({
+          id: `${DISRUPTION_BADGE_PREFIX}${label.toLowerCase()}`,
+          defaultMessage: capitalize(label.toLowerCase()).replace(/_/g, ' '),
+        })}
+      </Text>
+    </div>
+  );
+}
+
+DisruptionBadge.propTypes = {
+  label: PropTypes.string,
+  showIcon: PropTypes.bool,
+  variant: variantValidator,
+  className: PropTypes.string,
+};

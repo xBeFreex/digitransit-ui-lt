@@ -32,7 +32,6 @@ export default {
     'address-or-stop': 'Address or stop',
     agency: 'Operator',
     airplane: 'Flight',
-    'airplane-with-route-number': 'Flight {routeNumber}',
     'airport-check-in':
       'Check-in immediately upon arrival if you have not completed check-in in advance',
     'airport-collect-luggage': 'Collect your luggage',
@@ -44,6 +43,7 @@ export default {
     'alternative-legs':
       'Also {leg1} at {startTime1} and {leg2} at {startTime2}',
     'alternative-legs-single': 'Also {leg1} at {startTime1}',
+    'alternative-name-rail': 'Train',
     'aria-itinerary-summary':
       'Total journey time {duration}. Departing at {inFuture} {departureTime} and arriving at {arrivalTime}',
     'aria-itinerary-summary-bike-distance':
@@ -81,40 +81,29 @@ export default {
       'You can park your bike near the station or stop and continue your journey by public transport',
     'bike-park-disclaimer-header': 'Park your bike',
     'bike-station-disabled': 'The bike station is out of service.',
-    'bikes-available': '{amount} bikes at the station ',
     'biking-speed': 'Biking speed',
-    'book-a-lift': 'Use an app to book a ride',
+    'book-a-lift': 'Use taxis via the app',
     'booking-method': 'Booking method',
     bus: 'Bus',
     'bus-express': 'Trunk bus',
-    'bus-express-with-route-number': 'Trunk bus {routeNumber} {headSign}',
     'bus-local': 'Neighbourhood bus',
-    'bus-with-route-number': 'Bus {routeNumber} {headSign}',
     'buy-in-app': 'Buy in App',
     call: 'Demand responsive transport',
     'call-agency-disclaimer':
       'This service operates by advance booking. To ensure your ride, please book ahead of time. More information is available from the service provider. ',
     'call-number': 'Call {number}',
-    'call-with-route-number':
-      'Demand responsive transport {routeNumber} {headSign}',
     cancel: 'Cancel',
     canceled: 'Canceled',
-    'capacity-modal.crushed-standing-room-only-body':
-      'Only a little standing room available',
-    'capacity-modal.crushed-standing-room-only-heading': 'Very crowded',
-    'capacity-modal.few-seats-available-body': 'Some seats available',
-    'capacity-modal.few-seats-available-heading': 'Not too crowded',
-    'capacity-modal.full-capacity-body': 'No seats or standing room available',
-    'capacity-modal.full-capacity-heading': 'Full',
-    'capacity-modal.heading': 'Is there room in the vehicle?',
+    'capacity-modal.crushed-standing-room-only':
+      'Only limited standing room available',
+    'capacity-modal.few-seats-available': 'Some seats available',
+    'capacity-modal.heading': 'Is there room on board?',
     'capacity-modal.legend': 'Legend for the symbols',
-    'capacity-modal.many-seats-available-body': 'Plenty of seats available',
-    'capacity-modal.many-seats-available-heading': 'Not crowded',
-    'capacity-modal.standing-room-only-body':
-      'Only a few seats and little standing room available',
-    'capacity-modal.standing-room-only-heading': 'Nearly full',
+    'capacity-modal.many-seats-available': 'Plenty of seats available',
+    'capacity-modal.standing-room-only':
+      'Only a few seats and limited standing room available',
     'capacity-modal.subheading':
-      'Real-time capacity information is available for some vehicles',
+      'A real-time capacity estimate is available for some vehicles',
     car: 'Car',
     'car-distance-duration': 'Drive {duration} ({distance})',
     'car-distance-no-duration': 'Drive {distance}',
@@ -125,10 +114,11 @@ export default {
     'car-park-disclaimer':
       'You can park your car near a station or stop and continue your journey by public transport',
     'car-park-disclaimer-header': 'Park your car',
+    choose: 'Select',
     'choose-freely': 'Optional',
     'choose-stop': 'Select stop',
-    'choose-stop-or-vehicle': 'Select vehicle or stop',
-    'choose-vehicle': 'Select vehicle',
+    'choose-stop-or-vehicle': 'Select route or stop',
+    'choose-vehicle': 'Select route',
     citybike: 'City bike',
     'citybike-duration-general-header':
       'Extra charge applies to several sections of route to be completed by a city bike.',
@@ -182,18 +172,44 @@ export default {
     disclaimer:
       'Please note that the results are based on estimated travel times. The suggested transport connections cannot be guaranteed.',
     disruption: 'Disruption',
+    'disruption-badge-additional_service': 'Additional routes',
+    'disruption-badge-cancellation': 'Canceled',
+    'disruption-badge-detour': 'Detour',
+    'disruption-badge-modified_service': 'Service modifications',
+    'disruption-badge-no_effect': 'No effect',
+    'disruption-badge-no_service': 'No service',
+    'disruption-badge-other_effect': 'Other',
+    'disruption-badge-reduced_service': 'Reduced routes',
+    'disruption-badge-significant_delays': 'Delay',
+    'disruption-badge-stop_moved': 'Stop moved',
+    'disruption-badge-unknown_effect': 'Unknown',
     'disruption-info': 'Disruption info',
     'disruption-info-no-alerts': 'No known disruptions or diversions.',
     'disruption-info-route-no-alerts':
       'No known disruptions or diversions to the route.',
+    'disruption-list-active': 'Ongoing',
+    'disruption-list-no-active-alerts': 'No known ongoing disruptions',
+    'disruption-list-no-upcoming-alerts':
+      'No known upcoming disruptions or diversions',
+    'disruption-list-traffic-normal': 'Services normal',
+    'disruption-list-upcoming': 'Upcoming',
+    'disruption-view-details': 'View details',
+    'disruption-view-timetable': 'View timetable',
     disruptions: 'Disruptions',
     'disruptions-and-diversions': 'Disruptions and diversions',
+    'disruptions-change-filters': 'Please try again with different filters',
+    'disruptions-found-amount':
+      '{amount, plural, =0 {No disruptions found} one {Found 1 disruption} other {Found {amount} disruptions} }',
+    'disruptions-refresh': 'Load page',
     'disruptions-tab.sr-disruptions': 'One or more known disruptions',
     'disruptions-tab.sr-no-disruptions': 'No known disruptions',
+    'disruptions-update-available': 'Updates available',
     'distance-total': 'Total distance',
     'e-scooter': 'Electric scooter',
     'e-scooter-alternative':
       'How about using an electric scooter for part of your journey? {paymentInfo}',
+    'e-scooter-or-taxi-alternative':
+      'How about traveling part of the way by an e-scooter, a taxi or a ride-hailing service? {paymentInfo}',
     'e-scooters': 'Electric scooters',
     'e-scooters-available':
       'There are electric scooters available in the area. Use an app to unlock the electric scooter.',
@@ -210,8 +226,8 @@ export default {
     'favourite-failed-text': 'Please try again in a while.',
     ferry: 'Ferry',
     'ferry-external': 'Ferry',
-    'ferry-external-with-route-number': 'Ferry {routeNumber} {headSign}',
-    'ferry-with-route-number': 'Ferry {routeNumber} {headSign}',
+    filter: 'Filter',
+    filters: 'Filters',
     finnish: 'Finnish',
     'free-of-charge': 'Free',
     'from-bus': 'bus',
@@ -225,7 +241,7 @@ export default {
     'from-tram': 'tram',
     frontpage: 'Frontpage',
     funicular: 'Funicular',
-    'generic-cancelation': '{mode} {route} {headsign} at {time} is cancelled.',
+    'generic-cancelation': '{mode} {route} {headsign} is cancelled at {times}',
     'generic-error': 'There was an error',
     'geolocation-denied-heading': 'Geolocation denied',
     'geolocation-denied-text':
@@ -262,7 +278,7 @@ export default {
       '{co2value} g of carbondioxide emissions will be generated on this journey.',
     'itinerary-co2.description-sr':
       '{co2value} g of carbondioxide emissions will be generated on this journey. A car would generate {carCo2Value} g of carbondioxide on the same journey.',
-    'itinerary-co2.link': 'This is how we reduce emissions ›',
+    'itinerary-co2.link': 'How are emissions calculated ›',
     'itinerary-co2.title': 'CO₂ emissions of the journey',
     'itinerary-co2.title-sr': 'Carbondioxide emissions of the journey',
     'itinerary-details.biking-leg':
@@ -276,7 +292,9 @@ export default {
     'itinerary-details.route-has-unknown-alert': 'Route has disruptions.',
     'itinerary-details.route-has-warning-alert': 'Route has disruptions.',
     'itinerary-details.scooter-leg':
-      'At {time} travel by scooter {distance} from {origin} to {destination}. Estimated time {duration}',
+      'At {time} travel by scooter {distance} from the pickup location {origin} to {destination}. Estimated time {duration}',
+    'itinerary-details.taxi-leg':
+      'At {time} travel by taxi {distance} from the pickup location {origin} to {to} {destination}. Estimated time {duration}',
     'itinerary-details.transit-leg-part-1': 'At {time} {realtime} take',
     'itinerary-details.transit-leg-part-2':
       'from stop {startStop} {startZoneInfo} {trackInfo} to stop {endStop} {endZoneInfo}. Estimated duration {duration}. ',
@@ -303,14 +321,16 @@ export default {
     'itinerary-summary-row.clickable-area-description': 'Show on map',
     'itinerary-summary-row.description':
       'Itinerary departing at {departureDate} {departureTime} and arriving at {arrivalDate} {arrivalTime}. {firstDeparture} {transfers} Total time {totalTime}.',
-    'itinerary-summary-row.first-departure':
-      '{vehicle} leaves at {departureTime} from stop {stopName} {platformOrTrack}.',
     'itinerary-summary-row.first-leg-start-time':
       'Leaves at {firstDepartureTime} from {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
       'Departure at {firstDepartureTime} from {firstDepartureStop} bike station',
     'itinerary-summary-row.first-leg-start-time-scooter':
-      'Departure at {firstDepartureTime} by a scooter',
+      'Departure at {firstDepartureTime} from the scooter pickup location',
+    'itinerary-summary-row.first-leg-start-time-sr':
+      '{vehicle} leaves at {firstDepartureTime} from {firstDepartureStopType} {firstDepartureStop} {firstDeparturePlatform}.',
+    'itinerary-summary-row.first-leg-start-time-taxi':
+      'Departure at {firstDepartureTime} from the taxi pickup location',
     'itinerary-summary-row.no-transit-legs': 'Leave when it suits you',
     'itinerary-summary-row.transfers':
       'Transfer to {vehicle} on stop {stopName}',
@@ -334,6 +354,10 @@ export default {
       'The route number ({shortName}) and destination ({destination}) will change at the {stop} stop. Waiting time at the stop is {time}. Please wait onboard.',
     'itinerary-summary.interline-wait-multiple-legs':
       'The route number ({shortName}) and destination will change several times during the journey. Total waiting time is {time}. Please do not leave the vehicle.',
+    'itinerary-summary.interline-wait-multiple-legs-same-route':
+      'The destination will change several times during the journey. Total waiting time is {time}. Please do not leave the vehicle.',
+    'itinerary-summary.interline-wait-same-route':
+      'The destination ({destination}) will change at the {stop} stop. Waiting time at the stop is {time}. Please wait onboard.',
     'itinerary-summary.show-on-map': 'Show on map {target}',
     'itinerary-ticket.title': 'Required ticket',
     'itinerary-tickets.title': 'Required tickets',
@@ -360,6 +384,7 @@ export default {
     'map-layer-park-and-ride': 'Park & ride sites',
     'map-layer-park-and-ride-bike': 'Park & ride bike parking',
     'map-layer-scooter': 'Scooters',
+    'map-layer-stop-airplane': 'Airports',
     'map-layer-stop-bus': 'Bus stops',
     'map-layer-stop-ferry': 'Ferries',
     'map-layer-stop-funicular': 'Funiculars',
@@ -367,6 +392,7 @@ export default {
     'map-layer-vehicles': 'Vehicles',
     'map-zoom-in-button': 'Zoom in',
     'map-zoom-out-button': 'Zoom out',
+    maplayers: 'Map layers',
     'menu-feedback': 'Submit feedback',
     'messagebar-label-close-message-bar': 'Close banner',
     'min-transfer-time': 'Interchange time',
@@ -385,7 +411,7 @@ export default {
     'modes.to-scooter': 'to scooter',
     'modes.to-stop': 'stop',
     'modes.to-subway': 'subway station',
-    'modes.to-taxi': 'to taxi',
+    'modes.to-taxi': ' ',
     'modes.to-tram': 'tram stop',
     'more-departures': 'More departures',
     'move-on-map': 'Move on the map',
@@ -412,6 +438,8 @@ export default {
       'Your journey will continue in {duration} minutes',
     'navigation-interline-wait':
       'The route number {line} and destination {destination} will change at the stop',
+    'navigation-interline-wait-same-route':
+      'The destination {destination} will change at the stop',
     'navigation-intro-begin': 'Start journey',
     'navigation-intro-help-body': 'Travel step by step',
     'navigation-intro-notifications-body': 'Stay on track with your journey',
@@ -447,7 +475,9 @@ export default {
     'navileg-hop-on': 'and board',
     'navileg-in-transit': '{mode} journey',
     'navileg-in-transit-interline':
-      'Your journey will continue in {duration} minutes at {legTime}. Wait onboard.',
+      'The route number and destination change at {stop} {stopOrStation} in {duration} at {legTime}. Wait onboard.',
+    'navileg-in-transit-interline-same-route':
+      'The destination changes at {stop} {stopOrStation} in {duration} at {legTime}. Wait onboard.',
     'navileg-intermediate-stops': '{stopCount} intermediate stops',
     'navileg-leave-at':
       'Get off at {stop} {stopOrStation} in {duration} at {legTime}',
@@ -501,6 +531,7 @@ export default {
       'No route suggestions were found with the your settings. However, we found the following route options:',
     'no-route-start': 'Please select origin',
     'no-route-start-end': 'Please select origin and destination',
+    'no-trips-found': 'No journeys found for the selected date {selectedDate}.',
     'notification-minimize': 'Close message',
     'notification-open': 'Open message',
     'number-of-intermediate-stops':
@@ -542,24 +573,36 @@ export default {
     'payment-info-e-scooter':
       'Please note that you need to use the app of the operator in question in order to use and pay for the scooters.',
     'payment-info-e-scooter-or-taxi':
-      'Please note that you need to use the app of the operator in question in order to use and pay for the taxis or scooters.',
+      'Please note that you use and pay for scooters, taxis and ride-hailing services in the service providers’ own apps.',
     'payment-info-taxi':
-      'Please note that you need to use the app of the operator in question in order to use and pay for the taxis.',
+      'Please note that you use and pay for taxis and ride‑hailing services in the service providers’ own apps.',
+    payment_at_gate: 'Payment at the gate ',
     'personal-itineraries': 'Personal itineraries',
     personalization: 'Personalization',
     'personalization-activated': 'Personalization has been enabled',
     'personalization-aria-dislike': 'I do not like this itinerary',
     'personalization-aria-like': 'I like this itinerary',
-    'personalization-ask': 'Do you like this route recommendation?',
+    'personalization-ask': 'Do you like this route suggestion?',
     'personalization-beta':
       'Personalization is still in the testing phase, meaning we are trying out the service. We would love to hear about your experience. The survey will open in a new tab.',
+    'personalization-continue-choices':
+      'Choose whether we use your usage history for personalization or start over by deleting your usage history.',
+    'personalization-continue-query':
+      'How do you want to continue personalization?',
     'personalization-disliked':
       'You will receive fewer recommendations like this in the future.',
     'personalization-feedback': 'Give feedback',
+    'personalization-history-keep': 'Take advantage of usage history',
+    'personalization-history-remove':
+      'Delete personalization history and start over',
     'personalization-info':
       'Find your favorite routes and travel according to your habits',
     'personalization-liked':
       'You will receive similar recommendations in the future.',
+    'personalization-login-description':
+      'You can enable personalized route recommendations when you are logged in.',
+    'personalization-login-for-voting': 'Log in and give feedback',
+    'personalization-login-title': 'Sign in to get recommendations',
     'personalization-modal-feedback': 'We learn from your feedback',
     'personalization-modal-feedback-details':
       'We use your feedback in itinerary recommendations. Tell us what you think about the recommendations and we will take your preferences into account in the future.',
@@ -568,6 +611,9 @@ export default {
     'personalization-modal-highlight-details':
       'We emphasize your favorite routes in personalization. So add the routes you use as favorites.',
     'personalization-modal-link': 'Add or edit your favorites',
+    'personalization-new-feature':
+      'Discover new personalized route recommendations in settings',
+    'personalization-new-header': 'Route recommendations enabled',
     'personalization-open-info': 'Read how recommendations work',
     'phone-number': 'Phone number',
     'pick-mode': 'Transport modes',
@@ -585,7 +631,6 @@ export default {
     print: 'Print',
     'print-timetable': 'Weekly timetable',
     rail: 'Commuter train',
-    'rail-with-route-number': 'Train {routeNumber} {headSign}',
     'read-more': 'Read more',
     realtime: 'Real-time',
     releases: 'Releases',
@@ -593,7 +638,6 @@ export default {
     'rent-cycle-at': 'Fetch a city bike:',
     'rent-e-scooter-at': 'Use an app to unlock the electric scooter',
     'replacement-bus': 'Replacement bus',
-    'replacement-bus-with-route-number': 'Replacement bus {routeNumber}',
     'restore-default-settings': 'Reset',
     'restore-default-settings-aria-label': 'Restore default settings.',
     'restore-default-settings-aria-label-done': 'Default settings are in use.',
@@ -614,9 +658,11 @@ export default {
     'route-page-vehicle-position-between':
       '{mode} {shortName} is between the {stopName} stop and the {nextStopName} stop.',
     'route-page-vehicle-selected': 'Current selection.',
+    'route-page.alternative-routes': 'Alternative routes',
     'route-page.choose-direction': 'Choose direction and route',
     'route-page.description': 'Route {shortName} - {longName}',
     'route-page.future-routes': 'Future routes',
+    'route-page.main-routes': 'Directions',
     'route-page.pattern-chosen': 'Selected',
     'route-page.pattern-select-title': 'Select the route to be viewed',
     'route-page.select-time': 'Select time',
@@ -624,6 +670,8 @@ export default {
     'route-page.special-routes': 'Other routes',
     'route-page.title': 'Route {shortName}',
     'route-page.title-short': 'Route',
+    'route-pattern-select-tooltip': 'Show routes',
+    'route-pattern-swap-tooltip': 'Change direction',
     'route-to-ferry': 'Route to the pier',
     'route-to-park': 'Route to the park',
     'route-to-station': 'Route to the station',
@@ -661,7 +709,7 @@ export default {
     'scooter-distance-duration':
       'Travel by scooter for {duration} ({distance})',
     'scooterwalk-distance-duration':
-      'Walk your kick scooter {duration} ({distance})',
+      'Walk your kick scooter {duration} ({distance}).',
     'search-current-suggestion': 'Current selection: {selection}',
     'search-fields.sr-instructions':
       'Route search will take place automatically when you enter origin and destination. Changing search parameters will trigger a new search. Navigate to the search fields using the tab key',
@@ -686,7 +734,6 @@ export default {
     'set-time-earlier-button-label': 'Set travel time to earlier',
     'set-time-later-button-label': 'Set travel time to later',
     settings: 'Settings',
-    'settings-alternative-name-rail': 'Train',
     'settings-changed-by-you': 'You have edited your settings',
     'settings-dropdown-close-label': 'Close options',
     'settings-dropdown-open-label': 'Open options',
@@ -700,12 +747,17 @@ export default {
       'Some selections in the settings exclude certain route alternatives.',
     'settings-missing-itineraries-header':
       'Are some route alternatives missing?',
+    'settings-taxi':
+      'You can choose your preferred taxi and ride‑hailing services to include them in route planning.',
+    'settings-taxi-routes':
+      'Include taxi and ride‑hailing services in your routes!',
+    'show-all': 'Show all',
+    'show-departures': 'Show departures',
     'show-more': 'Show more',
     'show-more-stops-near-you': 'Show more stops near you',
     'show-routes': 'Choose routes',
     'skip-to-content': 'Skip to content',
     speedtram: 'Light Rail',
-    'speedtram-with-route-number': 'Light Rail {routeNumber} {headSign}',
     station: 'Station',
     'station-entrance': 'Entrance',
     'station-exit': 'Exit',
@@ -749,7 +801,6 @@ export default {
     'subway-exit.sr-description': 'Metro station exit {entranceName}}',
     'subway-exit.sr-description.accessible':
       'Metro station exit {entranceName}, accessible',
-    'subway-with-route-number': 'Metro {routeNumber} {headSign}',
     'summary-page.description': '{from} - {to}',
     'summary-page.row-label': 'Itinerary suggestion {number}',
     'summary-page.title': 'Itinerary suggestions',
@@ -764,10 +815,9 @@ export default {
     'swipe-summary-page-tab': 'Itinerary swipe result tabs',
     taxi: 'Taxi',
     'taxi-alternative':
-      'How about using a taxi for part of your journey? {paymentInfo}',
-    'taxi-distance-duration': 'Travel for {duration} ({distance})',
+      'How about traveling part of the way by a taxi? {paymentInfo}',
+    'taxi-distance-duration': 'Travel {duration} ({distance})',
     'taxi-external': 'Taxi',
-    'taxi-with-route-number': 'Taxi {routeNumber}',
     'taxis-and-ride-hailing': 'Taxis and ride-hailing services',
     terminal: 'Terminal',
     'terminal-page.description': 'Terminal {name}',
@@ -793,18 +843,44 @@ export default {
     'tracking-button-off': 'tracking off',
     'tracking-button-offline': 'tracking failed',
     'tracking-button-on': 'tracking on',
+    'traffic-now': 'Traffic now',
+    'traffic-now-long': 'Services now',
+    'traffic-now_bread': 'Travelling',
+    'traffic-now_canceled-trips--amount':
+      'Listing {amount} of {totalAmount} routes',
+    'traffic-now_canceled-trips--simple': '{amount} cancellations',
+    'traffic-now_description':
+      'Up-to-date information on disruptions and exceptions. ',
+    'traffic-now_description_see-also':
+      'See also {amount, plural, =1 {{link1},} other {{link1} as well as {link2},} } which you will find in detail on its own page.',
+    'traffic-now_description_see-also--link1': 'holidays and exceptions',
+    'traffic-now_description_see-also--link2': 'major changes',
+    'traffic-now_filters_entity-search': 'Search for individual route or stop',
+    'traffic-now_filters_entity-search--placeholder': 'Route, stop or station',
+    'traffic-now_filters_operator-select-legend': 'Show only these operators',
+    'traffic-now_filters_operator-select-placeholder': 'Select one or more',
+    'traffic-now_filters_toggles--cancellations-only': 'Cancellations only',
+    'traffic-now_filters_toggles--favourites-only': 'Favourites only',
+    'traffic-now_filters_validity-period': 'Filter by validity period',
+    'traffic-now_filters_vehicle-mode': 'Filter by vehicle mode',
+    'traffic-now_filters_view-results': 'View results',
+    'traffic-now_go-back': 'Go back',
+    'traffic-now_go-to-route-page': 'View route',
+    'traffic-now_link': 'Services now',
+    'traffic-now_link-description': 'See changes and disruptions',
+    'traffic-now_more-routes': '{count} more routes',
     trafficnow: 'Traffic now',
     'trafficnow-bread': 'Travelling',
     'trafficnow-description':
       'Up-to-date information on disruptions and exceptions',
     tram: 'Tram',
-    'tram-with-route-number': 'Tram {routeNumber} {headSign}',
     transfer: 'Transfer',
     'travel-time': '{min} min',
     'travel-time-label': 'Travel time',
     'travel-time-with-hours': '{h} h {min} min',
     'trip-information': 'Trip information',
     'try-again': 'Try again',
+    upcoming: 'Upcoming',
     'use-national-service-postfix': '.',
     'use-national-service-prefix':
       'We recommend you try the national journey planner, ',

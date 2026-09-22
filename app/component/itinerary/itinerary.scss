@@ -93,7 +93,7 @@ $itinerary-tab-switch-height: 48px;
   }
 
   &.taxi-external {
-    @include getCircleSvg($external-feed-color, $fill);
+    @include getCircleSvg($taxi-external-color, $fill);
   }
 
   &.replacement-bus {
@@ -280,6 +280,7 @@ $itinerary-tab-switch-height: 48px;
   .itinerary-leg-container {
     .zone-dual {
       min-height: 4em;
+      max-height: 0;
     }
 
     .zone-triple {
@@ -291,7 +292,7 @@ $itinerary-tab-switch-height: 48px;
       .itinerary-time-column {
         .time-column-zone-icons-container {
           &.intermediate-leg {
-            top: -12px;
+            top: -21px;
 
             .zone-icon-container {
               .circle {
@@ -311,7 +312,35 @@ $itinerary-tab-switch-height: 48px;
       }
     }
 
+    .zone-dual:not(.zone-previous) {
+      .itinerary-time-column {
+        .time-column-zone-icons-container {
+          &.intermediate-leg {
+            top: -15px;
+          }
+        }
+      }
+    }
+
     .zone-previous {
+      .itinerary-time-column {
+        .time-column-zone-icons-container {
+          &.intermediate-leg {
+            top: -26px;
+          }
+        }
+      }
+
+      &.zone-single-stop {
+        .itinerary-time-column {
+          .time-column-zone-icons-container {
+            &.intermediate-leg {
+              top: -24px;
+            }
+          }
+        }
+      }
+
       .leg-before-circle {
         bottom: 0;
       }
@@ -344,7 +373,7 @@ $itinerary-tab-switch-height: 48px;
   white-space: normal;
   margin-bottom: 5px;
   margin-top: 9px;
-  border-left: 4px solid $primary-color;
+  border-left: 4px solid $theme-primary-color;
   box-shadow: 0 2px 4px 0 rgba(51, 51, 51, 0.2);
   max-width: 350px;
   line-height: 16px;
@@ -354,7 +383,7 @@ $itinerary-tab-switch-height: 48px;
 
     .icon {
       &.info {
-        color: $primary-color;
+        color: $theme-primary-color;
         width: 16px;
         height: 16px;
       }
@@ -395,7 +424,7 @@ $itinerary-tab-switch-height: 48px;
       color: #fff;
       margin-top: var(--space-xs);
       border-radius: var(--radius-radius-pill, 999px);
-      background: $primary-color;
+      background: $theme-primary-color;
 
       .icon-container {
         padding-left: var(--space-xxs);
@@ -720,7 +749,25 @@ $itinerary-tab-switch-height: 48px;
   z-index: 10;
 
   &.start {
-    top: 12px;
+    top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .icon-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon {
+      position: relative;
+      top: 0;
+      margin-left: 0;
+      margin-top: 0;
+      width: 16px;
+      height: 16px;
+    }
   }
 
   &.bike-park {
@@ -776,8 +823,6 @@ $itinerary-tab-switch-height: 48px;
 
   &.from-it {
     @include itineraryTableIcons;
-
-    top: -4px;
   }
 
   &.via-it {
@@ -1074,7 +1119,7 @@ $itinerary-tab-switch-height: 48px;
     }
 
     &.taxi-external {
-      @include setModeCircles($external-feed-color);
+      @include setModeCircles($taxi-external-color);
     }
 
     &.replacement-bus {
@@ -1848,6 +1893,7 @@ $itinerary-tab-switch-height: 48px;
 
     .divider {
       border-top: 1px solid #ddd;
+      margin-bottom: 8px;
     }
 
     .interline-info-container {
@@ -1886,7 +1932,7 @@ $itinerary-tab-switch-height: 48px;
         color: #333;
         font-size: 0.9375rem;
         font-weight: $font-weight-medium;
-        padding-bottom: 22px;
+        padding-bottom: 11px;
         display: flex;
 
         .itinerary-arrow-icon {
@@ -2244,12 +2290,19 @@ $itinerary-tab-switch-height: 48px;
           bottom: 74px;
         }
 
-        .taxi-icon .icon-container .icon {
+        .taxi-icon {
           display: flex;
-          color: $external-feed-color;
-          border-radius: 3px;
-          font-size: 24px;
-          fill: white;
+          align-items: center;
+          flex-shrink: 0;
+
+          .icon-container .icon {
+            display: block;
+            color: $taxi-external-color;
+            border-radius: 3px;
+            fill: white;
+            height: $taxi-icon-height;
+            width: $taxi-icon-width;
+          }
         }
       }
     }
@@ -2591,7 +2644,7 @@ $itinerary-tab-switch-height: 48px;
       }
 
       .intermediate-steps-message {
-        color: $primary-color;
+        color: $theme-primary-color;
         font-weight: $font-weight-medium;
         line-height: 1.2;
         border-bottom: none;
@@ -2772,7 +2825,10 @@ div.itinerary-container-content {
       a {
         font-weight: $font-weight-medium;
         color: $link-button-color;
+        display: block;
         max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .external-link-icon-outer {
@@ -3630,7 +3686,6 @@ $font-print-decrease: 0.7;
       justify-content: center;
 
       .platform-updated-icon {
-        vertical-align: middle;
         color: $cancelation-red;
       }
     }

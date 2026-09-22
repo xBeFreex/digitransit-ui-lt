@@ -1,0 +1,127 @@
+// Styles for RouteControlPanel: navigation tab strip and its container.
+
+.navigation-tabs {
+  width: 100%;
+}
+
+// ─── Tab container ───────────────────────────────────────────────────────────
+
+.route-page-control-panel-container {
+  padding-bottom: 28px;
+
+  &.hairiot {
+    margin: 0 56px;
+  }
+
+  @media print {
+    .route-tabs {
+      display: none;
+    }
+  }
+}
+
+// ─── Tab strip (pill-selector style) ────────────────────────────────────────
+
+.route-tabs {
+  display: flex;
+  background-color: var(--color-surface-disabled);
+  border: 1px solid var(--color-border-weak);
+  border-radius: var(--radius-pill);
+  margin: var(--space-s) 0 0;
+  padding: var(--space-fixed-xxs);
+
+  button {
+    width: calc(100% / var(--totalCount));
+    flex: 0 0 calc(100% / var(--totalCount));
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    // HSL design system segmented-control button heights
+    height: 37px;
+    font-size: $font-size-small;
+    font-family: var(--font-family);
+    text-align: center;
+    letter-spacing: -0.42px;
+    border-radius: var(--radius-pill, 999px);
+    color: $link-color;
+    font-weight: $font-weight-medium;
+
+    @media (min-width: 768px) {
+      height: 40px;
+    }
+
+    &.is-active {
+      color: $black;
+      background-color: var(--color-surface-default);
+      box-shadow: 0 2px 4px 0 var(--color-shadow-strong);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-outline-default);
+    }
+
+    &:disabled {
+      color: $black;
+      font-weight: $font-weight-medium;
+      background-color: var(--color-surface-default);
+      border: 1px solid var(--color-border-weak);
+      cursor: default;
+
+      // Restore default appearance suppressed by Foundation / global button styles
+      opacity: 1;
+      box-shadow: 0 2px 4px 0 var(--color-shadow-strong);
+
+      &:focus,
+      &:hover {
+        color: inherit;
+        background: var(--color-surface-default);
+      }
+    }
+
+    .no-alerts > span {
+      color: $muted-gray;
+    }
+  }
+
+  .tab-route-disruption {
+    display: inline-flex;
+    align-items: center;
+
+    .icon-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 5px;
+
+      .disruption-icon {
+        width: 0.85em;
+        height: 0.95em;
+      }
+
+      .service-alert-icon {
+        fill: $muted-gray;
+      }
+    }
+  }
+
+  .tab-panel {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background: $white;
+
+    > div {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  @media print {
+    button.is-active {
+      text-decoration: underline;
+    }
+  }
+}

@@ -30,7 +30,6 @@ export default {
     'address-or-stop': 'Adres lub przystanek',
     agency: 'Operator',
     airplane: 'Lot',
-    'airplane-with-route-number': 'Lot {routeNumber}',
     'airport-check-in':
       'Check-in immediately upon arrival if you have not completed check-in in advance',
     'airport-collect-luggage': 'Odbierz swój bagaż',
@@ -41,6 +40,7 @@ export default {
     'all-routes-disabled': 'Brak tras',
     'alternative-legs': 'Lub {leg1} o {startTime1} i {leg2} o {startTime2}',
     'alternative-legs-single': 'Lub {leg1} o {startTime1}',
+    'alternative-name-rail': 'Pociąg',
     'aria-itinerary-summary':
       'Łączny czas podróży — {duration}. Odjazd o {inFuture} {departureTime} i przyjazd o {arrivalTime}',
     'aria-itinerary-summary-bike-distance':
@@ -75,29 +75,21 @@ export default {
       'You can park your bike near the station or stop and continue your journey conveniently by public transport',
     'bike-park-disclaimer-header': 'Zaparkuj rower',
     'bike-station-disabled': 'The bike station is out of service.',
-    'bikes-available': '{amount} rowery na stacji ',
     'biking-speed': 'Prędkość jazdy rowerem',
     bus: 'Autobus',
     'bus-express': 'Trunk bus',
     'bus-local': 'Autobus lokalny',
-    'bus-with-route-number': 'Autobus {routeNumber} {headSign}',
     'call-number': 'Zadzwoń {number}',
     cancel: 'Anuluj',
     canceled: 'Anulowano',
-    'capacity-modal.crushed-standing-room-only-body':
+    'capacity-modal.crushed-standing-room-only':
       'Pozostało niewiele miejsc stojących',
-    'capacity-modal.crushed-standing-room-only-heading': 'Bardzo zatłoczony',
-    'capacity-modal.few-seats-available-body': 'Niektóre miejsca są dostępne',
-    'capacity-modal.few-seats-available-heading': 'Niezbyt tłoczny',
-    'capacity-modal.full-capacity-body': 'Brak miejsc siedzących i stojących',
-    'capacity-modal.full-capacity-heading': 'Zapełniony',
+    'capacity-modal.few-seats-available': 'Niektóre miejsca są dostępne',
     'capacity-modal.heading': 'Czy w pojeździe jest miejsce?',
     'capacity-modal.legend': 'Legenda',
-    'capacity-modal.many-seats-available-body': 'Wiele miejsc dostępnych',
-    'capacity-modal.many-seats-available-heading': 'Niezatłoczony',
-    'capacity-modal.standing-room-only-body':
+    'capacity-modal.many-seats-available': 'Wiele miejsc dostępnych',
+    'capacity-modal.standing-room-only':
       'Pozostało niewiele miejsc siedzących i stojących.',
-    'capacity-modal.standing-room-only-heading': 'Prawie pełny',
     'capacity-modal.subheading':
       'Informacja o pojemności w czasie rzeczywistym jest dostępna dla niektórych pojazdów',
     car: 'Samochód',
@@ -186,7 +178,6 @@ export default {
     'extra-info': 'Więcej informacji',
     'favourite-failed-text': 'Spróbuj ponownie za chwilę.',
     ferry: 'Prom',
-    'ferry-with-route-number': 'Prom {routeNumber} {headSign}',
     finnish: 'Fiński',
     'free-of-charge': 'Za darmo',
     'from-bus': 'autobus',
@@ -198,7 +189,7 @@ export default {
     'from-tram': 'tramwaj',
     frontpage: 'Strona główna',
     funicular: 'Kolej liniowa',
-    'generic-cancelation': '{mode} {route} {headsign} at {time} is cancelled.',
+    'generic-cancelation': '{mode} {route} {headsign} is cancelled at {times}.',
     'generic-error': 'Wystąpił błąd',
     'geolocation-denied-heading': 'Odmówiono dostępu do geolokalizacji',
     'geolocation-denied-text':
@@ -261,12 +252,12 @@ export default {
     'itinerary-summary-row.clickable-area-description': 'Pokaż na mapie',
     'itinerary-summary-row.description':
       'Itinerary departing at {departureDate} {departureTime} and arriving at {arrivalDate} {arrivalTime}. {firstDeparture} {transfers} Total time {totalTime}.',
-    'itinerary-summary-row.first-departure':
-      '{vehicle} odjeżdża o {departureTime} z przystanku {stopName}.',
     'itinerary-summary-row.first-leg-start-time':
       'Odjeżdża o {firstDepartureTime} {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
       'Departure at {firstDepartureTime} from {firstDepartureStop} bike station',
+    'itinerary-summary-row.first-leg-start-time-sr':
+      '{vehicle} odjeżdża o {firstDepartureTime} z przystanku {firstDepartureStop}.',
     'itinerary-summary-row.no-transit-legs': 'Wyrusz, kiedy ci to pasuje',
     'itinerary-summary-row.transfers':
       'Transfer to {vehicle} on stop {stopName}',
@@ -409,7 +400,6 @@ export default {
     print: 'Drukuj',
     'print-timetable': 'Weekly timetable',
     rail: 'Kolej podmiejska',
-    'rail-with-route-number': 'Pociąg {routeNumber} {headSign}',
     'read-more': 'Czytaj więcej',
     realtime: 'W czasie rzeczywistym',
     releases: 'Komunikaty',
@@ -496,7 +486,6 @@ export default {
     'set-time-earlier-button-label': 'Ustaw wcześniejszy czas podróży',
     'set-time-later-button-label': 'Ustaw późniejszy czas podróży',
     settings: 'Ustawienia',
-    'settings-alternative-name-rail': 'Pociąg',
     'settings-dropdown-close-label': 'Zamknij opcje',
     'settings-dropdown-open-label': 'Otwórz opcje',
     'settings-label-change': 'Zmień ustawienia',
@@ -508,7 +497,6 @@ export default {
     'show-routes': 'Wybierz trasy',
     'skip-to-content': 'Przejdź do zawartości',
     speedtram: 'Light Rail',
-    'speedtram-with-route-number': 'Light Rail {routeNumber} {headSign}',
     station: 'Stacja',
     stop: 'Przystanek',
     'stop-departure-time-future': 'Departure time is in {minutes} minutes',
@@ -542,7 +530,6 @@ export default {
     'street-mode-walk-aria':
       'Show walking route. Duration {duration}, distance {length}',
     subway: 'Metro',
-    'subway-with-route-number': 'Metro {routeNumber} {headSign}',
     'summary-page.description': '{from} - {to}',
     'summary-page.row-label': 'Propozycja trasy {number}',
     'summary-page.title': 'Propozycje tras',
@@ -573,7 +560,6 @@ export default {
     'tracking-button-offline': 'tracking failed',
     'tracking-button-on': 'tracking on',
     tram: 'Tramwaj',
-    'tram-with-route-number': 'Tramwaj {routeNumber} {headSign}',
     transfer: 'Przesiadka',
     'travel-time': '{min} min.',
     'travel-time-label': 'Czas podróży',

@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import * as ReactRelay from 'react-relay';
 import * as ReactIntl from 'react-intl';
-import * as ConfigContext from '../../../app/configurations/ConfigContext';
+import * as ConfigContext from '../../../app/client/ConfigContext';
 import * as scheduleParamUtils from '../../../app/component/routepage/schedule/scheduleParamUtils';
 import * as scheduleDataUtils from '../../../app/component/routepage/schedule/scheduleDataUtils';
 import * as scheduleTripsUtils from '../../../app/component/routepage/schedule/scheduleTripsUtils';
@@ -48,7 +48,23 @@ export const createScheduleTestContext = (overrides = {}) => {
     },
     availableDates: overrides.availableDates || [],
     tripsResult: {
-      trips: [{ id: 'trip-1', stoptimes: [] }],
+      trips: [
+        {
+          id: 'trip-1',
+          stoptimes: [
+            {
+              serviceDay: 1547503200,
+              scheduledDeparture: 28080,
+              scheduledArrival: 28080,
+            },
+            {
+              serviceDay: 1547503200,
+              scheduledDeparture: 30060,
+              scheduledArrival: 30060,
+            },
+          ],
+        },
+      ],
       noTripsMessage: null,
       ...overrides.tripsResult,
     },
@@ -73,39 +89,6 @@ export const createScheduleTestContext = (overrides = {}) => {
     getTripsList: sandbox
       .stub(scheduleTripsUtils, 'getTripsList')
       .returns(mocks.tripsResult),
-  };
-
-  return { sandbox, mocks, stubs };
-};
-
-/**
- * Create a simple context for components that only need intl and config.
- *
- * @param {Object} overrides - Optional overrides
- * @param {Object} overrides.intl - Override intl mock
- * @param {Object} overrides.config - Override config mock
- * @returns {Object} { sandbox, mocks, stubs }
- */
-export const createSimpleTestContext = (overrides = {}) => {
-  const sandbox = sinon.createSandbox();
-
-  const mocks = {
-    intl: {
-      formatMessage: sandbox.stub().returns('translated text'),
-      locale: 'en',
-      ...overrides.intl,
-    },
-    config: {
-      ...mockContext.config,
-      ...overrides.config,
-    },
-  };
-
-  const stubs = {
-    useIntl: sandbox.stub(ReactIntl, 'useIntl').returns(mocks.intl),
-    useConfigContext: sandbox
-      .stub(ConfigContext, 'useConfigContext')
-      .returns(mocks.config),
   };
 
   return { sandbox, mocks, stubs };

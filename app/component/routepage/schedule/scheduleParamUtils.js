@@ -1,18 +1,19 @@
 import { DateTime } from 'luxon';
-import { routePagePath, PREFIX_TIMETABLE } from '../../../util/path';
-import { DATE_FORMAT } from '../../../constants';
+import { routePagePath, PREFIX_TIMETABLE } from '../../../../utils/shared/path';
+import { DATE_FORMAT } from '../../../../utils/shared/constants';
 
 const populateData = (params, match, noOfWeeks) => {
   const { query } = match.location;
 
-  const startOfWeek = DateTime.now().startOf('week');
+  const now = DateTime.now();
+  const startOfWeek = now.startOf('week');
   const date = query.serviceDay
     ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT)
     : null;
   const serviceDay =
     date && date.isValid && date.startOf('week') >= startOfWeek
       ? DateTime.fromFormat(query.serviceDay, DATE_FORMAT)
-      : DateTime.now();
+      : now;
 
   let day = startOfWeek;
 
@@ -27,7 +28,9 @@ const populateData = (params, match, noOfWeeks) => {
   return {
     ...params,
     serviceDate: serviceDay.toFormat(DATE_FORMAT),
-    date: DateTime.now().toFormat(DATE_FORMAT),
+    date: now.toFormat(DATE_FORMAT),
+    cancelationStartDate: now.toISO(),
+    cancelationEndDate: now.plus({ days: 7 }).toISO(),
     showTenWeeks: noOfWeeks === 10,
     ...weeks,
   };
@@ -79,7 +82,7 @@ export const calculateRedirectDecision = ({
 
   if (!hasTrips && availableDates?.length > 0) {
     const first = availableDates[0];
-    if (first && first !== wantedDay) {
+    if (first && first.toISODate() !== wantedDay?.toISODate()) {
       return {
         shouldRedirect: true,
         redirectPath: null,

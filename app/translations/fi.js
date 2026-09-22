@@ -29,7 +29,6 @@ export default {
     'address-or-stop': 'Osoite tai pysäkki',
     agency: 'Liikennöitsijä',
     airplane: 'Lentokone',
-    'airplane-with-route-number': 'Lento {routeNumber}',
     'airport-check-in':
       'Tee lähtöselvitys heti saavuttuasi, jos et ole tehnyt sitä jo etukäteen',
     'airport-collect-luggage': 'Nouda matkatavarat',
@@ -41,6 +40,7 @@ export default {
     'alternative-legs':
       'Myös {leg1} klo {startTime1} ja {leg2} klo {startTime2}',
     'alternative-legs-single': 'Myös {leg1} klo {startTime1}',
+    'alternative-name-rail': 'Juna',
     'aria-itinerary-summary':
       'Matkan kokonaiskesto {duration}. Lähtö {inFuture} kello {departureTime}. Perillä kello {arrivalTime}.',
     'aria-itinerary-summary-bike-distance':
@@ -76,39 +76,28 @@ export default {
       'Voit jättää pyörän parkkiin aseman tai pysäkin tuntumaan ja jatkaa matkaasi kätevästi julkisilla',
     'bike-park-disclaimer-header': 'Jätä pyörä parkkiin',
     'bike-station-disabled': 'Pyöräasema ei ole käytössä.',
-    'bikes-available': 'Pyöriä asemalla {amount}',
     'biking-speed': 'Pyöräilynopeus',
     'book-a-lift': 'Tilaa kyyti sovelluksella',
     'booking-method': 'Tilaustapa',
     bus: 'Bussi',
     'bus-express': 'Runkolinjabussi',
-    'bus-express-with-route-number': 'Runkolinjabussi {routeNumber} {headSign}',
     'bus-local': 'Lähibussi',
-    'bus-with-route-number': 'Bussi {routeNumber} {headSign}',
     'buy-in-app': 'Osta sovelluksessa',
     call: 'Kutsujoukkoliikenne',
     'call-agency-disclaimer':
       'Linja toimii ennakkotilauksella. Varmistaaksesi matkan, tee varaus etukäteen. Tarkemmat tiedot palveluntarjoalta.',
     'call-number': 'Soita {number}',
-    'call-with-route-number': 'Kutsujoukkoliikenne {routeNumber} {headSign}',
     cancel: 'Peruuta',
     canceled: 'Peruttu',
-    'capacity-modal.crushed-standing-room-only-body':
-      'Vain vähän seisomapaikkoja',
-    'capacity-modal.crushed-standing-room-only-heading': 'Kova tungos',
-    'capacity-modal.few-seats-available-body': 'Joitain istumapaikkoja',
-    'capacity-modal.few-seats-available-heading': 'Ei liikaa tungosta',
-    'capacity-modal.full-capacity-body': 'Ei vapaita paikkoja',
-    'capacity-modal.full-capacity-heading': 'Täynnä',
+    'capacity-modal.crushed-standing-room-only': 'Vain vähän seisomapaikkoja',
+    'capacity-modal.few-seats-available': 'Joitakin istumapaikkoja',
     'capacity-modal.heading': 'Onko kulkuneuvossa tilaa?',
     'capacity-modal.legend': 'Merkkien selitteet',
-    'capacity-modal.many-seats-available-body': 'Paljon istumapaikkoja',
-    'capacity-modal.many-seats-available-heading': 'Ei tungosta',
-    'capacity-modal.standing-room-only-body':
+    'capacity-modal.many-seats-available': 'Paljon istumapaikkoja',
+    'capacity-modal.standing-room-only':
       'Vain vähän istuma- ja seisomapaikkoja',
-    'capacity-modal.standing-room-only-heading': 'Lähes täynnä',
     'capacity-modal.subheading':
-      'Osasta kulkuneuvoja on saatavilla reaaliaikainen kapasiteettitieto',
+      'Osasta kulkuneuvoja on saatavilla reaaliaikainen arvio paikkatilanteesta',
     car: 'Auto',
     'car-distance-duration': 'Autoile {duration} ({distance})',
     'car-distance-no-duration': 'Autoile {distance}',
@@ -118,6 +107,7 @@ export default {
     'car-park-disclaimer':
       'Voit jättää auton parkkiin aseman tai pysäkin tuntumaan ja jatkaa matkaasi kätevästi julkisilla',
     'car-park-disclaimer-header': 'Jätä auto parkkiin',
+    choose: 'Valitse',
     'choose-freely': 'Vapaasti valittavat',
     'choose-stop': 'Valitse pysäkki',
     'choose-stop-or-vehicle': 'Valitse linja tai pysäkki',
@@ -176,19 +166,45 @@ export default {
     disclaimer:
       'Tulokset perustuvat arvioituihin ajoaikoihin. Ehdotetun yhteyden toteutumista ei voida taata.',
     disruption: 'Häiriö',
+    'disruption-badge-additional_service': 'Lisävuoroja',
+    'disruption-badge-cancellation': 'Peruutus',
+    'disruption-badge-detour': 'Poikkeusreitti',
+    'disruption-badge-modified_service': 'Palvelutason muutos',
+    'disruption-badge-no_effect': 'Ei vaikutusta',
+    'disruption-badge-no_service': 'Ei liikennöintiä',
+    'disruption-badge-other_effect': 'Muu',
+    'disruption-badge-reduced_service': 'Vähennettyä liikennettä',
+    'disruption-badge-significant_delays': 'Viivästyminen',
+    'disruption-badge-stop_moved': 'Pysäkki siirtynyt',
+    'disruption-badge-unknown_effect': 'Tuntematon',
     'disruption-info': 'Poikkeusinfo',
     'disruption-info-no-alerts':
       'Ei tiedossa olevia häiriöitä tai poikkeuksia.',
     'disruption-info-route-no-alerts':
       'Linjalla ei tiedossa olevia häiriöitä tai poikkeuksia.',
+    'disruption-list-active': 'Voimassa',
+    'disruption-list-no-active-alerts': 'Ei tiedossa voimassa olevia häiriöitä',
+    'disruption-list-no-upcoming-alerts':
+      'Ei tiedossa olevia tulevia häiriöitä tai poikkeuksia',
+    'disruption-list-traffic-normal': 'Liikenne normaalia',
+    'disruption-list-upcoming': 'Tulevat',
+    'disruption-view-details': 'Katso lisätiedot',
+    'disruption-view-timetable': 'Katso aikataulu',
     disruptions: 'Häiriöt',
     'disruptions-and-diversions': 'Häiriöt ja poikkeukset',
+    'disruptions-change-filters': 'Kokeile uudestaan muuttamalla valintoja',
+    'disruptions-found-amount':
+      '{amount, plural, =0 {Tiedotteita ei löytynyt} one {Löytyi 1 tiedote} other {Löytyi {amount} tiedotetta} }',
+    'disruptions-refresh': 'Lataa sivu',
     'disruptions-tab.sr-disruptions': 'Yksi tai useampi häiriö tiedossa',
     'disruptions-tab.sr-no-disruptions': 'Ei tiedossa olevia häiriöitä',
+    'disruptions-update-available': 'Päivityksiä saatavilla',
     'distance-total': 'Matkan pituus',
     'e-scooter': 'Sähköpotkulauta',
     'e-scooter-alternative':
       'Entä jos kulkisit osan matkasta sähköpotkulaudalla? {paymentInfo}',
+    'e-scooter-or-taxi-alternative':
+      'Entä jos kulkisit osan matkasta sähköpotkulaudalla, taksilla tai kyytipalvelulla? {paymentInfo}',
     'e-scooters': 'Sähköpotkulaudat',
     'e-scooters-available':
       'Alueella sähköpotkulautoja vapaana. Ota sähköpotkulauta käyttöön sovelluksella.',
@@ -205,8 +221,8 @@ export default {
     'favourite-failed-text': 'Yritä hetken päästä uudelleen.',
     ferry: 'Lautta',
     'ferry-external': 'Lautta',
-    'ferry-external-with-route-number': 'Lautta {routeNumber} {headSign}',
-    'ferry-with-route-number': 'Lautta {routeNumber} {headSign}',
+    filter: 'Suodata',
+    filters: 'Suodattimet',
     finnish: 'Suomi',
     'free-of-charge': 'Maksuton',
     'from-bus': 'bussista',
@@ -220,7 +236,8 @@ export default {
     'from-tram': 'raitiovaunusta',
     frontpage: 'Etusivu',
     funicular: 'Funikulaari',
-    'generic-cancelation': '{mode} {route} {headsign} kello {time} on peruttu.',
+    'generic-cancelation':
+      '{mode} {route} {headsign} on peruttu kello {times}.',
     'generic-error': 'Tapahtui virhe',
     'geolocation-denied-heading': 'Paikannus on estetty',
     'geolocation-denied-text':
@@ -254,7 +271,7 @@ export default {
       'Tämän matkan hiilidioksidipäästöt ovat {co2value} g.',
     'itinerary-co2.description-sr':
       'Tämän matkan hiilidioksidipäästöt ovat {co2value} g. Autolla kuljettuna ne olisivat olleet {carCo2Value} g.',
-    'itinerary-co2.link': 'Näin vähennämme päästöjä ›',
+    'itinerary-co2.link': 'Näin toteutamme päästölaskentaa ›',
     'itinerary-co2.title': 'Matkan CO₂-päästöt',
     'itinerary-co2.title-sr': 'Matkan hiilidioksidipäästöt',
     'itinerary-details.biking-leg':
@@ -267,7 +284,9 @@ export default {
     'itinerary-details.route-has-unknown-alert': 'Reitillä on häiriöitä.',
     'itinerary-details.route-has-warning-alert': 'Reitillä on häiriöitä.',
     'itinerary-details.scooter-leg':
-      '{time} potkulautaile kohteesta {origin} {distance} {to} {destination}. Matka-aika {duration}',
+      '{time} potkulautaile noutopaikasta {origin} {distance} {to} {destination}. Matka-aika {duration}',
+    'itinerary-details.taxi-leg':
+      '{time} matkusta taksilla {distance} noutopaikasta {origin} {to} {destination}. Matka-aika {duration}',
     'itinerary-details.transit-leg-part-1': '{time} {realtime} ota',
     'itinerary-details.transit-leg-part-2':
       'pysäkiltä {startStop} {startZoneInfo} {trackInfo} pysäkille {endStop} {endZoneInfo}. Arvioitu matka-aika {duration}. ',
@@ -293,14 +312,16 @@ export default {
     'itinerary-summary-row.clickable-area-description': 'Näytä kartalla',
     'itinerary-summary-row.description':
       'Lähtö {departureDate} kello {departureTime}. Perillä {arrivalDate} kello {arrivalTime}. {firstDeparture} {transfers} Matka-aika {totalTime}',
-    'itinerary-summary-row.first-departure':
-      '{vehicle} lähtee asemalta {stopName} kello {departureTime} {platformOrTrack}.',
     'itinerary-summary-row.first-leg-start-time':
       'Lähtee klo {firstDepartureTime} {firstDepartureStopType} {firstDepartureStop}{firstDeparturePlatform}',
     'itinerary-summary-row.first-leg-start-time-citybike':
       'Lähtö klo {firstDepartureTime} kaupunkipyöräasemalta {firstDepartureStop}',
     'itinerary-summary-row.first-leg-start-time-scooter':
-      'Lähtö klo {firstDepartureTime} sähköpotkulaudalla',
+      'Lähtö klo {firstDepartureTime} sähköpotkulaudan noutopaikasta',
+    'itinerary-summary-row.first-leg-start-time-sr':
+      '{vehicle} lähtee {firstDepartureStopType} {firstDepartureStop} kello {firstDepartureTime} {firstDeparturePlatform}.',
+    'itinerary-summary-row.first-leg-start-time-taxi':
+      'Lähtö klo {firstDepartureTime} taksin noutopaikasta',
     'itinerary-summary-row.no-transit-legs': 'Lähde, kun sinulle sopii',
     'itinerary-summary-row.transfers': 'Vaihto {vehicle} pysäkillä {stopName}',
     'itinerary-summary-row.transfers-to-rental': 'Vaihto {vehicle}',
@@ -322,7 +343,11 @@ export default {
     'itinerary-summary.interline-wait':
       'Linjatunnus ({shortName}) ja määränpää ({destination}) vaihtuvat pysäkillä {stop}. Matka jatkuu {time} odotuksen jälkeen. Odota kulkuneuvossa.',
     'itinerary-summary.interline-wait-multiple-legs':
-      'Linjatunnus ({shortName}) ja määränpää vaihtuvat useita kertoja matkan aikana. Odotusta yhteensä {time}. Odota ajoneuvossa.',
+      'Linjatunnus ({shortName}) ja määränpää vaihtuvat useita kertoja matkan aikana. Odotusta yhteensä {time}. Odota kulkuneuvossa.',
+    'itinerary-summary.interline-wait-multiple-legs-same-route':
+      'Määränpää vaihtuu useita kertoja matkan aikana. Odotusta yhteensä {time}. Odota kulkuneuvossa.',
+    'itinerary-summary.interline-wait-same-route':
+      'Määränpää ({destination}) vaihtuu pysäkillä {stop}. Matka jatkuu {time} odotuksen jälkeen. Odota kulkuneuvossa.',
     'itinerary-summary.show-on-map': 'Näytä kartalla {target}',
     'itinerary-ticket.title': 'Tarvittava lippu',
     'itinerary-tickets.title': 'Reitillä tarvittavat liput',
@@ -349,6 +374,7 @@ export default {
     'map-layer-park-and-ride': 'Liityntäpysäköintipaikat',
     'map-layer-park-and-ride-bike': 'Liityntäpyöräparkit',
     'map-layer-scooter': 'Potkulaudat',
+    'map-layer-stop-airplane': 'Lentokentät',
     'map-layer-stop-bus': 'Bussipysäkit',
     'map-layer-stop-ferry': 'Lautat',
     'map-layer-stop-funicular': 'Funikulaarit',
@@ -356,6 +382,7 @@ export default {
     'map-layer-vehicles': 'Liikennevälineet',
     'map-zoom-in-button': 'Lähennä',
     'map-zoom-out-button': 'Loitonna',
+    maplayers: 'Karttatasot',
     'menu-feedback': 'Anna palautetta',
     'messagebar-label-close-message-bar': 'Sulje banneri',
     'min-transfer-time': 'Vaihtoaika',
@@ -374,7 +401,7 @@ export default {
     'modes.to-scooter': 'potkulaudalle',
     'modes.to-stop': 'pysäkille',
     'modes.to-subway': 'metroasemalle',
-    'modes.to-taxi': 'taksiin',
+    'modes.to-taxi': 'kohteeseen',
     'modes.to-tram': 'raitiovaunupysäkille',
     'more-departures': 'Lisää lähtöjä',
     'move-on-map': 'Siirry kartalla',
@@ -400,6 +427,8 @@ export default {
     'navigation-interline-resume': 'Matka jatkuu {duration} odotuksen jälkeen',
     'navigation-interline-wait':
       'Linjatunnus {line} ja määränpää {destination} vaihtuvat pysäkillä',
+    'navigation-interline-wait-same-route':
+      'Määränpää {destination} vaihtuu pysäkillä',
     'navigation-intro-begin': 'Aloita matka',
     'navigation-intro-help-body': 'Matkusta vaihe kerrallaan',
     'navigation-intro-notifications-body':
@@ -435,7 +464,9 @@ export default {
     'navileg-hop-on': 'ja nouse kyytiin',
     'navileg-in-transit': '{mode}matka',
     'navileg-in-transit-interline':
-      'Matka jatkuu {duration} min päästä klo {legTime}. Odota kulkuneuvossa',
+      'Linjatunnus ja määränpää vaihtuvat {stopOrStation} {stop} {duration} päästä klo {legTime}. Odota kulkuneuvossa.',
+    'navileg-in-transit-interline-same-route':
+      'Määränpää vaihtuu {stopOrStation} {stop} {duration} päästä klo {legTime}. Odota kulkuneuvossa.',
     'navileg-intermediate-stops': '{stopCount} välipysäkkiä',
     'navileg-leave-at':
       'Jää pois {stopOrStation} {stop} {duration} päästä klo {legTime}',
@@ -489,6 +520,7 @@ export default {
       'Asettamillasi asetuksilla ei löytynyt yhtään reittiehdotusta. Löysimme kuitenkin seuraavia reittivaihtoehtoja:',
     'no-route-start': 'Syötä vielä lähtöpaikka',
     'no-route-start-end': 'Syötä lähtöpaikka ja määränpää',
+    'no-trips-found': 'Valitulle päivälle {selectedDate} ei löydy matkoja.',
     'notification-minimize': 'Sulje ilmoitus',
     'notification-open': 'Avaa ilmoitus',
     'number-of-intermediate-stops':
@@ -528,25 +560,35 @@ export default {
     'park-disclaimer-link': 'Lue lisää liityntäpysäköinnistä',
     'pay-attention': 'Huom!',
     'payment-info-e-scooter':
-      'Huomaathan, että potkulautojen käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
+      'Huomaathan, että sähköpotkulautojen käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
     'payment-info-e-scooter-or-taxi':
-      'Huomaathan, että potkulautojen ja taksin käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
+      'Huomaathan, että sähköpotkulautojen, taksien ja kyytipalveluiden käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
     'payment-info-taxi':
       'Huomaathan, että taksien ja kyytipalveluiden käyttö ja maksaminen tapahtuu toimijoiden omilla sovelluksilla.',
+    payment_at_gate: 'Maksu portilla',
     'personal-itineraries': 'Yksilölliset reittiehdotukset',
     personalization: 'Personointi',
     'personalization-activated': 'Personointi on otettu käyttöön',
-    'personalization-aria-dislike': 'En pidä tästä reittisuosituksesta',
-    'personalization-aria-like': 'Pidän tästä reittisuosituksesta',
-    'personalization-ask': 'Pidätkö tästä reittisuosituksesta?',
+    'personalization-aria-dislike': 'En pidä tästä reittiehdotuksesta',
+    'personalization-aria-like': 'Pidän tästä reittiehdotuksesta',
+    'personalization-ask': 'Pidätkö tästä reittiehdotuksesta?',
     'personalization-beta':
       'Personointi on vielä testausvaiheessa, eli kokeilemme palvelua. Haluaisimme kuulla kokemuksestasi. Kysely avautuu uuteen välilehteen.',
+    'personalization-continue-choices':
+      'Valitse, käytämmekö personointiin käyttöhistoriaasi vai aloitammeko alusta, jolloin käyttöhistoria poistetaan.',
+    'personalization-continue-query': 'Miten haluat jatkaa personointia?',
     'personalization-disliked':
       'Saat jatkossa vähemmän tämänkaltaisia suosituksia.',
     'personalization-feedback': 'Anna palautetta',
+    'personalization-history-keep': 'Hyödynnä käyttöhistoriaa',
+    'personalization-history-remove': 'Poista käyttöhistoria ja aloita alusta',
     'personalization-info':
       'Löydä mieleiset reitit ja matkusta tottumustesi mukaan.',
     'personalization-liked': 'Saat jatkossa samankaltaisia suosituksia.',
+    'personalization-login-description':
+      'Voit ottaa yksilölliset reittisuositukset käyttöön, kun olet kirjautunut sisään.',
+    'personalization-login-for-voting': 'Kirjaudu ja anna palautetta',
+    'personalization-login-title': 'Kirjaudu saadaksesi suosituksia',
     'personalization-modal-feedback': 'Opimme palautteestasi',
     'personalization-modal-feedback-details':
       'Hyödynnämme reittisuosituksissa palautettasi. Kerro mielipiteesi suosituksista, niin huomioimme mieltymyksesi jatkossa.',
@@ -555,6 +597,9 @@ export default {
     'personalization-modal-highlight-details':
       'Painotamme personoinnissa suosikkilinjojasi. Lisää siis käyttämäsi linjat suosikeiksi.',
     'personalization-modal-link': 'Lisää tai muokkaa suosikkejasi',
+    'personalization-new-feature':
+      'Tutustu uusiin yksilöllisiin reittisuosituksiin asetuksissa',
+    'personalization-new-header': 'Reittisuositukset käytössä',
     'personalization-open-info': 'Lue, miten suositukset toimivat',
     'phone-number': 'Puhelinnumero',
     'pick-mode': 'Liikennevälineet',
@@ -571,21 +616,19 @@ export default {
     print: 'Tulosta',
     'print-timetable': 'Viikkoaikataulu',
     rail: 'Lähijuna',
-    'rail-with-route-number': 'Juna {routeNumber} {headSign}',
     'read-more': 'Lue lisää',
     realtime: 'Reaaliaika',
     releases: 'Tiedotteet',
     'remove-favourite': 'Poista suosikkivalinta',
-    'rent-cycle-at': 'Nouda Kaupunkipyörä: ',
+    'rent-cycle-at': 'Nouda kaupunkipyörä: ',
     'rent-e-scooter-at': 'Ota sähköpotkulauta käyttöön sovelluksella',
     'replacement-bus': 'Korvaava bussi',
-    'replacement-bus-with-route-number': 'Korvaava bussi {routeNumber}',
     'restore-default-settings': 'Palauta',
     'restore-default-settings-aria-label': 'Palauta oletusasetukset.',
     'restore-default-settings-aria-label-done': 'Oletusasetukset käytössä.',
     'restore-default-settings-success': 'Oletusasetukset palautettu',
     'return-cycle-to': 'Palauta kaupunkipyörä:',
-    'return-e-scooter-to': 'Jätä potkulauta turvalliseen paikkaan',
+    'return-e-scooter-to': 'Jätä sähköpotkulauta turvalliseen paikkaan',
     'right-now': 'Juuri nyt',
     route: 'Linja',
     'route-add-viapoint': 'Välipiste',
@@ -599,9 +642,11 @@ export default {
     'route-page-vehicle-position-between':
       '{mode} {shortName} on pysäkin {stopName} ja pysäkin {nextStopName} välissä.',
     'route-page-vehicle-selected': 'Tämänhetkinen valinta.',
+    'route-page.alternative-routes': 'Vaihtoehtoista reittiä',
     'route-page.choose-direction': 'Valitse suunta ja reitti',
     'route-page.description': 'Linja {shortName}, {longName}',
     'route-page.future-routes': 'Tulevat reitit',
+    'route-page.main-routes': 'Kulkusuunnat',
     'route-page.pattern-chosen': 'Valittu',
     'route-page.pattern-select-title': 'Valitse tarkasteltava reitti',
     'route-page.select-time': 'Valitse ajankohta',
@@ -609,6 +654,8 @@ export default {
     'route-page.special-routes': 'Muut reitit',
     'route-page.title': 'Linja {shortName}',
     'route-page.title-short': 'Linja',
+    'route-pattern-select-tooltip': 'Näytä reitit',
+    'route-pattern-swap-tooltip': 'Vaihda suunta',
     'route-to-ferry': 'Reitti laiturille',
     'route-to-park': 'Reitti parkille',
     'route-to-station': 'Reitti asemalle',
@@ -641,11 +688,11 @@ export default {
       'Valittuna ajankohtana ei ole liikennöintiä.',
     'router-unable': 'Reittivaihtoehtoja ei voida näyttää',
     routes: 'Linjat',
-    scooter: 'Potkulauta',
-    'scooter-availability': 'Potkulautoja asemalla juuri nyt',
+    scooter: 'Sähköpotkulauta',
+    'scooter-availability': 'Sähköpotkulautoja asemalla juuri nyt',
     'scooter-distance-duration': 'Potkulautaile {duration} ({distance})',
     'scooterwalk-distance-duration':
-      'Taluta potkulautaa {duration} ({distance})',
+      'Taluta sähköpotkulautaa {duration} ({distance})',
     'search-current-suggestion': 'Tämänhetkinen valinta: {selection}',
     'search-fields.sr-instructions':
       'Reittihaku tehdään automaattisesti kun lähtöpaikka ja määränpää on asetettu. Haun parametrien muuttaminen laukaisee uuden reittihaun. Navigoi hakukenttiin tab-näppäimellä.',
@@ -670,7 +717,6 @@ export default {
     'set-time-earlier-button-label': 'Aikaista matkustusajankohtaa',
     'set-time-later-button-label': 'Myöhäistä matkustusajankohtaa',
     settings: 'Asetukset',
-    'settings-alternative-name-rail': 'Juna',
     'settings-changed-by-you': 'Olet muokannut asetuksia',
     'settings-dropdown-close-label': 'Sulje vaihtoehdot',
     'settings-dropdown-open-label': 'Avaa vaihtoehdot',
@@ -682,12 +728,16 @@ export default {
     'settings-missing-itineraries-body':
       'Asetuksissa on päällä valintoja, jotka rajaavat pois joitain reittivaihtoehtoja.',
     'settings-missing-itineraries-header': 'Puuttuuko reittivaihtoehtoja?',
+    'settings-taxi':
+      'Voit valita haluamasi taksi- ja kyytipalvelut, jolloin ne ovat osana reititystä',
+    'settings-taxi-routes': 'Taksi- ja kyytipalvelut osaksi reittejäsi!',
+    'show-all': 'Näytä kaikki',
+    'show-departures': 'Näytä lähdöt',
     'show-more': 'Näytä lisää',
     'show-more-stops-near-you': 'Näytä lisää pysäkkejä lähelläsi',
     'show-routes': 'Valitse linjat',
     'skip-to-content': 'Siirry sisältöön',
     speedtram: 'Pikaraitiovaunu',
-    'speedtram-with-route-number': 'Pikaraitiovaunu {routeNumber} {headSign}',
     station: 'Asema',
     'station-entrance': 'Sisäänkäynti',
     'station-exit': 'Uloskäynti',
@@ -732,7 +782,6 @@ export default {
     'subway-exit.sr-description': 'Metroaseman uloskäynti {entranceName}',
     'subway-exit.sr-description.accessible':
       'Metroaseman uloskäynti {entranceName}, esteetön',
-    'subway-with-route-number': 'Metro {routeNumber} {headSign}',
     'summary-page.description': '{from} - {to}',
     'summary-page.row-label': 'Reittiehdotus {number}',
     'summary-page.title': 'Reittiehdotukset',
@@ -750,7 +799,6 @@ export default {
       'Entä jos kulkisit osan matkasta taksilla? {paymentInfo}',
     'taxi-distance-duration': 'Matkusta {duration} ({distance})',
     'taxi-external': 'Taksi',
-    'taxi-with-route-number': 'Taksi {routeNumber}',
     'taxis-and-ride-hailing': 'Taksit ja kyytipalvelut',
     terminal: 'Terminaali',
     'terminal-page.description': 'Terminaali - {name}',
@@ -776,17 +824,46 @@ export default {
     'tracking-button-off': 'paikannus pois päältä',
     'tracking-button-offline': 'paikannus epäonnistui',
     'tracking-button-on': 'paikannus päällä',
+    'traffic-now': 'Liikenne nyt',
+    'traffic-now-long': 'Liikennetilanne nyt',
+    'traffic-now_bread': 'Matkustaminen',
+    'traffic-now_canceled-trips--amount':
+      'Näytetään {amount} yhteensä {totalAmount} linjasta',
+    'traffic-now_canceled-trips--simple': '{amount} peruttua',
+    'traffic-now_description':
+      'Ajantasaiset tiedot häiriöistä ja poikkeuksista. ',
+    'traffic-now_description_see-also':
+      'Katso myös {amount, plural, =1 {{link1},} other {{link1} sekä {link2},} } jotka löydät yksityiskohtaisemmin omilta sivuiltaan.',
+    'traffic-now_description_see-also--link1': 'juhlapyhät ja poikkeukset',
+    'traffic-now_description_see-also--link2': 'suuret muutokset',
+    'traffic-now_filters_entity-search': 'Hae yksittäistä linjaa tai pysäkkiä',
+    'traffic-now_filters_entity-search--placeholder':
+      'Linja, pysäkki tai asema',
+    'traffic-now_filters_operator-select-legend': 'Näytä operaattoreista vain',
+    'traffic-now_filters_operator-select-placeholder':
+      'Valitse yksi tai useampia',
+    'traffic-now_filters_toggles--cancellations-only': 'Vain peruutukset',
+    'traffic-now_filters_toggles--favourites-only':
+      'Vain omat linjat ja pysäkit',
+    'traffic-now_filters_validity-period': 'Näytä voimassaolon mukaan',
+    'traffic-now_filters_vehicle-mode': 'Näytä liikennevälineen mukaan',
+    'traffic-now_filters_view-results': 'Näytä tulokset',
+    'traffic-now_go-back': 'Palaa takaisin',
+    'traffic-now_go-to-route-page': 'Siirry linjasivulle',
+    'traffic-now_link': 'Liikennetilanne nyt',
+    'traffic-now_link-description': 'Katso häiriöt ja poikkeukset',
+    'traffic-now_more-routes': '{count} muuta linjaa',
     trafficnow: 'Liikenne nyt',
     'trafficnow-bread': 'Matkustaminen',
     'trafficnow-description': 'Ajantasaiset tiedot häiriöistä ja poikkeuksista',
     tram: 'Raitiovaunu',
-    'tram-with-route-number': 'Raitiovaunu {routeNumber} {headSign}',
     transfer: 'Vaihto',
     'travel-time': '{min} min',
     'travel-time-label': 'Matka-aika',
     'travel-time-with-hours': '{h} h {min} min',
     'trip-information': 'Lähdön tiedot',
     'try-again': 'Yritä uudelleen',
+    upcoming: 'Tuleva',
     'use-national-service-postfix': '-palvelusta.',
     'use-national-service-prefix':
       'Suosittelemme kokeilemaan reittihakua koko maan kattavasta ',

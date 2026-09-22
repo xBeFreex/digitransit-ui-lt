@@ -8,13 +8,24 @@ import {
   startRealTimeClient,
   stopRealTimeClient,
 } from '../../action/realTimeClientAction';
-import { PlannerMessageType, ExtendedRouteTypes } from '../../constants';
-import { addAnalyticsEvent } from '../../util/analyticsUtils';
-import { boundWithMinimumArea } from '../../util/geo-utils';
-import { compressLegs, getTotalBikingDistance } from '../../util/legUtils';
-import { getMapLayerOptions } from '../../util/mapLayerUtils';
-import { getDefaultSettings, getSettings } from '../../util/planParamUtil';
-import { getStartTimeWithColon } from '../../util/timeUtils';
+import {
+  PlannerMessageType,
+  ExtendedRouteTypes,
+} from '../../../utils/shared/constants';
+import { addAnalyticsEvent } from '../../../utils/shared/analyticsUtils';
+import { boundWithMinimumArea } from '../../../utils/shared/geo-utils';
+import {
+  compressLegs,
+  getTotalBikingDistance,
+  isDirectItineraryWithAllowedRouteTypes,
+} from '../../../utils/client/legUtils';
+import { getMapLayerOptions } from '../../../utils/client/mapLayerUtils';
+import {
+  getDefaultSettings,
+  getSettings,
+} from '../../../utils/client/planParamUtil';
+import { getStartTimeWithColon } from '../../../utils/client/timeUtils';
+import { splitGtfsId } from '../../../utils/shared/gtfs';
 
 /**
  * Returns the index of selected itinerary. Attempts to look for
@@ -82,10 +93,10 @@ export function getTopics(legs, config) {
 
     legs.forEach(leg => {
       if (leg.transitLeg && leg.trip) {
-        const feedId = leg.trip.gtfsId.split(':')[0];
+        const { feedId, entityId: tripId } = splitGtfsId(leg.trip.gtfsId);
         if (realTime && feedIds.includes(feedId)) {
           itineraryTopics.push({
-            route: leg.route.gtfsId.split(':')[1],
+            route: splitGtfsId(leg.route.gtfsId).entityId,
             shortName: leg.route.shortName,
             type: leg.route.type,
             feedId,
@@ -94,7 +105,7 @@ export function getTopics(legs, config) {
             tripStartTime: getStartTimeWithColon(
               leg.trip.stoptimesForDate[0].scheduledDeparture,
             ),
-            tripId: leg.trip.gtfsId.split(':')[1],
+            tripId,
           });
         }
       }
@@ -174,7 +185,7 @@ export function filterItinerariesByFeedId(plan, config) {
   plan.edges.forEach(edge => {
     let skip = false;
     for (let i = 0; i < edge.node.legs.length; i++) {
-      const feedId = edge.node.legs[i].route?.gtfsId?.split(':')[0];
+      const { feedId } = splitGtfsId(edge.node.legs[i].route?.gtfsId);
 
       if (
         feedId && // if feedId is undefined, leg  is non transit -> don't drop
@@ -205,7 +216,7 @@ export function settingsLimitRouting(config) {
 }
 
 export function setCurrentTimeToURL(config, match) {
-  if (process.env.NODE_ENV !== 'test' && !match.location?.query?.time) {
+  if (!match.location?.query?.time) {
     const newLocation = {
       ...match.location,
       query: {
@@ -247,14 +258,14 @@ export function stopClient(context) {
   }
 }
 
-export function startClient(itineraryTopics, context) {
+export function startClient(itineraryTopics, context, config) {
   if (!isEmpty(itineraryTopics)) {
-    const clientConfig = configClient(itineraryTopics, context.config);
+    const clientConfig = configClient(itineraryTopics, config);
     context.executeAction(startRealTimeClient, clientConfig);
   }
 }
 
-export function updateClient(itineraryTopics, context) {
+export function updateClient(itineraryTopics, context, config) {
   const { client, topics } = context.getStore('RealTimeInformationStore');
 
   if (isEmpty(itineraryTopics)) {
@@ -262,7 +273,7 @@ export function updateClient(itineraryTopics, context) {
     return;
   }
   if (client) {
-    const clientConfig = configClient(itineraryTopics, context.config);
+    const clientConfig = configClient(itineraryTopics, config);
     if (clientConfig) {
       context.executeAction(changeRealTimeClientTopics, {
         ...clientConfig,
@@ -273,7 +284,7 @@ export function updateClient(itineraryTopics, context) {
     }
     stopClient(context);
   }
-  startClient(itineraryTopics, context);
+  startClient(itineraryTopics, context, config);
 }
 
 export function addBikeStationMapForRentalVehicleItineraries() {
@@ -338,7 +349,7 @@ export function transitEdges(edges) {
  * 2. only use scooters (unless allowed by allowDirectScooterJourneys)
  * 3. use scooters that are not vehicles
  */
-export function scooterEdges(edges, allowDirectScooterJourneys) {
+export function filterScooterEdges(edges, allowDirectScooterJourneys) {
   if (!edges) {
     return [];
   }
@@ -374,18 +385,6 @@ export function scooterEdges(edges, allowDirectScooterJourneys) {
   return filteredEdges;
 }
 
-/** Filters away itineraries that are not flex */
-export function flexEdges(edges) {
-  if (!edges) {
-    return [];
-  }
-  return edges.filter(edge =>
-    edge.node.legs.some(
-      leg => leg.route?.type === ExtendedRouteTypes.CallAgency,
-    ),
-  );
-}
-
 /**
  * Filters away plain walk
  */
@@ -410,21 +409,34 @@ export function filterItineraries(edges, modes) {
   );
 }
 
-export function filterItinerariesByRouteType(
-  edges,
-  types,
-  includeTaxiSuggestions,
-) {
+export function filterItinerariesByRouteType(edges, types) {
   if (!edges) {
     return [];
   }
   return edges.filter(edge =>
-    edge.node.legs.some(
-      leg =>
-        types.includes(leg.route?.type) &&
-        (includeTaxiSuggestions || leg.route?.type !== 'TAXI'),
-    ),
+    edge.node.legs.some(leg => types.includes(leg.route?.type)),
   );
+}
+
+/**
+ * Usually selects the first flex edge from a pre-filtered list.
+ * If the showBothDirectAndTransitResults flag is true and a direct flex itinerary exists,
+ * this function selects 2 edges: the direct flex itinerary and the next transit itinerary (if it exists).
+ * OTP always returns the direct flex itinerary as the first result (if one exists).
+ *
+ * @param {Array} edges - Pre-filtered flex edges (must only contain flex itineraries of the given types).
+ * @param {number[]} allowedRouteTypes - Allowed route types used to identify direct flex itineraries (e.g. ExtendedRouteTypes.CallAgency).
+ * @param {boolean} showBothDirectAndTransitResults - When true, returns both a direct and transit itinerary if both exist; otherwise returns 1.
+ */
+function selectEdgesWithAllowedRouteTypes(
+  edges,
+  allowedRouteTypes,
+  showBothDirectAndTransitResults,
+) {
+  const hasDirect = edges.some(e =>
+    isDirectItineraryWithAllowedRouteTypes(e.node, allowedRouteTypes),
+  );
+  return edges.slice(0, hasDirect && showBothDirectAndTransitResults ? 2 : 1);
 }
 
 /**
@@ -512,33 +524,29 @@ export function getSortedEdges(edges, arriveBy) {
 }
 
 /**
- * Combine an external edge with the main transit edges.
+ * Merges a small set of additional edges (flex or scooter) with the main
+ * transit plan edges, sorts the combined result, and caps the total at 5.
+ *
+ * @param {Array} additionalEdges - Pre-selected flex or scooter edges to prepend (amount of edges should be 1 or 2).
+ * @param {Object} transitPlan - The main transit plan object with an `edges` array.
+ * @param {boolean} arriveBy - Whether the search is arrive-by (affects sort order).
  */
-function sortAndMergePlans(
-  externalTransitEdges,
-  transitPlan,
-  arriveBy,
-  maxAdditionalEdges = 1,
-) {
+function sortAndMergePlans(additionalEdges, transitPlan, arriveBy) {
   const transitPlanEdges = transitPlan.edges || [];
-  const maxTransitEdges =
-    externalTransitEdges.length > 0 ? 4 : transitPlanEdges.length;
+  const maxTransitEdges = Math.max(5 - additionalEdges.length, 0);
 
   // special case: if transitplan only has one walk itinerary, don't show external plan if it arrives later.
   if (
     transitPlanEdges.length === 1 &&
     transitPlanEdges[0].node.legs.every(leg => leg.mode === 'WALK') &&
-    transitPlanEdges[0].node.end < externalTransitEdges[0]?.node.end
+    transitPlanEdges[0].node.end < additionalEdges[0]?.node.end
   ) {
     return transitPlan;
   }
 
   return {
     edges: getSortedEdges(
-      [
-        ...externalTransitEdges.slice(0, maxAdditionalEdges),
-        ...transitPlanEdges.slice(0, maxTransitEdges),
-      ],
+      [...additionalEdges, ...transitPlanEdges.slice(0, maxTransitEdges)],
       arriveBy,
     ).map(edge => {
       return {
@@ -558,14 +566,15 @@ function sortAndMergePlans(
 export function mergeScooterTransitPlan(
   scooterPlan,
   transitPlan,
-  allowDirectScooterJourneys,
   arriveBy,
+  allowDirectScooterJourneys,
 ) {
-  const scooterTransitEdges = scooterEdges(
+  const filteredScooterEdges = filterScooterEdges(
     scooterPlan.edges,
     allowDirectScooterJourneys,
   );
-  return sortAndMergePlans(scooterTransitEdges, transitPlan, arriveBy);
+  const selectedScooterEdges = filteredScooterEdges.slice(0, 1);
+  return sortAndMergePlans(selectedScooterEdges, transitPlan, arriveBy);
 }
 
 /**
@@ -575,15 +584,19 @@ export function mergeExternalFlexPlan(
   externalPlan,
   transitPlan,
   arriveBy,
+  showBothDirectAndTransitResults,
   allowedExternalFlexRouteTypes,
-  includeTaxiSuggestions,
 ) {
-  const externalFlexEdges = filterItinerariesByRouteType(
+  const filteredExternalFlexEdges = filterItinerariesByRouteType(
     externalPlan.edges,
     allowedExternalFlexRouteTypes,
-    includeTaxiSuggestions,
   );
-  return sortAndMergePlans(externalFlexEdges, transitPlan, arriveBy);
+  const selectedExternalFlexEdges = selectEdgesWithAllowedRouteTypes(
+    filteredExternalFlexEdges,
+    allowedExternalFlexRouteTypes,
+    showBothDirectAndTransitResults,
+  );
+  return sortAndMergePlans(selectedExternalFlexEdges, transitPlan, arriveBy);
 }
 
 /** Combine an internal flex plan with the main transit plan. */
@@ -591,10 +604,39 @@ export function mergeInternalFlexPlan(
   flexPlan,
   plan,
   arriveBy,
-  maxAdditionalEdges = 1,
+  showBothDirectAndTransitResults,
 ) {
-  const edges = flexEdges(flexPlan.edges);
-  return sortAndMergePlans(edges, plan, arriveBy, maxAdditionalEdges);
+  const allowedInternalFlexRouteTypes = [ExtendedRouteTypes.CallAgency];
+  const filteredInternalFlexEdges = filterItinerariesByRouteType(
+    flexPlan.edges,
+    allowedInternalFlexRouteTypes,
+  );
+  const selectedInternalFlexEdges = selectEdgesWithAllowedRouteTypes(
+    filteredInternalFlexEdges,
+    allowedInternalFlexRouteTypes,
+    showBothDirectAndTransitResults,
+  );
+  return sortAndMergePlans(selectedInternalFlexEdges, plan, arriveBy);
+}
+
+/** Combine a taxi zone plan with the main transit plan. */
+export function mergeTaxiZonePlan(
+  taxiZonePlan,
+  transitPlan,
+  arriveBy,
+  showBothDirectAndTransitResults,
+  allowedTaxiZoneRouteTypes,
+) {
+  const filteredEdges = filterItinerariesByRouteType(
+    taxiZonePlan.edges,
+    allowedTaxiZoneRouteTypes,
+  );
+  const selectedEdges = selectEdgesWithAllowedRouteTypes(
+    filteredEdges,
+    allowedTaxiZoneRouteTypes,
+    showBothDirectAndTransitResults,
+  );
+  return sortAndMergePlans(selectedEdges, transitPlan, arriveBy);
 }
 
 /**
@@ -672,3 +714,77 @@ export const isStoredItineraryRelevant = ({ itinerary, params }, match) => {
     params.secondHash === match.params.secondHash
   );
 };
+
+const FAVOURITEBONUS = 0.5;
+const ADJUSTMENT = 0.15;
+const MINWEIGHT = 0.5;
+const MAXWEIGHT = 2;
+
+/**
+ * Calculate itinerary score based on mode weights and favourite lines
+ * Higher score = better match with user preferences
+ */
+function calculateScore(itinerary, weights, favourites) {
+  const transitLegs = itinerary.legs.filter(leg => leg.transitLeg);
+
+  if (!transitLegs.length) {
+    return 0;
+  }
+
+  const totalWeight = transitLegs.reduce((sum, leg) => {
+    const mode = leg.mode.toLowerCase();
+    const weight = weights[mode] || 1.0;
+    return sum + weight;
+  }, 0);
+
+  let score = totalWeight / transitLegs.length;
+
+  // Add bonus if route contains a favourite line
+  if (transitLegs.some(leg => favourites.includes(leg.route.gtfsId))) {
+    score += FAVOURITEBONUS;
+  }
+
+  return score;
+}
+
+export function rateItineraries(edges, weights, favorites) {
+  let topScore = 0;
+  let topIndex = -1;
+  let top;
+  edges.forEach((e, i) => {
+    const score = calculateScore(e.node, weights, favorites);
+    if (score > topScore) {
+      topScore = score;
+      topIndex = i;
+      top = e;
+    }
+  });
+  if (topIndex > 0) {
+    edges.splice(topIndex, 1);
+    edges.unshift(top);
+  }
+  return top ? 0 : -1;
+}
+
+/**
+ * Apply feedback to weights
+ * Weights are clamped between MINWEIGHT and MAXWEIGHT
+ */
+
+export function applyFeedback(weights, itinerary, positive) {
+  const adjustment = positive ? ADJUSTMENT : -ADJUSTMENT;
+  const updated = { ...weights };
+
+  const modes = new Set(
+    itinerary.legs
+      .filter(leg => leg.transitLeg)
+      .map(leg => leg.mode.toLowerCase()),
+  );
+
+  modes.forEach(mode => {
+    const base = updated[mode] || 1;
+    updated[mode] = Math.max(MINWEIGHT, Math.min(MAXWEIGHT, base + adjustment));
+  });
+
+  return updated;
+}

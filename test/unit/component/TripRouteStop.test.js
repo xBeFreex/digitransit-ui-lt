@@ -1,10 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-import { mountWithIntl } from '../helpers/mock-intl-enzyme';
+import { renderWithProviders } from '../helpers/mock-providers';
+import { mockContext } from '../helpers/mock-context';
 import TripRouteStop from '../../../app/component/routepage/TripRouteStop';
-import ServiceAlertIcon from '../../../app/component/ServiceAlertIcon';
-import { AlertSeverityLevelType } from '../../../app/constants';
+import { AlertSeverityLevelType } from '../../../utils/shared/constants';
 
 describe('<TripRouteStop />', () => {
   it('should not render a service alert icon for the trip route stop if the alert is not active', () => {
@@ -30,10 +28,9 @@ describe('<TripRouteStop />', () => {
       vehicles: [],
       setHumanScrolling: () => {},
     };
-    const wrapper = mountWithIntl(<TripRouteStop {...props} />, {
-      context: { config: { CONFIG: 'default', zones: { stops: true } } },
-      childContextTypes: { config: PropTypes.object },
+    const { container } = renderWithProviders(<TripRouteStop {...props} />, {
+      config: { ...mockContext.config, zones: { stops: true } },
     });
-    expect(wrapper.find(ServiceAlertIcon).isEmptyRender()).to.equal(true);
+    expect(container.querySelector('.caution')).to.equal(null);
   });
 });

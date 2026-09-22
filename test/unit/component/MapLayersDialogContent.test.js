@@ -1,36 +1,35 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 
-import { mountWithIntl } from '../helpers/mock-intl-enzyme';
-import { mockContext, mockChildContextTypes } from '../helpers/mock-context';
+import { renderWithProviders } from '../helpers/mock-providers';
 
 import {
   Component as MapLayersDialogContent,
   getGeoJsonLayersOrDefault,
-} from '../../../app/component/MapLayersDialogContent';
+} from '../../../app/component/map/MapLayersDialogContent';
+
+const testConfig = { CONFIG: 'default', language: 'fi' };
+
+const renderMapLayersDialogContent = (props, config = testConfig) =>
+  renderWithProviders(<MapLayersDialogContent {...props} />, {
+    config: { ...testConfig, ...config },
+  });
 
 describe('<MapLayersDialogContent />', () => {
   it('should render', () => {
     const props = {
-      open: true,
       setOpen: () => {},
-      lang: 'fi',
       mapLayers: {
         stop: {},
         terminal: {},
       },
-      updateMapLayers: () => {},
+      updateLayers: () => {},
     };
-    const wrapper = mountWithIntl(
-      <MapLayersDialogContent isOpen {...props} />,
-      {
-        context: { ...mockContext },
-        childContextTypes: { ...mockChildContextTypes },
-      },
-    );
+    const { container } = renderMapLayersDialogContent(props);
 
-    expect(wrapper.find('.map-layer-header')).to.have.lengthOf(1);
+    expect(container.querySelector('.map-layer-header')).to.not.equal(null);
   });
 
   it('should update the vehicles layer', () => {
@@ -40,31 +39,19 @@ describe('<MapLayersDialogContent />', () => {
       terminal: {},
     };
     const props = {
-      open: true,
       setOpen: () => {},
-      lang: 'fi',
       mapLayers,
-      updateMapLayers: layers => {
+      updateLayers: layers => {
         mapLayers = { ...layers };
       },
     };
-    const context = {
-      config: {
-        CONFIG: 'default',
-        vehicles: true,
-      },
-    };
-    const wrapper = mountWithIntl(
-      <MapLayersDialogContent isOpen {...props} />,
-      {
-        context: { ...mockContext, ...context },
-        childContextTypes: { ...mockChildContextTypes },
-      },
-    );
-    wrapper
-      .find('.option-checkbox.large input')
-      .at(0)
-      .simulate('change', { target: { checked: true } });
+    const { container } = renderMapLayersDialogContent(props, {
+      vehicles: true,
+    });
+    const checkbox = container.querySelectorAll(
+      '.option-checkbox.large input',
+    )[0];
+    fireEvent.click(checkbox);
 
     expect(mapLayers.vehicles).to.equal(true);
   });
@@ -77,36 +64,21 @@ describe('<MapLayersDialogContent />', () => {
       terminal: {},
     };
     const props = {
-      open: true,
       setOpen: () => {},
-      lang: 'fi',
       mapLayers,
-      updateMapLayers: layers => {
+      updateLayers: layers => {
         mapLayers = { ...layers };
       },
     };
-    const context = {
-      config: {
-        CONFIG: 'default',
-        transportModes: {
-          bus: {
-            availableForSelection: true,
-          },
+    const { container } = renderMapLayersDialogContent(props, {
+      transportModes: {
+        bus: {
+          availableForSelection: true,
         },
       },
-    };
-    const wrapper = mountWithIntl(
-      <MapLayersDialogContent isOpen {...props} />,
-      {
-        context: { ...mockContext, ...context },
-        childContextTypes: { ...mockChildContextTypes },
-      },
-    );
-
-    wrapper
-      .find('.option-checkbox.large input')
-      .at(0)
-      .simulate('change', { target: { checked: true } });
+    });
+    const checkbox = container.querySelector('.option-checkbox.large input');
+    fireEvent.click(checkbox);
 
     expect(mapLayers.stop.bus).to.equal(true);
   });
@@ -119,36 +91,21 @@ describe('<MapLayersDialogContent />', () => {
       terminal: {},
     };
     const props = {
-      open: true,
       setOpen: () => {},
-      lang: 'fi',
       mapLayers,
-      updateMapLayers: layers => {
+      updateLayers: layers => {
         mapLayers = { ...layers };
       },
     };
-    const context = {
-      config: {
-        CONFIG: 'default',
-        transportModes: {
-          tram: {
-            availableForSelection: true,
-          },
+    const { container } = renderMapLayersDialogContent(props, {
+      transportModes: {
+        tram: {
+          availableForSelection: true,
         },
       },
-    };
-    const wrapper = mountWithIntl(
-      <MapLayersDialogContent isOpen {...props} />,
-      {
-        context: { ...mockContext, ...context },
-        childContextTypes: { ...mockChildContextTypes },
-      },
-    );
-
-    wrapper
-      .find('.option-checkbox.large input')
-      .at(0)
-      .simulate('change', { target: { checked: true } });
+    });
+    const checkbox = container.querySelector('.option-checkbox.large input');
+    fireEvent.click(checkbox);
 
     expect(mapLayers.stop.tram).to.equal(true);
   });
@@ -161,38 +118,50 @@ describe('<MapLayersDialogContent />', () => {
       terminal: {},
     };
     const props = {
-      open: true,
       setOpen: () => {},
-      lang: 'fi',
       mapLayers,
-      updateMapLayers: layers => {
+      updateLayers: layers => {
         mapLayers = { ...layers };
       },
     };
-    const context = {
-      config: {
-        CONFIG: 'default',
-        transportModes: {
-          ferry: {
-            availableForSelection: true,
-          },
+    const { container } = renderMapLayersDialogContent(props, {
+      transportModes: {
+        ferry: {
+          availableForSelection: true,
         },
       },
-    };
-    const wrapper = mountWithIntl(
-      <MapLayersDialogContent isOpen {...props} />,
-      {
-        context: { ...mockContext, ...context },
-        childContextTypes: { ...mockChildContextTypes },
-      },
-    );
-
-    wrapper
-      .find('.option-checkbox.large input')
-      .at(0)
-      .simulate('change', { target: { checked: true } });
+    });
+    const checkbox = container.querySelector('.option-checkbox.large input');
+    fireEvent.click(checkbox);
 
     expect(mapLayers.stop.ferry).to.equal(true);
+  });
+
+  it('should update the airplane stop layer', () => {
+    let mapLayers = {
+      stop: {
+        airplane: false,
+      },
+      terminal: {},
+    };
+    const props = {
+      setOpen: () => {},
+      mapLayers,
+      updateLayers: layers => {
+        mapLayers = { ...layers };
+      },
+    };
+    const { container } = renderMapLayersDialogContent(props, {
+      transportModes: {
+        airplane: {
+          availableForSelection: true,
+        },
+      },
+    });
+    const checkbox = container.querySelector('.option-checkbox.large input');
+    fireEvent.click(checkbox);
+
+    expect(mapLayers.stop.airplane).to.equal(true);
   });
 
   it('should update the citybike layer', () => {
@@ -207,55 +176,41 @@ describe('<MapLayersDialogContent />', () => {
       terminal: {},
     };
     const props = {
-      open: true,
       setOpen: () => {},
-      lang: 'fi',
       mapLayers,
-      updateMapLayers: layers => {
+      updateLayers: layers => {
         mapLayers = { ...layers };
       },
     };
-    const context = {
-      config: {
-        CONFIG: 'default',
-        vehicleRental: {
-          networks: {
-            foo: {
-              type: 'citybike',
-              enabled: true,
-              season: {
-                start: `${today.getDate()}.${
-                  today.getMonth() + 1
-                }.${today.getFullYear()}`,
-                end: `${tomorrow.getDate()}.${
-                  tomorrow.getMonth() + 1
-                }.${tomorrow.getFullYear()}`,
-                preSeasonStart: `${yesterday.getDate()}.${
-                  yesterday.getMonth() + 1
-                }.${yesterday.getFullYear()}`,
-              },
+    const { container } = renderMapLayersDialogContent(props, {
+      vehicleRental: {
+        networks: {
+          foo: {
+            type: 'citybike',
+            enabled: true,
+            season: {
+              start: `${today.getDate()}.${
+                today.getMonth() + 1
+              }.${today.getFullYear()}`,
+              end: `${tomorrow.getDate()}.${
+                tomorrow.getMonth() + 1
+              }.${tomorrow.getFullYear()}`,
+              preSeasonStart: `${yesterday.getDate()}.${
+                yesterday.getMonth() + 1
+              }.${yesterday.getFullYear()}`,
             },
           },
         },
-        transportModes: {
-          citybike: {
-            availableForSelection: true,
-          },
+      },
+      transportModes: {
+        citybike: {
+          availableForSelection: true,
         },
       },
-    };
-    const wrapper = mountWithIntl(
-      <MapLayersDialogContent isOpen {...props} />,
-      {
-        context: { ...mockContext, ...context },
-        childContextTypes: { ...mockChildContextTypes },
-      },
-    );
+    });
+    const checkbox = container.querySelector('.option-checkbox.large input');
+    fireEvent.click(checkbox);
 
-    wrapper
-      .find('.option-checkbox.large input')
-      .at(0)
-      .simulate('change', { target: { checked: true } });
     expect(mapLayers.citybike).to.equal(true);
   });
 
@@ -266,34 +221,19 @@ describe('<MapLayersDialogContent />', () => {
       terminal: {},
     };
     const props = {
-      open: true,
       setOpen: () => {},
-      lang: 'fi',
       mapLayers,
-      updateMapLayers: layers => {
+      updateLayers: layers => {
         mapLayers = { ...layers };
       },
     };
-    const context = {
-      config: {
-        CONFIG: 'default',
-        parkAndRide: {
-          showParkAndRide: true,
-        },
+    const { container } = renderMapLayersDialogContent(props, {
+      parkAndRide: {
+        showParkAndRide: true,
       },
-    };
-    const wrapper = mountWithIntl(
-      <MapLayersDialogContent isOpen {...props} />,
-      {
-        context: { ...mockContext, ...context },
-        childContextTypes: { ...mockChildContextTypes },
-      },
-    );
-
-    wrapper
-      .find('.option-checkbox.large input')
-      .at(0)
-      .simulate('change', { target: { checked: true } });
+    });
+    const checkbox = container.querySelector('.option-checkbox.large input');
+    fireEvent.click(checkbox);
 
     expect(mapLayers.parkAndRide).to.equal(true);
   });
@@ -309,11 +249,9 @@ describe('<MapLayersDialogContent />', () => {
       },
     };
     const props = {
-      open: true,
       setOpen: () => {},
-      lang: 'fi',
       mapLayers,
-      updateMapLayers: layers => {
+      updateLayers: layers => {
         mapLayers = { ...layers };
       },
       geoJson: {
@@ -333,42 +271,34 @@ describe('<MapLayersDialogContent />', () => {
         },
       },
     };
-    const context = {
-      config: {
-        CONFIG: 'default',
-        geoJson: {
-          layers: [
-            {
-              name: {
-                fi: 'testi',
-                sv: 'test',
-                en: 'test',
-              },
-              url: 'somejson',
+    const { container } = renderMapLayersDialogContent(props, {
+      geoJson: {
+        layers: [
+          {
+            name: {
+              fi: 'testi',
+              sv: 'test',
+              en: 'test',
             },
-            {
-              name: {
-                fi: 'nimi',
-                sv: 'namn',
-                en: 'name',
-              },
-              url: 'morejson',
+            url: 'somejson',
+          },
+          {
+            name: {
+              fi: 'nimi',
+              sv: 'namn',
+              en: 'name',
             },
-          ],
-        },
+            url: 'morejson',
+          },
+        ],
       },
-    };
-    const wrapper = mountWithIntl(
-      <MapLayersDialogContent isOpen {...props} />,
-      {
-        context: { ...mockContext, ...context },
-        childContextTypes: { ...mockChildContextTypes },
-      },
+    });
+    const checkboxes = container.querySelectorAll(
+      '.option-checkbox.large input',
     );
-    const checkboxes = wrapper.find('.option-checkbox.large input');
     expect(checkboxes.length).to.equal(2);
 
-    checkboxes.at(1).simulate('change', { target: { checked: true } });
+    fireEvent.click(checkboxes[1]);
 
     expect(mapLayers.geoJson.morejson).to.equal(true);
   });
@@ -376,7 +306,7 @@ describe('<MapLayersDialogContent />', () => {
   describe('getGeoJsonLayersOrDefault', () => {
     it('should return the layers from the configuration', () => {
       const config = {
-        CONFIG: 'default',
+        ...testConfig,
         geoJson: {
           layers: [
             {
@@ -393,7 +323,7 @@ describe('<MapLayersDialogContent />', () => {
 
     it('should return the layers from the store', () => {
       const config = {
-        CONFIG: 'default',
+        ...testConfig,
         geoJson: {
           layerConfigUrl: 'foobar',
         },
@@ -409,12 +339,11 @@ describe('<MapLayersDialogContent />', () => {
     });
 
     it('should return the defaultValue', () => {
-      const config = { CONFIG: 'default' };
       const store = {};
       const defaultValue = [];
-      expect(getGeoJsonLayersOrDefault(config, store, defaultValue)).to.equal(
-        defaultValue,
-      );
+      expect(
+        getGeoJsonLayersOrDefault(testConfig, store, defaultValue),
+      ).to.equal(defaultValue);
     });
   });
 });

@@ -1,16 +1,38 @@
 /* eslint-disable func-names, no-console */
-const passport = require('passport');
-const session = require('express-session');
-const redis = require('redis');
-const axios = require('axios');
-const RedisStore = require('connect-redis')(session);
-const LoginStrategy = require('./Strategy').Strategy;
+import passport from 'passport';
+import session from 'express-session';
+import redis from 'redis';
+import axios from 'axios';
+import connectRedis from 'connect-redis';
+import { Strategy as LoginStrategy } from './Strategy.js';
+
+const RedisStore = connectRedis(session);
 
 const clearAllUserSessions = false; // set true if logout should erase all user's sessions
 
 const debugLogging = process.env.DEBUGLOGGING;
 
 axios.defaults.timeout = 12000;
+
+function getFirstQueryValue(value) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function safeLocalReturnTo(value, fallback) {
+  const returnTo = getFirstQueryValue(value);
+
+  if (!returnTo || typeof returnTo !== 'string') {
+    return fallback;
+  }
+
+  // Only allow local application paths.
+  // Reject absolute URLs and protocol-relative URLs.
+  if (!returnTo.startsWith('/') || returnTo.startsWith('//')) {
+    return fallback;
+  }
+
+  return returnTo;
+}
 
 export default function setUpOIDC(app, port, indexPath, hostnames) {
   /* ********* Setup OpenID Connect ********* */
@@ -105,14 +127,18 @@ export default function setUpOIDC(app, port, indexPath, hostnames) {
   };
 
   const refreshTokens = function (req, res, next) {
+    const now = Math.floor(new Date().getTime() / 1000);
+    const refreshSkewSeconds = 60;
+
     if (
       req.isAuthenticated() &&
-      req.user.token.refresh_token &&
-      Math.floor(new Date().getTime() / 1000) >= req.user.token.expires_at
+      req.user?.token?.refresh_token &&
+      req.user.token.expires_at &&
+      now + refreshSkewSeconds >= req.user.token.expires_at
     ) {
       return passport.authenticate('passport-openid-connect', {
         refresh: true,
-        successReturnToOrRedirect: `/${indexPath}`,
+        keepSessionInfo: true,
         failureRedirect: `/${indexPath}`,
       })(req, res, next);
     }
@@ -132,10 +158,10 @@ export default function setUpOIDC(app, port, indexPath, hostnames) {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV !== 'development',
+        httpOnly: process.env.NODE_ENV !== 'development',
         maxAge: 1000 * 60 * 60 * 24 * 60,
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        sameSite: process.env.NODE_ENV !== 'development' ? 'none' : 'lax',
       },
     }),
   );
@@ -149,24 +175,28 @@ export default function setUpOIDC(app, port, indexPath, hostnames) {
 
   app.use(redirectToLogin);
   app.use(refreshTokens);
+
   // Initiates an authentication request
   // users will be redirected to hsl.id and once authenticated
   // they will be returned to the callback handler below
-  app.get('/login', function (req, res) {
-    const { url, favouriteModalAction, ...rest } = req.query;
-    if (favouriteModalAction) {
-      req.session.returnTo = `/${indexPath}?favouriteModalAction=${favouriteModalAction}`;
+  app.get('/login', function (req, res, next) {
+    const { returnTo } = req.query;
+    const fallbackReturnTo = `/${indexPath}`;
+
+    if (returnTo) {
+      req.session.returnTo = safeLocalReturnTo(returnTo, fallbackReturnTo);
     }
-    if (url) {
-      const restParams = Object.keys(rest)
-        .map(k => `${k}=${rest[k]}`)
-        .join('&');
-      req.session.returnTo = `${url}?${restParams}`;
-    }
-    passport.authenticate('passport-openid-connect', {
-      scope: 'profile',
-      successReturnToOrRedirect: '/',
-    })(req, res);
+
+    req.session.save(err => {
+      if (err) {
+        return next(err);
+      }
+
+      return passport.authenticate('passport-openid-connect', {
+        scope: 'profile',
+        successReturnToOrRedirect: fallbackReturnTo,
+      })(req, res, next);
+    });
   });
 
   // Callback handler that will redirect back to application after successfull authentication
@@ -174,6 +204,7 @@ export default function setUpOIDC(app, port, indexPath, hostnames) {
     callbackPath,
     passport.authenticate('passport-openid-connect', {
       callback: true,
+      keepSessionInfo: true,
       successReturnToOrRedirect: `/${indexPath}`,
       failureRedirect: '/login',
     }),
@@ -344,4 +375,6 @@ export default function setUpOIDC(app, port, indexPath, hostnames) {
         errorHandler(res, err);
       });
   });
+
+  return RedisClient;
 }

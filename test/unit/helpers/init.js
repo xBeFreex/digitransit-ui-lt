@@ -1,18 +1,13 @@
 /* eslint-disable no-console */
 import { expect } from 'chai';
-import { configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
 import Link from 'found/Link';
 import relay from 'react-relay';
 import { JSDOM } from 'jsdom';
 import { after, afterEach, before } from 'mocha';
 import { stub } from 'sinon';
 import { Settings } from 'luxon';
-import { initAnalyticsClientSide } from '../../../app/util/analyticsUtils';
-import {
-  restoreOwnedIntlStub,
-  restoreOwnedContextStubs,
-} from './mock-intl-enzyme';
+import { cleanup } from '@testing-library/react';
+import { initAnalyticsClientSide } from '../../../utils/shared/analyticsUtils';
 
 /**
  * Helper function to copy the properties of the source object to the
@@ -68,10 +63,11 @@ initAnalyticsClientSide(config);
 // set up unit test globals
 global.expect = expect;
 
-// prevent mocha from interpreting imported .png or svg images
+// prevent mocha from interpreting imported .png, .svg or .css files
 const noop = () => null;
 require.extensions['.png'] = noop;
 require.extensions['.svg'] = noop;
+require.extensions['.css'] = noop;
 
 const MockLink = ({ children }) => children;
 
@@ -87,7 +83,6 @@ before('setting up the environment', () => {
   stub(relay, 'useFragment').callsFake((query, ref) => ref);
   // TODO this could be renabled when dependencies don't throw warnings
   // stub(console, 'warn').callsFake(callback);
-  configure({ adapter: new Adapter() });
 });
 
 after('resetting the environment', () => {
@@ -98,8 +93,7 @@ after('resetting the environment', () => {
 
 // make sure the local and session storage stays clear for each test
 afterEach(() => {
-  restoreOwnedIntlStub();
-  restoreOwnedContextStubs();
+  cleanup();
   window.localStorage.clear();
   window.sessionStorage.clear();
 });

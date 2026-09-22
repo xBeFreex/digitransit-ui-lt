@@ -3,6 +3,14 @@ on:
   release:
     types:
       - published
+permissions:
+  id-token: write # for generate-sbom
+  contents: read
+env:
+  # Runners default to UTC; keep tooling on the zone the app is developed
+  # against so any locally-formatted timestamps stay consistent with the
+  # dev pipeline.
+  TZ: Europe/Helsinki
 jobs:
   prod-push:
     runs-on: ubuntu-latest
@@ -26,3 +34,10 @@ jobs:
           DOCKER_AUTH: ${{ secrets.DOCKER_AUTH }}
           DOCKER_BASE_TAG: v3-prod
           DOCKER_DEV_TAG: ${{ github.event.release.target_commitish }}
+
+  generate-sbom:
+    uses: ./.github/workflows/generate-sbom.yml
+    secrets: inherit
+    with:
+      artifact-name: sbom-artifact-prod
+      sbom-env-key-name: 'SBOM_ENV_KEY_PROD'

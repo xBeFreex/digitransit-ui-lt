@@ -20,7 +20,6 @@ export default {
     'address-or-stop': 'Adresse oder Haltestelle',
     agency: 'Betreiber',
     airplane: 'Flug',
-    'airplane-with-route-number': 'Flug {routeNumber}',
     'airport-check-in': 'Gepäck bei {agency} einchecken',
     'airport-collect-luggage': 'Falls vorhanden, Gepäck einsammeln',
     'airport-security-check-go-to-gate':
@@ -44,10 +43,8 @@ export default {
     bicycle_walk: 'Fahrrad schieben',
     'bike-availability': 'Fahrräder verfügbar',
     'bike-station-disabled': 'Pyöräasema ei ole käytössä.',
-    'bikes-available': 'Fahrräder verfügbar',
     'biking-speed': 'Geschwindigkeit mit dem Fahrrad',
     bus: 'Bus',
-    'bus-with-route-number': 'Bus {routeNumber} {headSign}',
     'call-number': 'Anrufen {number}',
     cancel: 'Abbrechen',
     canceled: 'Ausgefallen',
@@ -89,7 +86,6 @@ export default {
     explanations: 'Erklärung',
     'extra-info': 'Mehr Infos',
     ferry: 'Fähre',
-    'ferry-with-route-number': 'Fähre {routeNumber} {headSign}',
     'from-station': 'Bahnhof',
     'from-stop': 'Halt',
     frontpage: 'Startseite',
@@ -133,12 +129,12 @@ export default {
     'itinerary-summary-row.clickable-area-description': 'Auf der Karte zeigen',
     'itinerary-summary-row.description':
       'Route fährt ab {departureDate} {departureTime} mit Ankunft {arrivalDate} {arrivalTime}. {firstDeparture} {transfers} Gesamte Dauer {totalTime}.',
-    'itinerary-summary-row.first-departure':
-      '{vehicle} fährt um {departureTime} von {stopName}.',
     'itinerary-summary-row.first-leg-start-time':
       'Fährt ab um {firstDepartureTime} von {firstDepartureStopType} {firstDepartureStop}',
     'itinerary-summary-row.first-leg-start-time-citybike':
       'Abfahrt um {firstDepartureTime} von {firstDepartureStop} Leihrad-Station',
+    'itinerary-summary-row.first-leg-start-time-sr':
+      '{vehicle} fährt um {firstDepartureTime} von {firstDepartureStop}.',
     'itinerary-summary-row.no-transit-legs': 'Start jederzeit möglich',
     'itinerary-summary-row.transfers':
       'Umstieg auf {vehicle} an Halt {stopName}',
@@ -231,7 +227,6 @@ export default {
     print: 'Drucken',
     'print-timetable': 'Fahrplan',
     rail: 'Zug',
-    'rail-with-route-number': 'Zug {routeNumber} {headSign}',
     realtime: 'Echtzeit',
     releases: 'Veröffentlichungen',
     'rent-cycle-at': 'Fahrrad bei {station} mieten',
@@ -299,7 +294,6 @@ export default {
       'Zeige Kombination von Fahrrad und ÖPNV. Dauer {duration}, davon {length} per Rad',
     'street-mode-walk-aria': 'Zeige Fußweg. Dauer {duration}, Strecke {length}',
     subway: 'U-Bahn',
-    'subway-with-route-number': 'U-Bahn {routeNumber} {headSign}',
     'summary-page.description': '{from} - {to}',
     'summary-page.row-label': 'Reisevorschlag {number}',
     'summary-page.title': 'Reisevorschläge',
@@ -315,7 +309,6 @@ export default {
     track: 'Gleis',
     'track-num': 'Gleis {platformCode}',
     tram: 'Tram',
-    'tram-with-route-number': 'Tram {routeNumber} {headSign}',
     'travel-time': '{min} min',
     'travel-time-label': 'Reisezeit',
     'travel-time-with-hours': '{h} h {min} min',

@@ -1,19 +1,15 @@
 import React from 'react';
-import { shallowWithIntl } from '../helpers/mock-intl-enzyme';
-
+import { renderWithProviders } from '../helpers/mock-providers';
 import { Component as DisruptionBanner } from '../../../app/component/DisruptionBanner';
-import DisruptionBannerAlert from '../../../app/component/DisruptionBannerAlert';
 import {
   AlertSeverityLevelType,
   AlertEntityType,
-} from '../../../app/constants';
+} from '../../../utils/shared/constants';
 
 describe('<DisruptionBanner />', () => {
   it('should render a service alert', () => {
     const props = {
       breakpoint: 'large',
-      currentTime: 1500,
-      language: 'fi',
       mode: 'BUS',
       alerts: [
         {
@@ -33,11 +29,12 @@ describe('<DisruptionBanner />', () => {
       ],
     };
 
-    const wrapper = shallowWithIntl(<DisruptionBanner {...props} />, {
-      context: {
-        config: { CONFIG: 'default' },
-      },
+    const { container } = renderWithProviders(<DisruptionBanner {...props} />, {
+      config: { CONFIG: 'default', URL: {}, language: 'fi' },
+      currentTime: 1500,
     });
-    expect(wrapper.find(DisruptionBannerAlert)).to.lengthOf(1);
+    expect(
+      container.querySelectorAll('.disruption-container'),
+    ).to.have.lengthOf(1);
   });
 });

@@ -8,14 +8,18 @@ import {
   drawStopIcon,
   drawHybridStopIcon,
   drawHybridStationIcon,
-} from '../../../util/mapIconUtils';
-import { getStopMode } from '../../../util/modeUtils';
+} from '../../../../utils/client/mapIconUtils';
+import { getStopMode } from '../../../../utils/client/modeUtils';
 import {
   isFeatureLayerEnabled,
   getLayerBaseUrl,
-} from '../../../util/mapLayerUtils';
-import { PREFIX_ITINERARY_SUMMARY, PREFIX_ROUTES } from '../../../util/path';
-import { fetchWithLanguageAndSubscription } from '../../../util/fetchUtils';
+} from '../../../../utils/client/mapLayerUtils';
+import {
+  PREFIX_ITINERARY_SUMMARY,
+  PREFIX_ROUTES,
+} from '../../../../utils/shared/path';
+import { splitGtfsId } from '../../../../utils/shared/gtfs';
+import { fetchWithLanguageAndSubscription } from '../../../../utils/shared/fetchUtils';
 
 const stopAlertsQuery = graphql`
   query StopsQuery($stopId: String!, $date: String!) {
@@ -134,8 +138,8 @@ class Stops {
   }
 
   stopsToShowCheck(feature, isStation) {
-    const feedid = feature.properties.gtfsId.split(':')[0];
-    if (!isStation && !this.config.feedIds.includes(feedid)) {
+    const { feedId } = splitGtfsId(feature.properties.gtfsId);
+    if (!isStation && !this.config.feedIds.includes(feedId)) {
       return false;
     }
     if (this.tile.stopsToShow) {

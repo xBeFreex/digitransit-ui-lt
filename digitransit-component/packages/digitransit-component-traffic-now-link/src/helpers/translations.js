@@ -1,3 +1,4 @@
+/* eslint sort-keys: "error" */
 const translations = {
   de: {
     translation: {
@@ -7,16 +8,6 @@ const translations = {
   en: {
     translation: {
       traffic: 'Changes and disruptions',
-    },
-  },
-  pl: {
-    translation: {
-      traffic: 'Zmiany i zakłócenia',
-    },
-  },
-  sv: {
-    translation: {
-      traffic: 'Störningar och ändringar',
     },
   },
   fi: {
@@ -29,5 +20,16 @@ const translations = {
       traffic: 'Sutrikimai ir pakeitimai',
     },
   },
+  pl: {
+    translation: {
+      traffic: 'Zmiany i zakłócenia',
+    },
+  },
+  sv: {
+    translation: {
+      traffic: 'Störningar och ändringar',
+    },
+  },
 };
+
 export default translations;

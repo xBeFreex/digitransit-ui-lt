@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, it } from 'mocha';
 import { DateTime, Settings } from 'luxon';
 
 import { calculateRedirectDecision } from '../../../app/component/routepage/schedule/scheduleParamUtils';
-import { routePagePath, PREFIX_TIMETABLE } from '../../../app/util/path';
-import { DATE_FORMAT } from '../../../app/constants';
+import { routePagePath, PREFIX_TIMETABLE } from '../../../utils/shared/path';
+import { DATE_FORMAT } from '../../../utils/shared/constants';
 
 describe('scheduleParamUtils', () => {
   describe('calculateRedirectDecision', () => {
@@ -97,6 +97,23 @@ describe('scheduleParamUtils', () => {
         patternCode: 'HSL:1001:0:01',
         routeId: 'HSL:1001',
         availableDates: [firstAvailable],
+        hasTrips: false,
+      });
+
+      expect(decision.shouldRedirect).to.equal(false);
+    });
+
+    it('should not redirect when wantedDay is the same calendar date as the first available date but a different object instance', () => {
+      // This is the first-load scenario: wantedDay = DateTime.local() (with time component),
+      // availableDates[0] = startOf('day') for the same date — different instances, same date.
+      const today = DateTime.now().startOf('day');
+      const wantedDayDifferentInstance = DateTime.now(); // same calendar date, different time + instance
+
+      const decision = calculateRedirectDecision({
+        wantedDay: wantedDayDifferentInstance,
+        patternCode: 'HSL:1001:0:01',
+        routeId: 'HSL:1001',
+        availableDates: [today],
         hasTrips: false,
       });
 

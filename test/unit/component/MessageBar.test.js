@@ -1,14 +1,15 @@
 import React from 'react';
+import { waitFor } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 
 import {
   Component as MessageBar,
   getServiceAlertId,
 } from '../../../app/component/MessageBar';
 import { mockContext } from '../helpers/mock-context';
-import { shallowWithIntl } from '../helpers/mock-intl-enzyme';
-import { setReadMessageIds } from '../../../app/store/localStorage';
-import { AlertSeverityLevelType } from '../../../app/constants';
-import Icon from '../../../app/component/Icon';
+import { renderWithProviders } from '../helpers/mock-providers';
+import { setReadMessageIds } from '../../../utils/client/localStorage';
+import { AlertSeverityLevelType } from '../../../utils/shared/constants';
 
 const defaultProps = {
   getServiceAlertsAsync: async () => [],
@@ -20,21 +21,21 @@ const defaultProps = {
   relayEnvironment: { environment: {} },
 };
 
-const context = {
-  ...mockContext,
-  config: {
-    CONFIG: 'default',
-    messageBarAlerts: true,
-  },
+const config = {
+  ...mockContext.config,
+  messageBarAlerts: true,
 };
 
 describe('<MessageBar />', () => {
-  it('should render empty if there are no messages', () => {
+  it('should render empty if there are no messages', async () => {
     const props = { ...defaultProps };
-    const wrapper = shallowWithIntl(<MessageBar {...props} />, {
-      context,
+    const { container } = renderWithProviders(<MessageBar {...props} />, {
+      config,
+      currentTime: defaultProps.currentTime,
     });
-    expect(wrapper.isEmptyRender()).to.equal(true);
+    await waitFor(() =>
+      expect(container.querySelector('.message-bar')).to.equal(null),
+    );
   });
 
   it('should render the service alert', async () => {
@@ -51,11 +52,15 @@ describe('<MessageBar />', () => {
         },
       ],
     };
-    const wrapper = shallowWithIntl(<MessageBar {...props} />, {
-      context,
+    const { container } = renderWithProviders(<MessageBar {...props} />, {
+      config,
+      currentTime: defaultProps.currentTime,
     });
-    await wrapper.instance().componentDidMount();
-    expect(wrapper.find(Icon)).to.have.lengthOf(2);
+    await waitFor(() =>
+      expect(container.querySelector('.message-bar')).to.not.equal(null),
+    );
+    expect(container.textContent).to.contain('foo');
+    expect(container.textContent).to.contain('bar');
   });
 
   it('should not show a closed service alert again', async () => {
@@ -88,12 +93,16 @@ describe('<MessageBar />', () => {
       ...defaultProps,
       getServiceAlertsAsync: async () => alerts,
     };
-    const wrapper = shallowWithIntl(<MessageBar {...props} />, {
-      context,
+    const { container } = renderWithProviders(<MessageBar {...props} />, {
+      config,
+      currentTime: defaultProps.currentTime,
     });
-    await wrapper.instance().componentDidMount();
-    expect(wrapper.instance().validMessages()[0].id).to.not.equal(alertId);
-    expect(wrapper.find(Icon)).to.have.lengthOf(2);
+    await waitFor(() =>
+      expect(container.querySelector('.message-bar')).to.not.equal(null),
+    );
+    expect(container.textContent).to.contain('header');
+    expect(container.textContent).to.contain('text');
+    expect(container.textContent).to.not.contain('bar');
   });
 
   it('should not render service alerts that are expired', async () => {
@@ -111,12 +120,49 @@ describe('<MessageBar />', () => {
       ...defaultProps,
       getServiceAlertsAsync: async () => alerts,
     };
-    const wrapper = shallowWithIntl(<MessageBar {...props} />, {
-      context,
+    const { container } = renderWithProviders(<MessageBar {...props} />, {
+      config,
+      currentTime: defaultProps.currentTime,
+    });
+    await waitFor(() =>
+      expect(container.querySelector('.message-bar')).to.equal(null),
+    );
+  });
+
+  it('should hide the only shown message immediately after clicking close, without a remount', async () => {
+    const alerts = [
+      {
+        alertDescriptionText: 'bar',
+        alertHash: 1,
+        alertHeaderText: 'foo',
+        alertSeverityLevel: AlertSeverityLevelType.Severe,
+        effectiveStartDate: defaultProps.currentTime - 100,
+        effectiveEndDate: defaultProps.currentTime + 100,
+        feed: 'Foo',
+      },
+    ];
+    const props = {
+      ...defaultProps,
+      getServiceAlertsAsync: async () => alerts,
+    };
+    const { container } = renderWithProviders(<MessageBar {...props} />, {
+      config,
+      currentTime: defaultProps.currentTime,
+    });
+    await waitFor(() =>
+      expect(container.querySelector('.message-bar')).to.not.equal(null),
+    );
+
+    const closeButton = container.querySelector('#close-message-bar');
+    act(() => {
+      closeButton.dispatchEvent(
+        new window.MouseEvent('click', { bubbles: true }),
+      );
     });
 
-    await wrapper.instance().componentDidMount();
-    expect(wrapper.find(Icon)).to.have.lengthOf(0);
+    await waitFor(() =>
+      expect(container.querySelector('.message-bar')).to.equal(null),
+    );
   });
 
   it('should not render service alerts when messageBarAlerts is false', async () => {
@@ -133,18 +179,13 @@ describe('<MessageBar />', () => {
         },
       ],
     };
-    const wrapper = shallowWithIntl(<MessageBar {...props} />, {
-      context: {
-        ...context,
-        config: {
-          CONFIG: 'default',
-          messageBarAlerts: false,
-        },
-      },
+    const { container } = renderWithProviders(<MessageBar {...props} />, {
+      config: { ...config, messageBarAlerts: false },
+      currentTime: defaultProps.currentTime,
     });
-    await wrapper.instance().componentDidMount();
-
-    expect(wrapper.find(Icon)).to.have.lengthOf(0);
+    await waitFor(() =>
+      expect(container.querySelector('.message-bar')).to.equal(null),
+    );
   });
 
   it('should have correct background color', async () => {
@@ -165,13 +206,15 @@ describe('<MessageBar />', () => {
         },
       ],
     };
-    const wrapper = shallowWithIntl(<MessageBar {...props} />, {
-      context,
+    const { container } = renderWithProviders(<MessageBar {...props} />, {
+      config,
+      currentTime: defaultProps.currentTime,
     });
-    await wrapper.instance().componentDidMount();
-    expect(wrapper.find('section').get(0).props.style).to.have.property(
-      'background',
-      '#000000',
+    await waitFor(() =>
+      expect(container.querySelector('.message-bar')).to.not.equal(null),
+    );
+    expect(container.querySelector('.message-bar').style.background).to.equal(
+      'rgb(0, 0, 0)',
     );
   });
 });

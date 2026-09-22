@@ -1,57 +1,67 @@
-/* eslint-disable no-param-reassign, no-console, strict, global-require, no-unused-vars, func-names */
+/* eslint-disable no-param-reassign, no-console, no-unused-vars, func-names */
 
-'use strict';
+// This file runs as native ESM (the repo is `"type": "module"`) - no
+// `@babel/register` transpile hook. Its `../app/*` require-chain no longer
+// renders React server-side (see server/serve.js) and every module in it is
+// plain ESM, so Node 24 loads it directly.
+import path from 'path';
+import fs from 'fs';
+import { createRequire } from 'module';
+import proxy from 'express-http-proxy';
+import express from 'express';
+import expressStaticGzip from 'express-static-gzip';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import logger from 'morgan';
+import helmet from 'helmet';
+import { CosmosClient } from '@azure/cosmos';
+import { ASSET_URL_PLACEHOLDER } from '../scripts/build/assetUrlPlaceholder.js';
+import { getJson } from '../utils/shared/xhrPromise.js';
+import { retryFetch } from '../utils/shared/fetchUtils.js';
+import * as configTools from './configs/config.js';
+import { splitGtfsId } from '../utils/shared/gtfs.js';
+// Previously lazy `require()`d inside setUp* functions; hoisted to
+// top-level imports for ESM. The OIDC stack (passport/redis/openid-client)
+// still only runs when `process.env.OIDC_CLIENT_ID` is set.
+import setUpOIDC from './passport-openid-connect/openidConnect.js';
+import reittiopasParameterMiddleware from './reittiopasParameterMiddleware.js';
+import serve from './serve.js';
 
-/* ********* Polyfills (for node) ********* */
-const path = require('path');
-const fs = require('fs');
-require('@babel/register')({
-  // This will override `node_modules` ignoring - you can alternatively pass
-  // an array of strings to be explicitly matched or a regex / glob
-  ignore: [
-    /node_modules\/(?!react-leaflet|@babel\/runtime\/helpers\/esm|@digitransit-util)/,
-  ],
-});
-
-global.fetch = require('node-fetch');
-const proxy = require('express-http-proxy');
-
-global.self = { fetch: global.fetch };
-
-const devhost = '';
+// Node 24 `require()`s an ESM `config.*.js` graph directly (none use
+// top-level await), so the geoJson/citybike config sweeps below stay
+// synchronous instead of turning their promise executors async. Anchored
+// via `process.cwd()` rather than `import.meta.url`: a file containing
+// `import.meta` can't be transpiled to CommonJS by `@babel/register`, which
+// breaks the Mocha unit-test suite's require()-based module loading. Both
+// call sites below pass createRequire's returned function an already-fully-
+// absolute path (built from `configsDir`), so the anchor itself only needs
+// to be *some* valid absolute location, not this file's true location.
+const require = createRequire(path.join(process.cwd(), 'server/server.js'));
 
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at:', p, 'reason:', reason);
 });
 
-/* ********* Server ********* */
-const express = require('express');
-const expressStaticGzip = require('express-static-gzip');
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
-const logger = require('morgan');
-const { CosmosClient } = require('@azure/cosmos');
-const { getJson } = require('../app/util/xhrPromise');
-const { retryFetch } = require('../app/util/fetchUtils');
-const configTools = require('../app/config');
-
 const config = configTools.getConfiguration();
 
 const appRoot = `${process.cwd()}/`;
-const configsDir = path.join(appRoot, 'app', 'configurations');
+const configsDir = path.join(appRoot, 'server', 'configs');
 const configFiles = fs
   .readdirSync(configsDir)
-  .filter(file => file.startsWith('config'));
+  // matches only the per-region `config.<name>.js` files, not the shared
+  // `config.js` module that now lives alongside them in this directory.
+  .filter(file => /^config\.\w+\.js$/.test(file));
 let allZones;
 
 /* ********* Global ********* */
 const port = config.PORT || 3000;
 const app = express();
 const { indexPath, hostnames } = config;
+let httpServer;
+let redisClient;
 
 /* Setup functions */
 function setUpOpenId() {
-  const setUpOIDC = require('./passport-openid-connect/openidConnect').default;
   if (process.env.DEBUGLOGGING) {
     app.use(logger('dev'));
   }
@@ -59,31 +69,36 @@ function setUpOpenId() {
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cookieParser());
   app.use(
-    require('helmet')({
+    helmet({
       contentSecurityPolicy: false,
       referrerPolicy: false,
       expectCt: false,
     }),
   );
-  setUpOIDC(app, port, indexPath, hostnames);
+  redisClient = setUpOIDC(app, port, indexPath, hostnames);
 }
 
 function setUpStaticFolders() {
-  // First set up a specific path for sw.js
-  if (process.env.ASSET_URL) {
+  // Serve /sw.js with the ASSET_URL placeholder (baked into the precache
+  // manifest at build time by workbox-webpack-plugin's InjectManifest -
+  // see webpack.config.js / utils/client/serviceWorker.js) replaced by
+  // this deployment's actual CDN base URL - or stripped out entirely when
+  // ASSET_URL isn't set. Only production builds actually produce
+  // _static/sw.js (InjectManifest is production-only), and app/client.js
+  // only ever registers this service worker when
+  // `process.env.NODE_ENV !== 'development'`, so this route is skipped
+  // entirely in dev - mirrors server/serve.js's own
+  // `process.env.NODE_ENV !== 'development'` guard around its
+  // manifest.json/stats.json reads.
+  if (process.env.NODE_ENV !== 'development') {
     const swText = fs.readFileSync(
       path.join(process.cwd(), '_static', 'sw.js'),
       { encoding: 'utf8' },
     );
-    const injectionPoint = swText.indexOf(';') + 2;
-    const swPreText = swText.substring(0, injectionPoint);
-    const swPostText = swText.substring(injectionPoint);
-    const swInjectionText = fs
-      .readFileSync(path.join(process.cwd(), 'server', 'swInjection.js'), {
-        encoding: 'utf8',
-      })
-      .replace(/ASSET_URL/g, process.env.ASSET_URL);
-    const swTextInjected = swPreText + swInjectionText + swPostText;
+    const swTextInjected = swText.replace(
+      new RegExp(ASSET_URL_PLACEHOLDER, 'g'),
+      process.env.ASSET_URL || '',
+    );
 
     app.get('/sw.js', (req, res) => {
       res.setHeader('Cache-Control', 'public, max-age=0');
@@ -124,24 +139,26 @@ function setUpMiddleware() {
   if (process.env.NODE_ENV === 'development') {
     const hotloadPort = process.env.HOT_LOAD_PORT || 9000;
     // proxy for dev-bundle
-    app.use('/proxy/', proxy(`http://localhost:${hotloadPort}/`));
-  }
-  // Proxy static assets to avoid CORS issues when fetching from the browser
-  // TODO this is a hacky solution, contact site-header admins to update site-header cors settings.
-  const staticAssetsBaseUrl = process.env.STATIC_ASSETS_URL;
-  if (staticAssetsBaseUrl) {
-    app.use(
-      '/static-assets',
-      proxy(staticAssetsBaseUrl, {
-        proxyReqPathResolver: req => req.url,
-      }),
-    );
+    app.use('/proxy/', proxy(`http://[::1]:${hotloadPort}/`));
   }
 }
 
-function onError(err, req, res) {
-  res.statusCode = 500;
-  res.end(err.message + err.stack);
+function onError(err, req, res, next) {
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
+  res.setHeader('Cloudflare-CDN-Cache-Control', 'no-store');
+
+  return res
+    .status(500)
+    .type('text/plain')
+    .send(
+      process.env.NODE_ENV === 'development'
+        ? `${err.message}\n${err.stack}`
+        : 'Internal server error',
+    );
 }
 
 function setUpErrorHandling() {
@@ -151,9 +168,9 @@ function setUpErrorHandling() {
 function setUpRoutes() {
   app.use(
     ['/', '/fi/', '/en/', '/sv/', '/ru/', '/slangi/'],
-    require('./reittiopasParameterMiddleware').default,
+    reittiopasParameterMiddleware,
   );
-  app.use(require('../app/server').default);
+  app.use(serve);
 
   // Make sure req has the correct hostname extracted from the proxy info
   app.enable('trust proxy');
@@ -164,7 +181,7 @@ function processTicketTypeResult(result) {
   if (config.availableTickets) {
     if (resultData && Array.isArray(resultData.ticketTypes)) {
       resultData.ticketTypes.forEach(ticket => {
-        const ticketFeed = ticket.fareId.split(':')[0];
+        const { feedId: ticketFeed } = splitGtfsId(ticket.fareId);
         if (config.availableTickets[ticketFeed] === undefined) {
           config.availableTickets[ticketFeed] = {};
         }
@@ -300,10 +317,47 @@ function collectGeoJsonZones() {
 }
 
 function startServer() {
-  const server = app.listen(port, '0.0.0.0', () =>
-    console.log('Digitransit-ui available on port %d', server.address().port),
+  httpServer = app.listen(port, '0.0.0.0', () =>
+    console.log(
+      'Digitransit-ui available on port %d',
+      httpServer.address().port,
+    ),
   );
 }
+
+// Stop accepting new connections and let in-flight requests finish (up to a
+// grace period, kept under `docker stop`'s default 10s so our own clean
+// exit(1) below wins the race instead of being cut off by a SIGKILL) before
+// closing the Redis connection (if OIDC/sessions are configured) and
+// exiting. Running as PID 1 in a container means the kernel skips the
+// default terminate-on-signal action entirely unless a handler is
+// registered (SIGTERM/SIGINT would otherwise just be silently discarded).
+function gracefulShutdown(signal) {
+  console.log(`Received ${signal}, shutting down gracefully`);
+
+  const forceExitTimer = setTimeout(() => {
+    console.log('Graceful shutdown timed out, forcing exit');
+    process.exit(1);
+  }, 8_000);
+  forceExitTimer.unref();
+
+  const closeRedisAndExit = () =>
+    redisClient ? redisClient.quit(() => process.exit(0)) : process.exit(0);
+
+  if (httpServer) {
+    httpServer.close(closeRedisAndExit);
+    // `close()` above only stops accepting new connections - it waits
+    // indefinitely for already-open keep-alive sockets to close on their
+    // own. Proactively close idle ones now so only genuinely in-flight
+    // requests hold up the shutdown.
+    httpServer.closeIdleConnections();
+  } else {
+    closeRedisAndExit();
+  }
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 async function fetchCitybikeSeasons() {
   const client = new CosmosClient(process.env.CITYBIKE_DB_CONN_STRING);
@@ -407,4 +461,4 @@ Promise.all([
   fetchCitybikeConfigurations(),
 ]).then(startServer);
 
-module.exports.app = app;
+export { app };
