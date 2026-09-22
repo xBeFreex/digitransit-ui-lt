@@ -135,7 +135,7 @@ function setUpMiddleware() {
   app.use(bodyParser.raw());
   // geocoder adapter: translates Pelias-format requests to Photon API
   // eslint-disable-next-line global-require
-  app.use('/geocoder', require('./geocoderProxy'));
+  app.use('/geocoder', require('./geocoderProxy.js').default);
   if (process.env.NODE_ENV === 'development') {
     const hotloadPort = process.env.HOT_LOAD_PORT || 9000;
     // proxy for dev-bundle

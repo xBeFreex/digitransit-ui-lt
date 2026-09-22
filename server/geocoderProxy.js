@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-const express = require('express');
-const axios = require('axios');
+import express from 'express';
+import axios from 'axios';
 
 const router = express.Router();
 
@@ -165,4 +165,4 @@ router.get('/place', (_req, res) => {
   res.json({ type: 'FeatureCollection', features: [] });
 });
 
-module.exports = router;
+export default router;
